@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NIELIT StudentHub - Connect, Create, Inspire</title>
-    <link href="[https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Playfair+Display:wght@700;900&display=swap](https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Playfair+Display:wght@700;900&display=swap)" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
     <style>
         :root {
             /* NIELIT Theme Colors */
@@ -1087,6 +1087,10 @@
         .toast.success {
             background: var(--success);
         }
+        
+        .toast.error {
+            background: var(--nielit-red);
+        }
 
         .loading {
             text-align: center;
@@ -1483,11 +1487,11 @@
                 </div>
                 <div class="form-group">
                     <label>LinkedIn</label>
-                    <input type="url" id="editLinkedIn" placeholder="[https://linkedin.com/in/yourprofile](https://linkedin.com/in/yourprofile)">
+                    <input type="url" id="editLinkedIn" placeholder="https://linkedin.com/in/yourprofile">
                 </div>
                 <div class="form-group">
                     <label>GitHub</label>
-                    <input type="url" id="editGitHub" placeholder="[https://github.com/yourusername](https://github.com/yourusername)">
+                    <input type="url" id="editGitHub" placeholder="https://github.com/yourusername">
                 </div>
                 <div class="form-group">
                     <label>Bio</label>
@@ -1523,7 +1527,7 @@
                 </div>
                 <div class="form-group">
                     <label>Project Link</label>
-                    <input type="url" id="projectLink" placeholder="[https://github.com/yourproject](https://github.com/yourproject) or live demo URL">
+                    <input type="url" id="projectLink" placeholder="https://github.com/yourproject or live demo URL">
                 </div>
                 <div class="form-group">
                     <label>Technologies Used</label>
@@ -1591,9 +1595,14 @@
 
     <script>
         // ====== CONFIGURATION ======
-        // IMPORTANT: Replace with your actual Google Apps Script Web App URL
-        // CRITICAL: Make sure to DEPLOY > NEW DEPLOYMENT after pasting the backend code!
-        const SHEET_URL = 'https://script.google.com/macros/s/AKfycbzIua2Weldc6ra16G8Z5zfuG6GHkfj_ZJtwucwr6tQwchYtxR1VZk26uyw2r5rOXao4Xw/exec';
+        // ------------------------------------------------------------------
+        // IMPORTANT: REPLACE THE URL BELOW WITH YOUR DEPLOYED WEB APP URL
+        // 1. Go to your Google Apps Script
+        // 2. Click Deploy > New Deployment
+        // 3. Set 'Who has access' to 'Anyone'
+        // 4. Copy the URL ending in '/exec' and paste it below
+        // ------------------------------------------------------------------
+        const SHEET_URL = 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE'; 
         const CLOUDINARY_UPLOAD_PRESET = 'studenthub_preset';
         const CLOUDINARY_CLOUD_NAME = 'dy8up08qd';
 
@@ -1615,7 +1624,8 @@
         function initializeApp() {
             // Check if configuration is set
             if (SHEET_URL.includes('YOUR_GOOGLE_APPS_SCRIPT_URL_HERE')) {
-                console.warn('⚠️ Google Apps Script URL not configured. Using demo mode.');
+                console.warn('⚠️ Google Apps Script URL not configured.');
+                showToast('SETUP REQUIRED: Please update SHEET_URL in index.html line 1230', false);
             }
             
             checkAuth();
@@ -1623,44 +1633,59 @@
             setupSearchHandlers();
         }
 
-        // ====== HELPER FOR API REQUESTS ======
-        // CRITICAL FIX: Use 'text/plain' to avoid CORS preflight (OPTIONS) requests
-        // which Google Apps Script does not support.
+        // ====== API HANDLER (FIXED) ======
         async function apiCall(action, data = null, method = 'GET') {
             try {
                 if (SHEET_URL.includes('YOUR_GOOGLE_APPS_SCRIPT_URL_HERE')) {
-                    // Demo mode logic handled separately
-                    return { status: 'error', data: 'Demo Mode Active' };
+                    // Demo mode logic fallback if setup is missing
+                    return { status: 'error', data: 'SETUP REQUIRED: Update SHEET_URL in code' };
                 }
 
+                let response;
+                
                 if (method === 'GET') {
-                    // Append parameters to URL
+                    // Construct URL with params
                     const url = new URL(SHEET_URL);
                     url.searchParams.append('action', action);
                     if (data) {
                         Object.keys(data).forEach(key => url.searchParams.append(key, data[key]));
                     }
-                    const response = await fetch(url.toString());
-                    return await response.json();
+                    response = await fetch(url.toString());
                 } else if (method === 'POST') {
-                    // Use text/plain to skip CORS preflight
+                    // Use text/plain to avoid CORS preflight issues
                     const payload = {
                         action: action,
                         ...data
                     };
                     
-                    const response = await fetch(SHEET_URL, {
+                    response = await fetch(SHEET_URL, {
                         method: 'POST',
                         body: JSON.stringify(payload),
-                        // The browser typically defaults to text/plain if no content-type is set,
-                        // or we can set it explicitly to text/plain to be safe.
-                        // DO NOT use application/json here.
                         headers: {
                             "Content-Type": "text/plain;charset=utf-8"
                         }
                     });
-                    return await response.json();
                 }
+
+                // Robust Response Handling
+                const text = await response.text();
+                
+                try {
+                    return JSON.parse(text);
+                } catch (e) {
+                    // If JSON parse fails, it means Google returned an HTML error page
+                    // This usually happens due to Permissions or Code crashes
+                    console.error("SERVER ERROR (HTML returned instead of JSON):", text);
+                    
+                    if(text.includes("Google Drive - Access Denied") || text.includes("Meet Google Drive")) {
+                        throw new Error("PERMISSION ERROR: Set Deployment access to 'Anyone'");
+                    } else if (text.includes("ScriptError")) {
+                        throw new Error("SCRIPT ERROR: Check Apps Script logs");
+                    } else {
+                        throw new Error("SERVER ERROR: See console for details");
+                    }
+                }
+
             } catch (error) {
                 console.error(`API Call Error (${action}):`, error);
                 throw error;
@@ -1757,7 +1782,6 @@
             document.getElementById('mainApp').classList.remove('hidden');
             updateUserUI();
             loadData();
-            setupEventListeners();
         }
 
         function logout() {
@@ -1883,25 +1907,24 @@
             if (currentUser) viewUserProfile(currentUser.email);
         }
 
-        // ====== FORM SUBMISSIONS ======
+        // ====== FORM SUBMISSIONS (LOGIN) ======
         document.getElementById('loginForm')?.addEventListener('submit', async (e) => {
             e.preventDefault();
             const email = document.getElementById('loginEmail').value.trim();
             const password = document.getElementById('loginPassword').value;
 
             if (!email || !password) return showToast('Please enter both email and password', false);
+            
+            // Demo credentials check for when API is down
+            if (email === 'demo@nielit.gov.in' && password === 'demo123') {
+                 currentUser = { name: 'Demo Student', email: 'demo@nielit.gov.in', profilePicture: '', university: 'NIELIT Ropar', major: 'Computer Science', bio: 'I am a demo user.' };
+                 localStorage.setItem('studenthub_user', JSON.stringify(currentUser));
+                 showMainApp();
+                 return showToast('Logged in as Demo User', true);
+            }
 
             try {
-                if (SHEET_URL.includes('YOUR_GOOGLE_APPS_SCRIPT_URL_HERE')) {
-                    if (email === 'demo@nielit.gov.in' && password === 'demo123') {
-                        currentUser = { name: 'Demo Student', email: 'demo@nielit.gov.in', profilePicture: '', university: 'NIELIT Ropar', major: 'Computer Science', bio: '' };
-                        localStorage.setItem('studenthub_user', JSON.stringify(currentUser));
-                        showMainApp();
-                        return showToast('Welcome back! 👋 (Demo Mode)', true);
-                    }
-                    return showToast('Invalid credentials. Try: demo@nielit.gov.in / demo123', false);
-                }
-
+                showToast('Logging in...', true); // Feedback
                 const result = await apiCall('login', { email, password }, 'GET');
 
                 if (result.status === 'success' && result.data) {
@@ -1915,10 +1938,11 @@
                 }
             } catch (error) {
                 console.error('Login error:', error);
-                showToast('Login failed. Please try again.', false);
+                showToast('Login Failed: ' + error.message, false);
             }
         });
 
+        // ====== FORM SUBMISSIONS (SIGNUP) ======
         document.getElementById('signupForm')?.addEventListener('submit', async (e) => {
             e.preventDefault();
             const name = document.getElementById('signupName').value.trim();
@@ -1944,14 +1968,7 @@
             };
 
             try {
-                if (SHEET_URL.includes('YOUR_GOOGLE_APPS_SCRIPT_URL_HERE')) {
-                    currentUser = { ...userData, bio: '' };
-                    delete currentUser.password;
-                    localStorage.setItem('studenthub_user', JSON.stringify(currentUser));
-                    showMainApp();
-                    return showToast('Account created successfully! 🎉 (Demo Mode)', true);
-                }
-
+                showToast('Creating account...', true);
                 const result = await apiCall('signup', { data: userData }, 'POST');
 
                 if (result.status === 'success') {
@@ -1965,56 +1982,260 @@
                 }
             } catch (error) {
                 console.error('Signup error:', error);
-                // Fallback to local storage
-                currentUser = { ...userData, bio: '' };
-                delete currentUser.password;
-                localStorage.setItem('studenthub_user', JSON.stringify(currentUser));
-                showMainApp();
-                showToast('Account created locally!', true);
+                showToast('Signup Failed: ' + error.message, false);
             }
         });
 
-        document.getElementById('editProfileForm')?.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const profileImageFile = document.getElementById('editProfileImage').files[0];
-            let profilePictureUrl = currentUser.profilePicture;
+        // ====== DATA LOADING ======
+        async function loadData() {
+            try {
+                let projectsLoaded = false;
+                try {
+                    const projectsData = await apiCall('getProjects', null, 'GET');
+                    if (projectsData.status === 'success') {
+                        allProjects = Array.isArray(projectsData.data) ? projectsData.data : [];
+                        projectsLoaded = true;
+                    }
+                } catch (e) { console.error("Error loading projects:", e); }
 
-            if (profileImageFile) {
-                showToast('Uploading new profile picture...', true);
-                profilePictureUrl = await uploadToCloudinary(profileImageFile);
+                let profilesLoaded = false;
+                try {
+                    const profilesData = await apiCall('getProfiles', null, 'GET');
+                    if (profilesData.status === 'success') {
+                        allProfiles = Array.isArray(profilesData.data) ? profilesData.data : [];
+                        profilesLoaded = true;
+                    }
+                } catch (e) { console.error("Error loading profiles:", e); }
+
+                if (!projectsLoaded && !profilesLoaded) {
+                    console.log('Using demo data fallback due to load failure');
+                    showToast("Could not load data from Sheet. Check console.", false);
+                    loadDemoData();
+                } else {
+                    renderProjects();
+                    renderProfiles();
+                    updateTrending();
+                    updateStats();
+                }
+            } catch (error) {
+                console.error('Load data fatal error:', error);
+                showToast("Fatal Data Error: " + error.message, false);
+                loadDemoData();
+            }
+        }
+
+        function loadDemoData() {
+            allProjects = [
+                {
+                    id: '1', authorName: 'Demo Student', authorEmail: 'demo@nielit.gov.in', authorPicture: '',
+                    title: 'AI Study Companion', description: 'An intelligent study assistant...', link: '#', tech: 'Python',
+                    projectImage: '', upvotes: 42, commentCount: 8, shareCount: 12, timestamp: new Date().toISOString()
+                }
+            ];
+            allProfiles = [
+                {
+                    name: 'Demo Student', email: 'demo@nielit.gov.in', university: 'NIELIT Ropar', major: 'CS',
+                    bio: 'AI Enthusiast', profilePicture: '', timestamp: new Date().toISOString()
+                }
+            ];
+            renderProjects();
+            renderProfiles();
+            updateTrending();
+            updateStats();
+        }
+
+        // ====== RENDERING & ACTIONS ======
+        function loadFeed() {
+            currentView = 'feed';
+            document.getElementById('feedView').style.display = 'block';
+            document.getElementById('profilesView').style.display = 'none';
+            document.getElementById('userProfileView').style.display = 'none';
+            document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
+            document.querySelector('.nav-link[data-view="feed"]').classList.add('active');
+            renderProjects();
+        }
+
+        function renderProjects(projects = null, containerId = 'projectsContainer') {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            const list = projects || allProjects;
+            
+            if (list.length === 0) {
+                container.innerHTML = `<div class="empty-state"><h3>No Projects</h3></div>`;
+                return;
             }
 
-            const updatedData = {
-                ...currentUser,
-                name: document.getElementById('editName').value.trim(),
-                university: document.getElementById('editUniversity').value.trim(),
-                major: document.getElementById('editMajor').value.trim(),
-                linkedin: document.getElementById('editLinkedIn').value.trim(),
-                github: document.getElementById('editGitHub').value.trim(),
-                bio: document.getElementById('editBio').value.trim(),
-                profilePicture: profilePictureUrl
+            container.innerHTML = list.map(p => `
+                <div class="project-card">
+                    <div class="project-header">
+                        ${p.authorPicture ? `<img src="${p.authorPicture}" class="project-avatar">` : `<div class="project-avatar placeholder">${p.authorName[0]}</div>`}
+                        <div class="project-info">
+                            <h3 onclick="viewUserProfile('${p.authorEmail}')">${escapeHtml(p.authorName)}</h3>
+                            <div class="project-meta">${getTimeAgo(p.timestamp)}</div>
+                        </div>
+                    </div>
+                    <div class="project-title">${escapeHtml(p.title)}</div>
+                    ${p.projectImage ? `<img src="${p.projectImage}" class="project-image">` : ''}
+                    <div class="project-description">${escapeHtml(p.description)}</div>
+                    ${p.link ? `<a href="${p.link}" target="_blank" class="project-link">🔗 View Project</a>` : ''}
+                    <div style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1rem;">
+                        ${p.tech ? `🛠️ ${escapeHtml(p.tech)}` : ''}
+                    </div>
+                    <div class="project-footer">
+                        <button class="action-btn ${userUpvotes.has(p.id) ? 'upvoted' : ''}" onclick="toggleUpvote('${p.id}')">👍 ${p.upvotes}</button>
+                        <button class="action-btn" onclick="openComments('${p.id}')">💬 ${p.commentCount || 0}</button>
+                        <button class="action-btn" onclick="openShare('${p.id}')">🔗 ${p.shareCount || 0}</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderProfiles(profiles = null) {
+            const container = document.getElementById('profilesContainer');
+            if (!container) return;
+            const list = profiles || allProfiles;
+            
+            container.innerHTML = `<div class="profiles-grid">` + list.map(p => `
+                <div class="profile-card" onclick="viewUserProfile('${p.email}')">
+                    ${p.profilePicture ? `<img src="${p.profilePicture}" class="profile-card-avatar">` : `<div class="profile-card-avatar placeholder">${p.name[0]}</div>`}
+                    <h3>${escapeHtml(p.name)}</h3>
+                    <div>${escapeHtml(p.major || '')}</div>
+                </div>
+            `).join('') + `</div>`;
+        }
+
+        function updateTrending() { 
+            const sorted = [...allProjects].sort((a,b) => b.upvotes - a.upvotes).slice(0, 3);
+            const container = document.getElementById('trendingContainer');
+            if(!container) return;
+            container.innerHTML = sorted.map(p => `
+                <div class="trending-item" onclick="viewUserProfile('${p.authorEmail}')">
+                    <div class="trending-title">${escapeHtml(p.title)}</div>
+                    <div class="trending-meta">by ${escapeHtml(p.authorName)} • ${p.upvotes} upvotes</div>
+                </div>
+            `).join('');
+        }
+        
+        function updateStats() { 
+            document.getElementById('totalProjects').textContent = allProjects.length;
+            document.getElementById('totalStudents').textContent = allProfiles.length;
+        }
+
+        async function toggleUpvote(id) {
+            const p = allProjects.find(x => x.id === id);
+            if (!p) return;
+            
+            if (userUpvotes.has(id)) {
+                p.upvotes--; userUpvotes.delete(id);
+            } else {
+                p.upvotes++; userUpvotes.add(id);
+            }
+            renderProjects(); // Re-render to show new count
+            
+            if (!SHEET_URL.includes('YOUR_GOOGLE_APPS_SCRIPT_URL_HERE')) {
+                await apiCall('updateUpvotes', { projectId: id, upvotes: p.upvotes }, 'POST');
+            }
+        }
+
+        async function openComments(id) {
+            currentProjectIdForComments = id;
+            openModal('comments');
+            document.getElementById('commentsList').innerHTML = '<div class="loading"><div class="spinner"></div></div>';
+            
+            try {
+                const res = await apiCall('getComments', { projectId: id }, 'GET');
+                const comments = (res && res.status === 'success') ? res.data : [];
+                
+                if (comments.length === 0) {
+                     document.getElementById('commentsList').innerHTML = '<div style="text-align:center; padding:1rem; color:gray;">No comments yet. Be the first!</div>';
+                } else {
+                    document.getElementById('commentsList').innerHTML = comments.map(c => `
+                        <div class="comment">
+                            <div class="comment-header">
+                                ${c.authorPicture ? `<img src="${c.authorPicture}" class="comment-avatar">` : `<div class="comment-avatar placeholder" style="width:32px;height:32px;font-size:0.8rem;">${c.authorName[0]}</div>`}
+                                <span class="comment-author">${escapeHtml(c.authorName)}</span>
+                                <span class="comment-time">${getTimeAgo(c.timestamp)}</span>
+                            </div>
+                            <div class="comment-text">${escapeHtml(c.comment)}</div>
+                        </div>
+                    `).join('');
+                }
+            } catch(e) {
+                 document.getElementById('commentsList').innerHTML = '<div style="color:red; text-align:center;">Failed to load comments</div>';
+            }
+        }
+
+        async function submitComment() {
+            const text = document.getElementById('commentInput').value.trim();
+            if(!text) return;
+            
+            const data = { 
+                id: Date.now().toString(), 
+                projectId: currentProjectIdForComments, 
+                authorName: currentUser.name, 
+                authorEmail: currentUser.email, 
+                authorPicture: currentUser.profilePicture, 
+                comment: text, 
+                timestamp: new Date().toISOString() 
             };
+            
+            // Optimistic update
+            const tempComment = `
+                <div class="comment" style="opacity:0.7">
+                    <div class="comment-header"><span class="comment-author">${currentUser.name}</span><span>Just now...</span></div>
+                    <div class="comment-text">${text}</div>
+                </div>`;
+            document.getElementById('commentsList').insertAdjacentHTML('beforeend', tempComment);
+            document.getElementById('commentInput').value = '';
 
             try {
-                if (!SHEET_URL.includes('YOUR_GOOGLE_APPS_SCRIPT_URL_HERE')) {
-                    await apiCall('updateProfile', { data: updatedData }, 'POST');
-                }
-                currentUser = updatedData;
-                localStorage.setItem('studenthub_user', JSON.stringify(currentUser));
-                updateUserUI();
-                closeModal('editProfile');
-                showToast('Profile updated successfully! ✨', true);
-                loadData();
-            } catch (error) {
-                console.error('Update error:', error);
-                currentUser = updatedData;
-                localStorage.setItem('studenthub_user', JSON.stringify(currentUser));
-                updateUserUI();
-                closeModal('editProfile');
-                showToast('Profile updated locally!', true);
+                await apiCall('addComment', { data }, 'POST');
+                openComments(currentProjectIdForComments); // Reload to confirm
+            } catch(e) {
+                showToast("Failed to post comment", false);
             }
-        });
+        }
 
+        function openShare(id) {
+            currentProjectForShare = allProjects.find(p => p.id === id);
+            openModal('share');
+            document.getElementById('shareLinkContainer').style.display = 'none';
+        }
+
+        function shareViaLink() {
+            if(!currentProjectForShare) return;
+            const link = currentProjectForShare.link || 'No Link Available';
+            const shareContainer = document.getElementById('shareLinkContainer');
+            const shareInput = document.getElementById('shareLink');
+            
+            shareContainer.style.display = 'block';
+            shareInput.value = link;
+            
+            shareInput.select();
+            document.execCommand('copy'); // For older browser compatibility
+            
+            // Modern API attempt
+            navigator.clipboard.writeText(link).then(() => {
+                showToast('Link copied to clipboard!', true);
+            }).catch(() => {
+                showToast('Link shown below', true);
+            });
+        }
+        
+        function shareViaEmail() {
+             if(!currentProjectForShare) return;
+             const subject = `Check out this project: ${currentProjectForShare.title}`;
+             const body = `Hey, I found this cool project on StudentHub:\n\n${currentProjectForShare.title}\n${currentProjectForShare.description}\n\nLink: ${currentProjectForShare.link}`;
+             window.open(`mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`);
+        }
+        
+        function shareViaWhatsApp() {
+             if(!currentProjectForShare) return;
+             const text = `Check out this project: ${currentProjectForShare.title} - ${currentProjectForShare.link}`;
+             window.open(`https://wa.me/?text=${encodeURIComponent(text)}`);
+        }
+
+        // Project Form Handler
         document.getElementById('projectForm')?.addEventListener('submit', async (e) => {
             e.preventDefault();
             if (!currentUser) return showToast('Please log in first!', false);
@@ -2023,6 +2244,8 @@
             const description = document.getElementById('projectDescription').value.trim();
 
             if (!title || !description) return showToast('Please fill in title and description', false);
+
+            showToast('Posting project...', true);
 
             let projectImageUrl = null;
             const projectImageFile = document.getElementById('projectImage').files[0];
@@ -2058,168 +2281,77 @@
                 showToast('Project posted successfully! 🚀', true);
             } catch (error) {
                 console.error('Error posting project:', error);
-                allProjects.unshift(projectData);
-                renderProjects();
-                updateTrending();
-                updateStats();
-                closeModal('project');
-                showToast('Project saved locally!', true);
+                showToast('Failed to post project: ' + error.message, false);
             }
         });
 
-        // ====== DATA LOADING ======
-        async function loadData() {
+        // Edit Profile Handler
+        document.getElementById('editProfileForm')?.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            showToast('Updating profile...', true);
+            
+            const profileImageFile = document.getElementById('editProfileImage').files[0];
+            let profilePictureUrl = currentUser.profilePicture;
+
+            if (profileImageFile) {
+                showToast('Uploading new profile picture...', true);
+                profilePictureUrl = await uploadToCloudinary(profileImageFile);
+            }
+
+            const updatedData = {
+                ...currentUser,
+                name: document.getElementById('editName').value.trim(),
+                university: document.getElementById('editUniversity').value.trim(),
+                major: document.getElementById('editMajor').value.trim(),
+                linkedin: document.getElementById('editLinkedIn').value.trim(),
+                github: document.getElementById('editGitHub').value.trim(),
+                bio: document.getElementById('editBio').value.trim(),
+                profilePicture: profilePictureUrl
+            };
+
             try {
-                if (SHEET_URL.includes('YOUR_GOOGLE_APPS_SCRIPT_URL_HERE')) {
-                    return loadDemoData();
+                if (!SHEET_URL.includes('YOUR_GOOGLE_APPS_SCRIPT_URL_HERE')) {
+                    await apiCall('updateProfile', { data: updatedData }, 'POST');
                 }
-
-                let projectsLoaded = false;
-                try {
-                    const projectsData = await apiCall('getProjects', null, 'GET');
-                    if (projectsData.status === 'success') {
-                        allProjects = Array.isArray(projectsData.data) ? projectsData.data : [];
-                        projectsLoaded = true;
-                    }
-                } catch (e) { console.error(e); }
-
-                let profilesLoaded = false;
-                try {
-                    const profilesData = await apiCall('getProfiles', null, 'GET');
-                    if (profilesData.status === 'success') {
-                        allProfiles = Array.isArray(profilesData.data) ? profilesData.data : [];
-                        profilesLoaded = true;
-                    }
-                } catch (e) { console.error(e); }
-
-                if (!projectsLoaded && !profilesLoaded) {
-                    console.log('Using demo data fallback');
-                    loadDemoData();
-                } else {
-                    renderProjects();
-                    renderProfiles();
-                    updateTrending();
-                    updateStats();
-                }
+                currentUser = updatedData;
+                localStorage.setItem('studenthub_user', JSON.stringify(currentUser));
+                updateUserUI();
+                closeModal('editProfile');
+                showToast('Profile updated successfully! ✨', true);
+                loadData(); // Reload to sync
             } catch (error) {
-                console.error('Load data fatal error:', error);
-                loadDemoData();
+                console.error('Update error:', error);
+                showToast('Failed to update profile', false);
             }
-        }
+        });
 
-        function loadDemoData() {
-            allProjects = [
-                {
-                    id: '1', authorName: 'Demo Student', authorEmail: 'demo@nielit.gov.in', authorPicture: '',
-                    title: 'AI Study Companion', description: 'An intelligent study assistant...', link: '#', tech: 'Python',
-                    projectImage: '', upvotes: 42, commentCount: 8, shareCount: 12, timestamp: new Date().toISOString()
-                }
-            ];
-            allProfiles = [
-                {
-                    name: 'Demo Student', email: 'demo@nielit.gov.in', university: 'NIELIT Ropar', major: 'CS',
-                    bio: 'AI Enthusiast', profilePicture: '', timestamp: new Date().toISOString()
-                }
-            ];
-            renderProjects();
-            renderProfiles();
-            updateTrending();
-            updateStats();
-        }
-
-        // ====== RENDERING & ACTIONS ======
-        function renderProjects(projects = null, containerId = 'projectsContainer') {
-            const container = document.getElementById(containerId);
-            if (!container) return;
-            const list = projects || allProjects;
-            
-            if (list.length === 0) {
-                container.innerHTML = `<div class="empty-state"><h3>No Projects</h3></div>`;
-                return;
-            }
-
-            container.innerHTML = list.map(p => `
-                <div class="project-card">
-                    <div class="project-header">
-                        ${p.authorPicture ? `<img src="${p.authorPicture}" class="project-avatar">` : `<div class="project-avatar placeholder">${p.authorName[0]}</div>`}
-                        <div class="project-info">
-                            <h3 onclick="viewUserProfile('${p.authorEmail}')">${escapeHtml(p.authorName)}</h3>
-                            <div class="project-meta">${getTimeAgo(p.timestamp)}</div>
-                        </div>
-                    </div>
-                    <div class="project-title">${escapeHtml(p.title)}</div>
-                    ${p.projectImage ? `<img src="${p.projectImage}" class="project-image">` : ''}
-                    <div class="project-description">${escapeHtml(p.description)}</div>
-                    <div class="project-footer">
-                        <button class="action-btn ${userUpvotes.has(p.id) ? 'upvoted' : ''}" onclick="toggleUpvote('${p.id}')">👍 ${p.upvotes}</button>
-                        <button class="action-btn" onclick="openComments('${p.id}')">💬 ${p.commentCount}</button>
-                        <button class="action-btn" onclick="openShare('${p.id}')">🔗 ${p.shareCount}</button>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function renderProfiles(profiles = null) {
-            const container = document.getElementById('profilesContainer');
-            if (!container) return;
-            const list = profiles || allProfiles;
-            
-            container.innerHTML = `<div class="profiles-grid">` + list.map(p => `
-                <div class="profile-card" onclick="viewUserProfile('${p.email}')">
-                    ${p.profilePicture ? `<img src="${p.profilePicture}" class="profile-card-avatar">` : `<div class="profile-card-avatar placeholder">${p.name[0]}</div>`}
-                    <h3>${escapeHtml(p.name)}</h3>
-                    <div>${escapeHtml(p.major || '')}</div>
-                </div>
-            `).join('') + `</div>`;
-        }
-
-        function updateTrending() { /* Same logic */ }
-        function updateStats() { /* Same logic */ }
-
-        async function toggleUpvote(id) {
-            const p = allProjects.find(x => x.id === id);
-            if (!p) return;
-            
-            if (userUpvotes.has(id)) {
-                p.upvotes--; userUpvotes.delete(id);
-            } else {
-                p.upvotes++; userUpvotes.add(id);
-            }
-            renderProjects(); // Re-render to show new count
-            
-            if (!SHEET_URL.includes('YOUR_GOOGLE_APPS_SCRIPT_URL_HERE')) {
-                await apiCall('updateUpvotes', { projectId: id, upvotes: p.upvotes }, 'POST');
-            }
-        }
-
-        // Comment & Share functions follow similar pattern...
-        async function openComments(id) {
-            currentProjectIdForComments = id;
-            openModal('comments');
-            const res = await apiCall('getComments', { projectId: id }, 'GET');
-            const comments = (res && res.status === 'success') ? res.data : [];
-            document.getElementById('commentsList').innerHTML = comments.map(c => `
-                <div class="comment"><b>${escapeHtml(c.authorName)}</b>: ${escapeHtml(c.comment)}</div>
-            `).join('') || 'No comments yet.';
-        }
-
-        async function submitComment() {
-            const text = document.getElementById('commentInput').value.trim();
-            if(!text) return;
-            const data = { id: Date.now().toString(), projectId: currentProjectIdForComments, authorName: currentUser.name, authorEmail: currentUser.email, authorPicture: currentUser.profilePicture, comment: text, timestamp: new Date().toISOString() };
-            
-            await apiCall('addComment', { data }, 'POST');
-            document.getElementById('commentInput').value = '';
-            openComments(currentProjectIdForComments);
-        }
-
-        function openShare(id) {
-            currentProjectForShare = allProjects.find(p => p.id === id);
-            openModal('share');
+        // UI Helpers
+        function showToast(message, isSuccess) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = 'toast show ' + (isSuccess ? 'success' : 'error');
+            setTimeout(() => { toast.classList.remove('show'); }, 4000);
         }
 
         function closeModal(id) { document.getElementById(id+'Modal').classList.remove('active'); }
-        function getTimeAgo(ts) { return new Date(ts).toLocaleDateString(); }
+        function openModal(id) { document.getElementById(id+'Modal').classList.add('active'); }
+        
+        function showProfiles() {
+            currentView = 'profiles';
+            document.getElementById('feedView').style.display = 'none';
+            document.getElementById('profilesView').style.display = 'block';
+            document.getElementById('userProfileView').style.display = 'none';
+            document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
+            document.querySelector('.nav-link[data-view="profiles"]').classList.add('active');
+            renderProfiles();
+        }
+
+        function getTimeAgo(ts) { 
+            if(!ts) return '';
+            const date = new Date(ts);
+            return date.toLocaleDateString(); 
+        }
+        
         function escapeHtml(text) { return text ? text.replace(/</g, "&lt;").replace(/>/g, "&gt;") : ''; }
     </script>
 </body>
