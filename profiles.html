@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>StudentHub - Profiles</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
     <link rel="icon" type="image/x-icon" href="logo.png">
@@ -12,13 +12,35 @@
             --background: #F5F7FA; --card-bg: #FFFFFF; --text-primary: #1A1A1A;
             --text-secondary: #6B7280; --border: #E5E7EB;
         }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Poppins', sans-serif; background: var(--background); color: var(--text-primary); display: flex; flex-direction: column; min-height: 100vh; }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        
+        body { 
+            font-family: 'Poppins', sans-serif; 
+            background: var(--background); 
+            color: var(--text-primary); 
+            display: flex; 
+            flex-direction: column; 
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
 
-        nav.desktop-nav { background: var(--card-bg); box-shadow: 0 2px 8px rgba(0,0,0,0.05); padding: 1rem 2rem; position: sticky; top: 0; z-index: 10; }
+        nav.desktop-nav { 
+            background: var(--card-bg); 
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05); 
+            padding: 1rem 2rem; 
+            position: sticky; 
+            top: 0; 
+            z-index: 10; 
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+        
         .nav-container { max-width: 1400px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
-        .logo { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 700; color: var(--primary); text-decoration: none; }
-        .nav-link { margin-left: 2rem; text-decoration: none; color: var(--text-secondary); font-weight: 500; }
+        .logo { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 700; color: var(--primary); text-decoration: none; display: flex; align-items: center; gap: 0.5rem; }
+        .logo::before { content: '🎓'; font-size: 1.8rem; }
+        
+        .nav-link { margin-left: 2rem; text-decoration: none; color: var(--text-secondary); font-weight: 500; transition: color 0.3s; }
+        .nav-link:hover { color: var(--accent); }
         .nav-link.active { color: var(--accent); font-weight: 700; }
 
         .container { max-width: 1200px; margin: 2rem auto; padding: 0 1rem; flex: 1; width: 100%; }
@@ -34,6 +56,7 @@
             box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
             justify-content: space-around;
             padding: 0.8rem 0.5rem;
+            padding-bottom: env(safe-area-inset-bottom);
             z-index: 1001;
             border-top: 1px solid var(--border);
         }
@@ -45,24 +68,54 @@
             color: var(--text-secondary);
             font-size: 0.75rem;
             font-weight: 500;
+            padding: 0.3rem;
+            min-width: 60px;
         }
         .mobile-nav-icon { font-size: 1.4rem; margin-bottom: 2px; }
         .mobile-nav-item.active { color: var(--accent); }
 
         /* Directory Grid */
         .profiles-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1.5rem; }
-        .profile-card { background: white; padding: 1.5rem; border-radius: 12px; text-align: center; cursor: pointer; transition: 0.3s; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-        .profile-card:hover { transform: translateY(-5px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
-        .profile-pic { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; margin-bottom: 1rem; background: #eee; }
+        .profile-card { 
+            background: white; 
+            padding: 1.5rem; 
+            border-radius: 12px; 
+            text-align: center; 
+            cursor: pointer; 
+            transition: 0.3s; 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05); 
+            border: 1px solid transparent;
+        }
+        .profile-card:hover { transform: translateY(-5px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); border-color: var(--accent); }
+        .profile-pic { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; margin-bottom: 1rem; background: #eee; border: 2px solid white; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
         
         /* Portfolio View */
-        .portfolio-header { background: white; padding: 3rem 2rem; border-radius: 16px; text-align: center; margin-bottom: 2rem; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .portfolio-header { 
+            background: white; 
+            padding: 3rem 2rem; 
+            border-radius: 16px; 
+            text-align: center; 
+            margin-bottom: 2rem; 
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05); 
+            animation: fadeIn 0.4s ease-out;
+        }
         .big-avatar { width: 150px; height: 150px; border-radius: 50%; object-fit: cover; border: 4px solid var(--accent); margin-bottom: 1rem; }
-        .social-link { display: inline-block; margin: 0.5rem; padding: 0.5rem 1rem; background: #eee; border-radius: 20px; text-decoration: none; color: var(--text-primary); font-size: 0.9rem; }
+        .social-link { display: inline-block; margin: 0.5rem; padding: 0.5rem 1rem; background: #eee; border-radius: 20px; text-decoration: none; color: var(--text-primary); font-size: 0.9rem; transition: all 0.2s; }
+        .social-link:hover { background: var(--accent); color: white; }
         
         /* Projects List in Portfolio */
-        .project-item { background: white; padding: 1.5rem; border-radius: 12px; margin-bottom: 1rem; border: 1px solid var(--border); display: flex; flex-direction: column; gap: 1rem; }
-        .project-img { width: 100%; height: 200px; object-fit: cover; border-radius: 8px; }
+        .project-item { 
+            background: white; 
+            padding: 1.5rem; 
+            border-radius: 12px; 
+            margin-bottom: 1rem; 
+            border: 1px solid var(--border); 
+            display: flex; 
+            flex-direction: column; 
+            gap: 1rem; 
+            animation: fadeIn 0.5s ease-out;
+        }
+        .project-img { width: 100%; height: 200px; object-fit: cover; border-radius: 8px; border: 1px solid var(--border); }
         
         /* Footer */
         .site-footer {
@@ -76,13 +129,45 @@
         }
 
         .hidden { display: none; }
-        .btn-back { margin-bottom: 1rem; display: inline-block; text-decoration: none; color: var(--accent); font-weight: 600; cursor: pointer; }
+        .btn-back { 
+            margin-bottom: 1rem; 
+            display: inline-flex; 
+            align-items: center;
+            text-decoration: none; 
+            color: var(--accent); 
+            font-weight: 600; 
+            cursor: pointer; 
+            padding: 0.5rem 0;
+        }
+        .btn-back:hover { text-decoration: underline; }
+
+        /* Search Input */
+        input[type="text"] {
+            font-size: 16px; /* Prevents iOS zoom */
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
 
         @media (max-width: 968px) {
             .mobile-bottom-nav { display: flex; }
-            .desktop-nav .nav-link { display: none; } /* Hide desktop links, keep logo */
-            .site-footer { padding-bottom: 100px; } /* Space for bottom nav */
+            .desktop-nav .nav-link { display: none; } 
+            .site-footer { padding-bottom: 100px; } 
+            
+            /* Mobile adjustments */
+            .portfolio-header { padding: 1.5rem 1rem; }
+            .big-avatar { width: 120px; height: 120px; }
+            .container { margin: 1rem auto; }
+            .logo { font-size: 1.3rem; }
+            .project-img { height: 180px; }
         }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--background); }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 5px; }
     </style>
 </head>
 <body>
@@ -101,11 +186,14 @@
         
         <!-- VIEW 1: DIRECTORY -->
         <div id="directoryView">
-            <h1 style="margin-bottom: 1.5rem;">Student Directory</h1>
-            <input type="text" placeholder="Search by name or major..." style="width: 100%; padding: 1rem; border-radius: 8px; border: 1px solid #ccc; margin-bottom: 2rem;" onkeyup="filterProfiles(this.value)">
+            <h1 style="margin-bottom: 1.5rem; font-size: 1.8rem;">Student Directory</h1>
+            <input type="text" placeholder="🔍 Search by name or major..." style="width: 100%; padding: 1rem; border-radius: 12px; border: 2px solid var(--border); margin-bottom: 2rem; outline: none; transition: border-color 0.3s;" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'" onkeyup="filterProfiles(this.value)">
             
             <div id="profilesGrid" class="profiles-grid">
-                <div style="grid-column: 1/-1; text-align: center; padding: 2rem;">Loading profiles...</div>
+                <div style="grid-column: 1/-1; text-align: center; padding: 2rem; color: var(--text-secondary);">
+                    <div style="font-size: 2rem; margin-bottom: 0.5rem;">⏳</div>
+                    Loading profiles...
+                </div>
             </div>
         </div>
 
@@ -117,7 +205,7 @@
                 <!-- Injected via JS -->
             </div>
 
-            <h2 style="margin-bottom: 1rem;">Projects</h2>
+            <h2 style="margin-bottom: 1rem; font-size: 1.4rem;">Projects</h2>
             <div id="userProjects">
                 <!-- Injected via JS -->
             </div>
@@ -129,8 +217,7 @@
     <footer class="site-footer">
         <p>&copy; 2026 <strong>NIELIT Ropar</strong>. All rights reserved.</p>
         <p style="font-size: 0.8rem; margin-top: 0.5rem; opacity: 0.7;">
-            National Institute of Electronics & Information Technology<br>
-            Deemed to be University under Distinct Category
+            National Institute of Electronics & Information Technology
         </p>
     </footer>
 
@@ -144,7 +231,7 @@
             <span class="mobile-nav-icon">👥</span>
             <span>Profiles</span>
         </a>
-        <a href="index.html" class="mobile-nav-item">
+        <a href="index.html" onclick="localStorage.setItem('openPostModal', 'true');" class="mobile-nav-item">
             <span class="mobile-nav-icon">➕</span>
             <span>Post</span>
         </a>
@@ -190,15 +277,15 @@
         function renderDirectory(list) {
             const grid = document.getElementById('profilesGrid');
             if(list.length === 0) {
-                grid.innerHTML = '<p>No profiles found.</p>';
+                grid.innerHTML = '<p style="text-align:center; width:100%; color: var(--text-secondary);">No profiles found.</p>';
                 return;
             }
             grid.innerHTML = list.map(p => `
                 <div class="profile-card" onclick="openPortfolio('${p.email}')">
                     <img src="${p.profilePicture || 'https://via.placeholder.com/100'}" class="profile-pic">
-                    <h3>${escapeHtml(p.name)}</h3>
-                    <p style="color: var(--text-secondary); font-size: 0.9rem;">${escapeHtml(p.major || 'Student')}</p>
-                    <p style="font-size: 0.8rem; margin-top: 0.5rem;">${escapeHtml(p.university || '')}</p>
+                    <h3 style="color: var(--primary); font-size: 1.1rem;">${escapeHtml(p.name)}</h3>
+                    <p style="color: var(--text-secondary); font-size: 0.9rem; margin: 0.2rem 0;">${escapeHtml(p.major || 'Student')}</p>
+                    <p style="font-size: 0.8rem; color: var(--accent); font-weight: 500;">${escapeHtml(p.university || '')}</p>
                 </div>
             `).join('');
         }
@@ -207,11 +294,13 @@
             document.getElementById('directoryView').classList.remove('hidden');
             document.getElementById('portfolioView').classList.add('hidden');
             history.pushState({}, "", "profiles.html");
+            window.scrollTo(0,0);
         }
 
         function openPortfolio(email) {
             showPortfolio(email);
             history.pushState({}, "", `profiles.html?email=${email}`);
+            window.scrollTo(0,0);
         }
 
         function showPortfolio(email) {
@@ -224,16 +313,16 @@
             // Header
             document.getElementById('portfolioHeader').innerHTML = `
                 <img src="${profile.profilePicture || 'https://via.placeholder.com/150'}" class="big-avatar">
-                <h1>${escapeHtml(profile.name)}</h1>
-                <p style="font-size: 1.1rem; color: var(--text-secondary); margin-bottom: 1rem;">
-                    ${escapeHtml(profile.major)} @ ${escapeHtml(profile.university)}
+                <h1 style="font-size: 1.5rem; margin-bottom: 0.5rem;">${escapeHtml(profile.name)}</h1>
+                <p style="font-size: 1rem; color: var(--text-secondary); margin-bottom: 1rem;">
+                    ${escapeHtml(profile.major)} ${profile.university ? '@ ' + escapeHtml(profile.university) : ''}
                 </p>
-                <div style="margin-bottom: 1.5rem;">
+                <div style="margin-bottom: 1.5rem; display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem;">
                     ${profile.linkedin ? `<a href="${profile.linkedin}" target="_blank" class="social-link">LinkedIn</a>` : ''}
                     ${profile.github ? `<a href="${profile.github}" target="_blank" class="social-link">GitHub</a>` : ''}
-                    <a href="mailto:${profile.email}" class="social-link">Email</a>
+                    <a href="mailto:${profile.email}" class="social-link">Contact</a>
                 </div>
-                <p style="max-width: 600px; margin: 0 auto;">${escapeHtml(profile.bio || 'No bio yet.')}</p>
+                <p style="max-width: 600px; margin: 0 auto; line-height: 1.6;">${escapeHtml(profile.bio || 'No bio yet.')}</p>
             `;
 
             // Projects
@@ -241,19 +330,19 @@
             const list = document.getElementById('userProjects');
             
             if (userProjects.length === 0) {
-                list.innerHTML = '<div style="text-align:center; padding: 2rem; color:#888;">No projects posted yet.</div>';
+                list.innerHTML = '<div style="text-align:center; padding: 2rem; color: var(--text-secondary); background: white; border-radius: 12px; border: 1px dashed var(--border);">No projects posted yet.</div>';
             } else {
                 list.innerHTML = userProjects.map(p => `
                     <div class="project-item">
-                        <div style="display:flex; justify-content:space-between; align-items:center;">
-                            <h3 style="color: var(--primary);">${escapeHtml(p.title)}</h3>
-                            <span style="font-size:0.8rem; background:#eee; padding:2px 8px; border-radius:4px;">${escapeHtml(p.tech)}</span>
+                        <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                            <h3 style="color: var(--primary); font-size: 1.1rem;">${escapeHtml(p.title)}</h3>
+                            <span style="font-size:0.75rem; background: var(--background); color: var(--text-secondary); padding:2px 8px; border-radius:4px; white-space: nowrap; margin-left: 0.5rem;">${escapeHtml(p.tech)}</span>
                         </div>
-                        <p>${escapeHtml(p.description)}</p>
+                        <p style="font-size: 0.95rem; line-height: 1.5;">${escapeHtml(p.description)}</p>
                         ${p.projectImage ? `<img src="${p.projectImage}" class="project-img">` : ''}
-                        <div style="display:flex; gap:1rem;">
-                            <span>👍 ${p.upvotes}</span>
-                            ${p.link ? `<a href="${p.link}" target="_blank" style="color:var(--accent); text-decoration:none; font-weight:600;">View Project →</a>` : ''}
+                        <div style="display:flex; gap:1rem; align-items: center; margin-top: auto;">
+                            <span style="font-size: 0.9rem;">👍 ${p.upvotes}</span>
+                            ${p.link ? `<a href="${p.link}" target="_blank" style="color:var(--accent); text-decoration:none; font-weight:600; font-size: 0.9rem; margin-left: auto;">View Code →</a>` : ''}
                         </div>
                     </div>
                 `).join('');
