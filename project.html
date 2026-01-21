@@ -506,6 +506,35 @@
         .hidden {
             display: none;
         }
+
+        /* App Download Button */
+.app-download-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: #1a1a1a; /* Dark background for contrast */
+    color: #ffffff !important; /* Force white text */
+    padding: 10px 20px;
+    border-radius: 50px; /* Pill shape */
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.9rem;
+    margin-top: 1.5rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    border: 1px solid transparent;
+}
+
+.app-download-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+    background: var(--accent); /* Changes to blue on hover */
+    border-color: var(--accent);
+}
+
+.app-icon {
+    font-size: 1.2rem;
+}
     </style>
 </head>
 <body>
@@ -653,12 +682,23 @@
     </div>
 
     <footer class="site-footer">
-        <p>&copy; 2026 <strong>NIELIT Ropar</strong>. All rights reserved.</p>
-        <p style="font-size: 0.8rem; margin-top: 0.5rem; opacity: 0.7;">
-            National Institute of Electronics & Information Technology
+    <div class="footer-logo">
+        <p style="font-size: 1.2rem; font-weight: 700; color: var(--primary); margin-bottom: 0.5rem;">
+            🎓 NIELIT Ropar
         </p>
-    </footer>
+    </div>
+    
+    <p>&copy; 2026 <strong>StudentHub</strong>. All rights reserved.</p>
+    
+    <p style="font-size: 0.8rem; margin: 0.5rem 0; opacity: 0.7; max-width: 300px; margin-left: auto; margin-right: auto;">
+        National Institute of Electronics & Information Technology
+    </p>
 
+    <a href="https://github.com/nielitropar/nielitropar.github.io/releases/tag/v1.0" target="_blank" class="app-download-btn">
+        <span class="app-icon">🤖</span> 
+        <span>Download Android App</span>
+    </a>
+    </footer>
     <script>
         // CONFIGURATION - Update these with your actual values
         const SHEET_URL = 'https://script.google.com/macros/s/AKfycbzGbZ39b67jJ2NPODCW4K3zqlf6p6-bq8vPRHmCdNjOxl37MT9KdndnCR8vw55qv7dN/exec';
