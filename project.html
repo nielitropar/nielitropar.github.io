@@ -689,7 +689,8 @@
 
                 if (json.status === 'success') {
                     // Find the specific project
-                    currentProject = json.data.find(p => p.id === id);
+                    // Convert both to strings to ensure they match
+                    currentProject = json.data.find(p => String(p.id) === String(id));
 
                     if (currentProject) {
                         renderProject(currentProject);
