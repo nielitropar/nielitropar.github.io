@@ -18,8 +18,8 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Poppins', sans-serif; background: var(--background); color: var(--text-primary); line-height: 1.6; }
         
-        /* Navigation */
-        nav { background: var(--card-bg); box-shadow: var(--shadow-sm); position: sticky; top: 0; z-index: 1000; }
+        /* Navigation (Desktop) */
+        nav.desktop-nav { background: var(--card-bg); box-shadow: var(--shadow-sm); position: sticky; top: 0; z-index: 1000; }
         .nav-container { max-width: 1400px; margin: 0 auto; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
         .logo { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 900; color: var(--primary); }
         .nav-links { display: flex; gap: 2rem; align-items: center; }
@@ -27,8 +27,34 @@
         .nav-link.active { color: var(--accent); font-weight: 700; }
         .nav-link:hover { color: var(--accent); }
 
+        /* Mobile Bottom Navigation */
+        .mobile-bottom-nav {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: var(--card-bg);
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            justify-content: space-around;
+            padding: 0.8rem 0.5rem;
+            z-index: 1001;
+            border-top: 1px solid var(--border);
+        }
+        .mobile-nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        .mobile-nav-icon { font-size: 1.4rem; margin-bottom: 2px; }
+        .mobile-nav-item.active { color: var(--accent); }
+
         /* Layout */
-        .container { max-width: 1400px; margin: 0 auto; padding: 2rem; }
+        .container { max-width: 1400px; margin: 0 auto; padding: 2rem; min-height: 80vh; }
         .main-layout { display: grid; grid-template-columns: 280px 1fr 320px; gap: 2rem; }
         
         /* Cards */
@@ -44,6 +70,17 @@
         .project-footer { display: flex; gap: 1rem; padding-top: 1rem; border-top: 1px solid var(--border); }
         .action-btn { background: none; border: none; cursor: pointer; color: var(--text-secondary); display: flex; align-items: center; gap: 5px; font-weight: 600; font-family: 'Poppins', sans-serif; transition: 0.2s; }
         .action-btn:hover, .action-btn.active { color: var(--accent); }
+
+        /* Footer */
+        .site-footer {
+            text-align: center;
+            padding: 2rem;
+            background: var(--card-bg);
+            border-top: 1px solid var(--border);
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-top: 2rem;
+        }
 
         /* Auth Pages */
         .auth-page { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: var(--gradient-primary); padding: 1rem; }
@@ -77,7 +114,14 @@
         @media (max-width: 968px) {
             .main-layout { grid-template-columns: 1fr; }
             .sidebar-card, .right-sidebar { display: none; }
-            .nav-links { display: none; } /* Simplified mobile nav for brevity */
+            .nav-links { display: none; } 
+            
+            /* Show Mobile Nav */
+            .mobile-bottom-nav { display: flex; }
+            
+            /* Adjust container to not hide behind bottom nav */
+            .container { padding-bottom: 80px; }
+            .site-footer { padding-bottom: 100px; }
         }
     </style>
 </head>
@@ -140,7 +184,8 @@
 
     <!-- MAIN APP -->
     <div id="mainApp" class="hidden">
-        <nav>
+        <!-- Desktop Nav -->
+        <nav class="desktop-nav">
             <div class="nav-container">
                 <div class="logo">StudentHub</div>
                 <div class="nav-links">
@@ -190,6 +235,35 @@
                 </aside>
             </div>
         </div>
+
+        <!-- NIELIT Footer -->
+        <footer class="site-footer">
+            <p>&copy; 2026 <strong>NIELIT Ropar</strong>. All rights reserved.</p>
+            <p style="font-size: 0.8rem; margin-top: 0.5rem; opacity: 0.7;">
+                National Institute of Electronics & Information Technology<br>
+                Deemed to be University under Distinct Category
+            </p>
+        </footer>
+
+        <!-- Mobile Bottom Nav -->
+        <nav class="mobile-bottom-nav">
+            <a href="index.html" class="mobile-nav-item active">
+                <span class="mobile-nav-icon">🏠</span>
+                <span>Feed</span>
+            </a>
+            <a href="profiles.html" class="mobile-nav-item">
+                <span class="mobile-nav-icon">👥</span>
+                <span>Profiles</span>
+            </a>
+            <a href="#" onclick="openModal('project')" class="mobile-nav-item">
+                <span class="mobile-nav-icon">➕</span>
+                <span>Post</span>
+            </a>
+            <a href="#" onclick="logout()" class="mobile-nav-item">
+                <span class="mobile-nav-icon">🚪</span>
+                <span>Logout</span>
+            </a>
+        </nav>
     </div>
 
     <!-- MODALS -->
