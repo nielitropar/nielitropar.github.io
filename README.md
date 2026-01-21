@@ -2,7 +2,8 @@
 
 <div align="center">
 
-![NIELIT Logo](https://nielit.gov.in/sites/default/files/Ropar/ropar_logo_1.png)
+<img width="666" height="374" alt="nielit_logo" src="https://github.com/user-attachments/assets/8c14f5c0-decd-41cd-8524-2cd89abc589c" />
+
 
 **A professional LinkedIn-style platform for NIELIT Ropar students**
 
