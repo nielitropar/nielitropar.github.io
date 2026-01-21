@@ -1084,6 +1084,43 @@
         </div>
     </div>
 
+    <!-- Share Project Modal -->
+<div id="shareProjectModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>📤 Share Project</h2>
+            <button class="modal-close" onclick="closeModal('shareProject')">&times;</button>
+        </div>
+        
+        <div style="margin-bottom: 1.5rem;">
+            <p style="color: var(--text-secondary); margin-bottom: 1rem;">
+                Share this project with anyone - even those without an account!
+            </p>
+            <div style="display: flex; gap: 0.5rem; padding: 1rem; background: var(--background); border-radius: 8px; border: 2px solid var(--border);">
+                <input type="text" id="shareProjectLink" readonly class="form-input" style="flex: 1; font-size: 0.85rem; font-family: monospace; padding: 0.5rem;">
+                <button onclick="copyShareLink()" class="btn btn-primary" id="copyShareBtn" style="white-space: nowrap;">
+                    📋 Copy
+                </button>
+            </div>
+        </div>
+
+        <div style="display: grid; gap: 0.75rem;">
+            <button onclick="shareViaEmail()" class="btn btn-secondary" style="width: 100%; justify-content: flex-start;">
+                📧 Share via Email
+            </button>
+            <button onclick="shareViaWhatsApp()" class="btn btn-secondary" style="width: 100%; justify-content: flex-start;">
+                💬 Share on WhatsApp
+            </button>
+            <button onclick="shareViaTwitter()" class="btn btn-secondary" style="width: 100%; justify-content: flex-start;">
+                🐦 Share on Twitter
+            </button>
+            <button onclick="shareViaLinkedIn()" class="btn btn-secondary" style="width: 100%; justify-content: flex-start;">
+                💼 Share on LinkedIn
+            </button>
+        </div>
+    </div>
+</div>
+
     <script>
         // CONFIGURATION
         const SHEET_URL = 'https://script.google.com/macros/s/AKfycbzGbZ39b67jJ2NPODCW4K3zqlf6p6-bq8vPRHmCdNjOxl37MT9KdndnCR8vw55qv7dN/exec';
@@ -1472,6 +1509,88 @@
             const data = await res.json();
             return data.secure_url;
         }
+
+        // ===== SHARE FUNCTIONALITY =====
+
+// Share Project Variables
+let currentShareProjectId = null;
+let currentShareProjectTitle = null;
+
+// Open share modal
+function shareProject(projectId, projectTitle) {
+    currentShareProjectId = projectId;
+    currentShareProjectTitle = projectTitle;
+    
+    // Generate share link to project.html
+    const baseUrl = window.location.origin + window.location.pathname.replace('index.html', '');
+    const shareLink = `${baseUrl}project.html?id=${projectId}`;
+    document.getElementById('shareProjectLink').value = shareLink;
+    
+    // Open modal
+    openModal('shareProject');
+}
+
+// Copy share link to clipboard
+function copyShareLink() {
+    const input = document.getElementById('shareProjectLink');
+    input.select();
+    input.setSelectionRange(0, 99999); // For mobile devices
+    
+    try {
+        document.execCommand('copy');
+        
+        const btn = document.getElementById('copyShareBtn');
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '✓ Copied!';
+        btn.style.background = 'var(--success)';
+        
+        setTimeout(() => {
+            btn.innerHTML = originalText;
+            btn.style.background = '';
+        }, 2000);
+    } catch (err) {
+        // Fallback for older browsers
+        alert('Failed to copy. Please copy the link manually.');
+    }
+}
+
+// Share via Email
+function shareViaEmail() {
+    const shareLink = document.getElementById('shareProjectLink').value;
+    const subject = encodeURIComponent(`Check out this project: ${currentShareProjectTitle}`);
+    const body = encodeURIComponent(`I found this interesting project on NIELIT StudentHub:\n\n${currentShareProjectTitle}\n\nView it here: ${shareLink}`);
+    window.open(`mailto:?subject=${subject}&body=${body}`);
+}
+
+// Share via WhatsApp
+function shareViaWhatsApp() {
+    const shareLink = document.getElementById('shareProjectLink').value;
+    const text = encodeURIComponent(`Check out this project on NIELIT StudentHub: ${currentShareProjectTitle}\n\n${shareLink}`);
+    
+    // Check if mobile device
+    if (/Android|webOS|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+        window.open(`whatsapp://send?text=${text}`);
+    } else {
+        window.open(`https://web.whatsapp.com/send?text=${text}`, '_blank');
+    }
+}
+
+// Share via Twitter
+function shareViaTwitter() {
+    const shareLink = document.getElementById('shareProjectLink').value;
+    const text = encodeURIComponent(`Check out this project: ${currentShareProjectTitle}`);
+    const url = encodeURIComponent(shareLink);
+    window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank', 'width=550,height=420');
+}
+
+// Share via LinkedIn
+function shareViaLinkedIn() {
+    const shareLink = document.getElementById('shareProjectLink').value;
+    const url = encodeURIComponent(shareLink);
+    window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${url}`, '_blank', 'width=550,height=420');
+}
+
+        
     </script>
 </body>
 
