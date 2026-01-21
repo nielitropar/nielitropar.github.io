@@ -9,24 +9,105 @@
     <style>
         :root {
             /* NIELIT Theme Colors */
-            --primary: #003366; --secondary: #FF6B35; --accent: #0066CC;
-            --background: #F5F7FA; --card-bg: #FFFFFF; --text-primary: #1A1A1A;
-            --text-secondary: #6B7280; --border: #E5E7EB; --success: #10B981;
+            --primary: #003366;
+            --secondary: #FF6B35;
+            --accent: #0066CC;
+            --background: #F5F7FA;
+            --card-bg: #FFFFFF;
+            --text-primary: #1A1A1A;
+            --text-secondary: #6B7280;
+            --border: #E5E7EB;
+            --success: #10B981;
             --gradient-primary: linear-gradient(135deg, #003366 0%, #0066CC 100%);
             --shadow-sm: 0 2px 8px rgba(0, 51, 102, 0.08);
             --shadow-md: 0 4px 16px rgba(0, 51, 102, 0.12);
+            --shadow-lg: 0 10px 40px rgba(0, 51, 102, 0.15);
         }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Poppins', sans-serif; background: var(--background); color: var(--text-primary); line-height: 1.6; }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--background);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
         
         /* Navigation (Desktop) */
-        nav.desktop-nav { background: var(--card-bg); box-shadow: var(--shadow-sm); position: sticky; top: 0; z-index: 1000; }
-        .nav-container { max-width: 1400px; margin: 0 auto; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
-        .logo { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 900; color: var(--primary); }
-        .nav-links { display: flex; gap: 2rem; align-items: center; }
-        .nav-link { color: var(--text-secondary); text-decoration: none; font-weight: 500; transition: 0.3s; }
-        .nav-link.active { color: var(--accent); font-weight: 700; }
-        .nav-link:hover { color: var(--accent); }
+        nav.desktop-nav {
+            background: var(--card-bg);
+            box-shadow: var(--shadow-sm);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+        
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .logo::before {
+            content: '🎓';
+            font-size: 1.8rem;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+        
+        .nav-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            position: relative;
+        }
+        
+        .nav-link:hover {
+            color: var(--accent);
+            background: rgba(0, 102, 204, 0.05);
+        }
+        
+        .nav-link.active {
+            color: var(--accent);
+            font-weight: 700;
+        }
+        
+        .nav-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 30px;
+            height: 3px;
+            background: var(--accent);
+            border-radius: 3px;
+        }
 
         /* Mobile Bottom Navigation */
         .mobile-bottom-nav {
@@ -42,103 +123,605 @@
             z-index: 1001;
             border-top: 1px solid var(--border);
         }
+        
         .mobile-nav-item {
             display: flex;
             flex-direction: column;
             align-items: center;
             text-decoration: none;
             color: var(--text-secondary);
-            font-size: 0.75rem;
-            font-weight: 500;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 0.3rem 0.8rem;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            min-width: 70px;
         }
-        .mobile-nav-icon { font-size: 1.4rem; margin-bottom: 2px; }
-        .mobile-nav-item.active { color: var(--accent); }
+        
+        .mobile-nav-icon {
+            font-size: 1.5rem;
+            margin-bottom: 4px;
+        }
+        
+        .mobile-nav-item.active {
+            color: var(--accent);
+            background: rgba(0, 102, 204, 0.1);
+        }
 
         /* Layout */
-        .container { max-width: 1400px; margin: 0 auto; padding: 2rem; min-height: 80vh; }
-        .main-layout { display: grid; grid-template-columns: 280px 1fr 320px; gap: 2rem; }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+            min-height: 80vh;
+        }
+        
+        .main-layout {
+            display: grid;
+            grid-template-columns: 280px 1fr 320px;
+            gap: 2rem;
+        }
         
         /* Cards */
-        .card { background: var(--card-bg); border-radius: 16px; padding: 1.5rem; box-shadow: var(--shadow-sm); margin-bottom: 1.5rem; }
-        .sidebar-card { position: sticky; top: 100px; }
+        .card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .card:hover {
+            box-shadow: var(--shadow-md);
+        }
+        
+        .sidebar-card {
+            position: sticky;
+            top: 100px;
+        }
+        
+        /* Enhanced Profile Sidebar */
+        .profile-sidebar {
+            text-align: center;
+            background: linear-gradient(135deg, rgba(0, 51, 102, 0.05), rgba(0, 102, 204, 0.05));
+            border: 2px solid var(--border);
+        }
+        
+        .profile-header {
+            position: relative;
+            padding-bottom: 1rem;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid var(--border);
+        }
         
         /* Project Card */
-        .project-card { animation: fadeIn 0.5s ease-out; }
-        .project-header { display: flex; gap: 1rem; margin-bottom: 1rem; align-items: center; }
-        .avatar { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; background: #eee; }
-        .project-title { font-size: 1.25rem; font-weight: 700; color: var(--primary); margin-bottom: 0.5rem; }
+        .project-card {
+            animation: fadeIn 0.5s ease-out;
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
+        }
         
-        /* FIXED PROJECT IMAGE STYLES */
-        .project-image { 
-            width: 100%; 
-            max-width: 100%; /* Prevents overflow */
-            height: 300px; 
-            object-fit: cover; 
-            border-radius: 12px; 
-            margin: 1rem 0; 
+        .project-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--accent);
+        }
+        
+        .project-header {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            align-items: center;
+        }
+        
+        .avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            object-fit: cover;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: 2px solid white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .big-avatar {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 1rem;
+            border: 4px solid var(--accent);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        .project-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+            line-height: 1.3;
+        }
+        
+        .project-description {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+        
+        /* Enhanced Project Image */
+        .project-image {
+            width: 100%;
+            max-width: 100%;
+            height: 300px;
+            object-fit: cover;
+            border-radius: 12px;
+            margin: 1rem 0;
             display: block;
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
+        }
+        
+        .project-card:hover .project-image {
+            transform: scale(1.02);
         }
 
-        .project-footer { display: flex; gap: 1rem; padding-top: 1rem; border-top: 1px solid var(--border); }
-        .action-btn { background: none; border: none; cursor: pointer; color: var(--text-secondary); display: flex; align-items: center; gap: 5px; font-weight: 600; font-family: 'Poppins', sans-serif; transition: 0.2s; }
-        .action-btn:hover, .action-btn.active { color: var(--accent); }
+        .project-footer {
+            display: flex;
+            gap: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border);
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .action-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-weight: 600;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.2s ease;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+        
+        .action-btn:hover {
+            color: var(--accent);
+            background: rgba(0, 102, 204, 0.05);
+            transform: translateY(-2px);
+        }
+        
+        .action-btn.active {
+            color: var(--accent);
+            background: rgba(0, 102, 204, 0.1);
+        }
+        
+        .tech-badge {
+            margin-left: auto;
+            font-size: 0.8rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
 
         /* Footer */
         .site-footer {
             text-align: center;
-            padding: 2rem;
+            padding: 3rem 2rem;
             background: var(--card-bg);
             border-top: 1px solid var(--border);
             color: var(--text-secondary);
             font-size: 0.9rem;
-            margin-top: 2rem;
+            margin-top: 3rem;
+        }
+        
+        .footer-logo {
+            max-width: 200px;
+            margin: 0 auto 1rem;
+            opacity: 0.8;
         }
 
         /* Auth Pages */
-        .auth-page { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: var(--gradient-primary); padding: 1rem; }
-        .auth-box { background: white; padding: 2.5rem; border-radius: 20px; width: 100%; max-width: 450px; text-align: center; box-shadow: var(--shadow-md); }
-        .form-group { margin-bottom: 1.5rem; text-align: left; }
-        .form-group label { display: block; font-weight: 600; margin-bottom: 0.5rem; font-size: 0.9rem; }
-        .form-input { width: 100%; padding: 0.75rem; border: 2px solid var(--border); border-radius: 8px; font-family: inherit; }
+        .auth-page {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--gradient-primary);
+            padding: 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .auth-page::before {
+            content: '';
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            top: -100px;
+            right: -100px;
+        }
+        
+        .auth-page::after {
+            content: '';
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 50%;
+            bottom: -150px;
+            left: -150px;
+        }
+        
+        .auth-box {
+            background: white;
+            padding: 3rem;
+            border-radius: 20px;
+            width: 100%;
+            max-width: 450px;
+            text-align: center;
+            box-shadow: var(--shadow-lg);
+            position: relative;
+            z-index: 1;
+            animation: slideUp 0.5s ease-out;
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+        
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--text-primary);
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 0.875rem;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            font-family: inherit;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+        }
         
         /* Buttons */
-        .btn { padding: 0.75rem 1.5rem; border-radius: 8px; border: none; font-weight: 600; cursor: pointer; transition: 0.3s; }
-        .btn-primary { background: var(--accent); color: white; }
-        .btn-primary:hover { background: var(--primary); }
-        .btn-secondary { background: #eee; color: var(--text-primary); }
-        .btn-ghost { background: transparent; color: var(--text-secondary); }
+        .btn {
+            padding: 0.875rem 1.75rem;
+            border-radius: 10px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        .btn-primary {
+            background: var(--gradient-primary);
+            color: white;
+            box-shadow: 0 4px 12px rgba(0, 102, 204, 0.3);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 102, 204, 0.4);
+        }
+        
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+        
+        .btn-secondary {
+            background: #F3F4F6;
+            color: var(--text-primary);
+        }
+        
+        .btn-secondary:hover {
+            background: #E5E7EB;
+        }
+        
+        .btn-ghost {
+            background: transparent;
+            color: var(--text-secondary);
+        }
+        
+        .btn-ghost:hover {
+            background: rgba(0, 0, 0, 0.05);
+        }
 
         /* Search */
-        .search-container { margin-bottom: 2rem; }
-        .search-input { width: 100%; padding: 1rem; border: 2px solid var(--border); border-radius: 12px; font-size: 1rem; }
+        .search-container {
+            margin-bottom: 2rem;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 1rem 1.25rem;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: white;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+        }
+        
+        .search-input::placeholder {
+            color: var(--text-secondary);
+        }
 
         /* Modal */
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
-        .modal.active { display: flex; }
-        .modal-content { background: white; padding: 2rem; border-radius: 16px; width: 90%; max-width: 600px; max-height: 90vh; overflow-y: auto; }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(4px);
+            padding: 1rem;
+        }
+        
+        .modal.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow-lg);
+            animation: modalSlide 0.3s ease-out;
+        }
+        
+        @keyframes modalSlide {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-secondary);
+            padding: 0.5rem;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+        
+        .modal-close:hover {
+            background: rgba(0,0,0,0.05);
+            color: var(--text-primary);
+        }
+        
+        /* Trending Section */
+        .trending-item {
+            margin-bottom: 1rem;
+            padding: 1rem;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+        }
+        
+        .trending-item:hover {
+            background: rgba(0, 102, 204, 0.05);
+            border-color: var(--accent);
+            transform: translateX(5px);
+        }
         
         /* Utils */
-        .hidden { display: none !important; }
-        .loading { text-align: center; padding: 2rem; color: var(--text-secondary); }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .hidden {
+            display: none !important;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-secondary);
+        }
+        
+        .loading-spinner {
+            font-size: 3rem;
+            animation: spin 2s linear infinite;
+        }
+        
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Comment Section */
+        .comment-item {
+            margin-bottom: 1rem;
+            background: #F9FAFB;
+            padding: 1rem;
+            border-radius: 12px;
+            border-left: 3px solid var(--accent);
+        }
+        
+        .comment-author {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 0.25rem;
+        }
+        
+        .comment-text {
+            color: var(--text-primary);
+            line-height: 1.5;
+        }
         
         /* Responsive */
+        @media (max-width: 1200px) {
+            .main-layout {
+                grid-template-columns: 260px 1fr 280px;
+                gap: 1.5rem;
+            }
+        }
+        
         @media (max-width: 968px) {
-            .main-layout { grid-template-columns: 1fr; gap: 1rem; }
-            .sidebar-card, .right-sidebar { display: none; }
-            .nav-links { display: none; } 
+            .main-layout {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
             
-            /* Show Mobile Nav */
-            .mobile-bottom-nav { display: flex; }
+            .sidebar-card,
+            .right-sidebar {
+                display: none;
+            }
             
-            /* Better mobile spacing */
-            .container { padding: 1rem; padding-bottom: 80px; }
-            .site-footer { padding-bottom: 100px; }
+            .nav-links {
+                display: none;
+            }
             
-            /* Image fix for mobile */
-            .project-image { height: 200px; }
+            .mobile-bottom-nav {
+                display: flex;
+            }
             
-            .card { padding: 1rem; }
+            .container {
+                padding: 1rem;
+                padding-bottom: 100px;
+            }
+            
+            .site-footer {
+                padding-bottom: 120px;
+            }
+            
+            .project-image {
+                height: 220px;
+            }
+            
+            .card {
+                padding: 1.25rem;
+            }
+            
+            .auth-box {
+                padding: 2rem;
+            }
+            
+            .nav-container {
+                padding: 1rem;
+            }
+            
+            .logo {
+                font-size: 1.3rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .project-footer {
+                font-size: 0.85rem;
+            }
+            
+            .action-btn {
+                padding: 0.4rem 0.7rem;
+                font-size: 0.85rem;
+            }
+            
+            .tech-badge {
+                font-size: 0.7rem;
+                padding: 3px 8px;
+            }
+            
+            .mobile-nav-item {
+                font-size: 0.65rem;
+                min-width: 60px;
+            }
+            
+            .mobile-nav-icon {
+                font-size: 1.3rem;
+            }
+        }
+        
+        /* Smooth scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: var(--background);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 5px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--text-secondary);
         }
     </style>
 </head>
@@ -148,20 +731,20 @@
     <div id="loginPage" class="auth-page">
         <div class="auth-box">
             <h1 class="logo" style="font-size: 2.5rem; margin-bottom: 0.5rem;">StudentHub</h1>
-            <p style="color: var(--text-secondary); margin-bottom: 2rem;">NIELIT Ropar</p>
+            <p style="color: var(--text-secondary); margin-bottom: 2.5rem; font-weight: 500;">NIELIT Ropar</p>
             <form onsubmit="handleLogin(event)">
                 <div class="form-group">
-                    <label>Email</label>
+                    <label>Email Address</label>
                     <input type="email" id="loginEmail" class="form-input" required placeholder="student@nielit.gov.in">
                 </div>
                 <div class="form-group">
                     <label>Password</label>
-                    <input type="password" id="loginPass" class="form-input" required>
+                    <input type="password" id="loginPass" class="form-input" required placeholder="Enter your password">
                 </div>
-                <button type="submit" class="btn btn-primary" style="width: 100%">Log In</button>
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Log In</button>
             </form>
-            <p style="margin-top: 1.5rem; font-size: 0.9rem;">
-                No account? <a href="#" onclick="toggleAuth('signup')" style="color: var(--accent);">Sign up</a>
+            <p style="margin-top: 2rem; font-size: 0.9rem;">
+                No account? <a href="#" onclick="toggleAuth('signup')" style="color: var(--accent); font-weight: 600; text-decoration: none;">Sign up</a>
             </p>
         </div>
     </div>
@@ -169,7 +752,8 @@
     <!-- SIGNUP PAGE -->
     <div id="signupPage" class="auth-page hidden">
         <div class="auth-box">
-            <h2 style="margin-bottom: 1.5rem;">Create Account</h2>
+            <h2 style="margin-bottom: 0.5rem; font-size: 1.8rem;">Create Account</h2>
+            <p style="color: var(--text-secondary); margin-bottom: 2rem;">Join the NIELIT community</p>
             <form onsubmit="handleSignup(event)">
                 <div class="form-group">
                     <label>Profile Picture</label>
@@ -177,24 +761,24 @@
                 </div>
                 <div class="form-group">
                     <label>Full Name</label>
-                    <input type="text" id="signupName" class="form-input" required>
+                    <input type="text" id="signupName" class="form-input" required placeholder="John Doe">
                 </div>
                 <div class="form-group">
-                    <label>Email</label>
-                    <input type="email" id="signupEmail" class="form-input" required>
+                    <label>Email Address</label>
+                    <input type="email" id="signupEmail" class="form-input" required placeholder="student@nielit.gov.in">
                 </div>
                 <div class="form-group">
                     <label>Password</label>
-                    <input type="password" id="signupPass" class="form-input" required minlength="6">
+                    <input type="password" id="signupPass" class="form-input" required minlength="6" placeholder="Minimum 6 characters">
                 </div>
                 <div class="form-group">
                     <label>Major / Stream</label>
-                    <input type="text" id="signupMajor" class="form-input" placeholder="e.g. CS, Electronics">
+                    <input type="text" id="signupMajor" class="form-input" placeholder="e.g. Computer Science, Electronics">
                 </div>
-                <button type="submit" class="btn btn-primary" style="width: 100%">Sign Up</button>
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Sign Up</button>
             </form>
-            <p style="margin-top: 1rem;">
-                <a href="#" onclick="toggleAuth('login')" style="color: var(--text-secondary);">Back to Login</a>
+            <p style="margin-top: 1.5rem;">
+                <a href="#" onclick="toggleAuth('login')" style="color: var(--text-secondary); text-decoration: none; font-weight: 500;">← Back to Login</a>
             </p>
         </div>
     </div>
@@ -208,7 +792,7 @@
                 <div class="nav-links">
                     <a href="index.html" class="nav-link active">Feed</a>
                     <a href="profiles.html" class="nav-link">Profiles</a>
-                    <button class="btn btn-primary" onclick="openModal('project')">Post Project</button>
+                    <button class="btn btn-primary" onclick="openModal('project')">📝 Post Project</button>
                     <button class="btn-ghost" onclick="logout()">Logout</button>
                 </div>
             </div>
@@ -218,27 +802,28 @@
             <div class="main-layout">
                 <!-- Sidebar -->
                 <aside class="sidebar-card">
-                    <div class="card" style="text-align: center;">
-                        <img id="sideAvatar" src="" class="avatar" style="width: 80px; height: 80px; margin-bottom: 1rem;">
-                        <h3 id="sideName">User</h3>
-                        <p id="sideMajor" style="color: var(--text-secondary); font-size: 0.9rem;">Student</p>
-                        <hr style="border: 0; border-top: 1px solid var(--border); margin: 1rem 0;">
-                        <button class="btn btn-secondary" onclick="openMyProfile()" style="width: 100%; margin-bottom: 0.5rem;">My Projects</button>
-                        <button class="btn btn-ghost" onclick="openModal('editProfile')" style="width: 100%">Edit Profile</button>
+                    <div class="card profile-sidebar">
+                        <div class="profile-header">
+                            <img id="sideAvatar" src="" class="avatar big-avatar">
+                            <h3 id="sideName" style="margin-bottom: 0.25rem;">User</h3>
+                            <p id="sideMajor" style="color: var(--text-secondary); font-size: 0.9rem;">Student</p>
+                        </div>
+                        <button class="btn btn-secondary" onclick="openMyProfile()" style="width: 100%; margin-bottom: 0.75rem;">📁 My Projects</button>
+                        <button class="btn btn-ghost" onclick="openModal('editProfile')" style="width: 100%">✏️ Edit Profile</button>
                     </div>
                 </aside>
 
                 <!-- Feed -->
                 <main>
                     <div class="search-container">
-                        <input type="text" class="search-input" placeholder="Search projects by title, tech, or author..." onkeyup="filterProjects(this.value)">
+                        <input type="text" class="search-input" placeholder="🔍 Search projects by title, tech, or author..." onkeyup="filterProjects(this.value)">
                     </div>
                     
                     <!-- Projects Container -->
                     <div id="projectsList">
                         <div class="loading">
-                            <div style="font-size: 2rem;">⏳</div>
-                            <p>Loading the latest innovation...</p>
+                            <div class="loading-spinner">⏳</div>
+                            <p style="margin-top: 1rem; font-size: 1.1rem; font-weight: 500;">Loading the latest innovations...</p>
                         </div>
                     </div>
                 </main>
@@ -246,8 +831,10 @@
                 <!-- Trending -->
                 <aside class="right-sidebar">
                     <div class="card">
-                        <h3>🔥 Trending</h3>
-                        <div id="trendingList" style="margin-top: 1rem;"></div>
+                        <h3 style="margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                            🔥 <span>Trending Projects</span>
+                        </h3>
+                        <div id="trendingList"></div>
                     </div>
                 </aside>
             </div>
@@ -255,8 +842,11 @@
 
         <!-- NIELIT Footer -->
         <footer class="site-footer">
+            <div class="footer-logo">
+                <p style="font-size: 1.2rem; font-weight: 700; color: var(--primary); margin-bottom: 0.5rem;">NIELIT Ropar</p>
+            </div>
             <p>&copy; 2026 <strong>NIELIT Ropar</strong>. All rights reserved.</p>
-            <p style="font-size: 0.8rem; margin-top: 0.5rem; opacity: 0.7;">
+            <p style="font-size: 0.8rem; margin-top: 0.75rem; opacity: 0.7;">
                 National Institute of Electronics & Information Technology<br>
                 Deemed to be University under Distinct Category
             </p>
@@ -272,11 +862,11 @@
                 <span class="mobile-nav-icon">👥</span>
                 <span>Profiles</span>
             </a>
-            <a href="#" onclick="openModal('project')" class="mobile-nav-item">
+            <a href="#" onclick="openModal('project'); return false;" class="mobile-nav-item">
                 <span class="mobile-nav-icon">➕</span>
                 <span>Post</span>
             </a>
-            <a href="#" onclick="logout()" class="mobile-nav-item">
+            <a href="#" onclick="logout(); return false;" class="mobile-nav-item">
                 <span class="mobile-nav-icon">🚪</span>
                 <span>Logout</span>
             </a>
@@ -288,31 +878,34 @@
     <!-- Post Project Modal -->
     <div id="projectModal" class="modal">
         <div class="modal-content">
-            <h2 style="margin-bottom: 1rem;">Share Project</h2>
+            <div class="modal-header">
+                <h2>Share Your Project</h2>
+                <button class="modal-close" onclick="closeModal('project')">&times;</button>
+            </div>
             <form onsubmit="handlePostProject(event)">
                 <div class="form-group">
-                    <label>Project Image</label>
+                    <label>📸 Project Image</label>
                     <input type="file" id="postImage" class="form-input" accept="image/*">
                 </div>
                 <div class="form-group">
-                    <label>Title</label>
-                    <input type="text" id="postTitle" class="form-input" required>
+                    <label>Project Title</label>
+                    <input type="text" id="postTitle" class="form-input" required placeholder="My Awesome Project">
                 </div>
                 <div class="form-group">
                     <label>Description</label>
-                    <textarea id="postDesc" class="form-input" rows="4" required></textarea>
+                    <textarea id="postDesc" class="form-input" rows="4" required placeholder="Describe your project..."></textarea>
                 </div>
                 <div class="form-group">
-                    <label>Link (GitHub/Demo)</label>
-                    <input type="url" id="postLink" class="form-input">
+                    <label>🔗 Link (GitHub/Demo)</label>
+                    <input type="url" id="postLink" class="form-input" placeholder="https://github.com/username/project">
                 </div>
                 <div class="form-group">
                     <label>Tech Stack</label>
-                    <input type="text" id="postTech" class="form-input" placeholder="React, Python, etc.">
+                    <input type="text" id="postTech" class="form-input" placeholder="React, Python, Node.js">
                 </div>
-                <div style="display: flex; gap: 1rem; justify-content: flex-end;">
+                <div style="display: flex; gap: 1rem; justify-content: flex-end; margin-top: 1.5rem;">
                     <button type="button" class="btn btn-ghost" onclick="closeModal('project')">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Post</button>
+                    <button type="submit" class="btn btn-primary">Post Project</button>
                 </div>
             </form>
         </div>
@@ -321,10 +914,13 @@
     <!-- Edit Profile Modal -->
     <div id="editProfileModal" class="modal">
         <div class="modal-content">
-            <h2 style="margin-bottom: 1rem;">Edit Profile</h2>
+            <div class="modal-header">
+                <h2>Edit Profile</h2>
+                <button class="modal-close" onclick="closeModal('editProfile')">&times;</button>
+            </div>
             <form onsubmit="handleEditProfile(event)">
                 <div class="form-group">
-                    <label>New Profile Picture</label>
+                    <label>📸 New Profile Picture</label>
                     <input type="file" id="editPic" class="form-input" accept="image/*">
                 </div>
                 <div class="form-group">
@@ -333,25 +929,25 @@
                 </div>
                 <div class="form-group">
                     <label>University</label>
-                    <input type="text" id="editUni" class="form-input">
+                    <input type="text" id="editUni" class="form-input" placeholder="NIELIT Ropar">
                 </div>
                 <div class="form-group">
                     <label>Major</label>
-                    <input type="text" id="editMajorInput" class="form-input">
+                    <input type="text" id="editMajorInput" class="form-input" placeholder="Computer Science">
                 </div>
                 <div class="form-group">
                     <label>Bio</label>
-                    <textarea id="editBio" class="form-input" rows="3"></textarea>
+                    <textarea id="editBio" class="form-input" rows="3" placeholder="Tell us about yourself..."></textarea>
                 </div>
                 <div class="form-group">
-                    <label>LinkedIn URL</label>
-                    <input type="url" id="editLinked" class="form-input">
+                    <label>🔗 LinkedIn URL</label>
+                    <input type="url" id="editLinked" class="form-input" placeholder="https://linkedin.com/in/yourprofile">
                 </div>
                 <div class="form-group">
-                    <label>GitHub URL</label>
-                    <input type="url" id="editGit" class="form-input">
+                    <label>🔗 GitHub URL</label>
+                    <input type="url" id="editGit" class="form-input" placeholder="https://github.com/yourusername">
                 </div>
-                <div style="display: flex; gap: 1rem; justify-content: flex-end;">
+                <div style="display: flex; gap: 1rem; justify-content: flex-end; margin-top: 1.5rem;">
                     <button type="button" class="btn btn-ghost" onclick="closeModal('editProfile')">Cancel</button>
                     <button type="submit" class="btn btn-primary">Save Changes</button>
                 </div>
@@ -362,15 +958,17 @@
     <!-- Comments Modal -->
     <div id="commentsModal" class="modal">
         <div class="modal-content">
-            <h3 style="margin-bottom: 1rem;">Comments</h3>
-            <div id="commentsList" style="margin-bottom: 1.5rem; max-height: 300px; overflow-y: auto;">
+            <div class="modal-header">
+                <h3>💬 Comments</h3>
+                <button class="modal-close" onclick="closeModal('comments')">&times;</button>
+            </div>
+            <div id="commentsList" style="margin-bottom: 1.5rem; max-height: 400px; overflow-y: auto;">
                 <!-- Comments injected here -->
             </div>
-            <div style="display: flex; gap: 0.5rem;">
-                <input type="text" id="commentInput" class="form-input" placeholder="Write a comment...">
+            <div style="display: flex; gap: 0.75rem;">
+                <input type="text" id="commentInput" class="form-input" placeholder="Write a comment..." style="flex: 1;">
                 <button onclick="submitComment()" class="btn btn-primary">Post</button>
             </div>
-            <button onclick="closeModal('comments')" class="btn btn-ghost" style="margin-top: 1rem; width: 100%;">Close</button>
         </div>
     </div>
 
@@ -444,8 +1042,9 @@
 
         async function handleSignup(e) {
             e.preventDefault();
-            const btn = e.target.querySelector('button');
-            btn.textContent = 'Creating...';
+            const btn = e.target.querySelector('button[type="submit"]');
+            btn.textContent = 'Creating Account...';
+            btn.disabled = true;
             
             const file = document.getElementById('signupPic').files[0];
             let picUrl = '';
@@ -461,7 +1060,11 @@
 
             const res = await postData('signup', { data });
             if(res.status === 'success') completeAuth(data);
-            else { alert(res.data); btn.textContent = 'Sign Up'; }
+            else { 
+                alert(res.data); 
+                btn.textContent = 'Sign Up'; 
+                btn.disabled = false;
+            }
         }
 
         function completeAuth(user) {
@@ -471,8 +1074,10 @@
         }
 
         function logout() {
-            localStorage.removeItem('studenthub_user');
-            location.reload();
+            if(confirm('Are you sure you want to logout?')) {
+                localStorage.removeItem('studenthub_user');
+                location.reload();
+            }
         }
 
         // --- PROJECTS ---
@@ -488,26 +1093,33 @@
 
         function renderProjects(list) {
             const container = document.getElementById('projectsList');
+            if(list.length === 0) {
+                container.innerHTML = '<div class="card" style="text-align: center; padding: 3rem;"><p style="color: var(--text-secondary); font-size: 1.1rem;">No projects yet. Be the first to share!</p></div>';
+                return;
+            }
             container.innerHTML = list.map(p => `
                 <div class="project-card card">
                     <div class="project-header">
                         <img src="${p.authorPicture || 'https://via.placeholder.com/50'}" class="avatar">
-                        <div>
-                            <!-- Link to Profile Page -->
-                            <div style="font-weight: 600; cursor: pointer" onclick="location.href='profiles.html?email=${p.authorEmail}'">
+                        <div style="flex: 1;">
+                            <div style="font-weight: 600; cursor: pointer; color: var(--primary);" onclick="location.href='profiles.html?email=${p.authorEmail}'">
                                 ${escapeHtml(p.authorName)}
                             </div>
-                            <div style="font-size: 0.8rem; color: var(--text-secondary);">${new Date(p.timestamp).toLocaleDateString()}</div>
+                            <div style="font-size: 0.8rem; color: var(--text-secondary);">${formatDate(p.timestamp)}</div>
                         </div>
                     </div>
                     <div class="project-title">${escapeHtml(p.title)}</div>
-                    <div style="color: var(--text-secondary); margin-bottom: 0.5rem;">${escapeHtml(p.description)}</div>
-                    ${p.projectImage ? `<img src="${p.projectImage}" class="project-image">` : ''}
+                    <div class="project-description">${escapeHtml(p.description)}</div>
+                    ${p.projectImage ? `<img src="${p.projectImage}" class="project-image" alt="${escapeHtml(p.title)}">` : ''}
                     <div class="project-footer">
-                        <button class="action-btn" onclick="upvote('${p.id}', this)">👍 ${p.upvotes}</button>
-                        <button class="action-btn" onclick="openComments('${p.id}')">💬 ${p.commentCount || 0}</button>
-                        ${p.link ? `<a href="${p.link}" target="_blank" class="action-btn">🔗 Code</a>` : ''}
-                        <span style="margin-left: auto; font-size: 0.8rem; background: #eee; padding: 2px 8px; border-radius: 4px;">${escapeHtml(p.tech || 'Tech')}</span>
+                        <button class="action-btn" onclick="upvote('${p.id}', this)">
+                            👍 <span>${p.upvotes}</span>
+                        </button>
+                        <button class="action-btn" onclick="openComments('${p.id}')">
+                            💬 <span>${p.commentCount || 0}</span>
+                        </button>
+                        ${p.link ? `<a href="${p.link}" target="_blank" class="action-btn" style="text-decoration: none;">🔗 View Code</a>` : ''}
+                        <span class="tech-badge">${escapeHtml(p.tech || 'Tech')}</span>
                     </div>
                 </div>
             `).join('');
@@ -515,6 +1127,10 @@
 
         async function handlePostProject(e) {
             e.preventDefault();
+            const btn = e.target.querySelector('button[type="submit"]');
+            btn.textContent = 'Posting...';
+            btn.disabled = true;
+            
             const file = document.getElementById('postImage').files[0];
             let imgUrl = '';
             if(file) imgUrl = await uploadImage(file);
@@ -533,18 +1149,25 @@
 
             await postData('addProject', { data: project });
             closeModal('project');
-            loadProjects(); // Reload
+            e.target.reset();
+            btn.textContent = 'Post Project';
+            btn.disabled = false;
+            loadProjects();
         }
 
         async function handleEditProfile(e) {
             e.preventDefault();
+            const btn = e.target.querySelector('button[type="submit"]');
+            btn.textContent = 'Saving...';
+            btn.disabled = true;
+            
             const file = document.getElementById('editPic').files[0];
             let picUrl = currentUser.profilePicture;
             if(file) picUrl = await uploadImage(file);
 
             const updatedData = {
                 name: document.getElementById('editName').value,
-                email: currentUser.email, // Identity key
+                email: currentUser.email,
                 university: document.getElementById('editUni').value,
                 major: document.getElementById('editMajorInput').value,
                 bio: document.getElementById('editBio').value,
@@ -555,11 +1178,12 @@
 
             await postData('updateProfile', { data: updatedData });
             
-            // Update Local State
             currentUser = { ...currentUser, ...updatedData };
             localStorage.setItem('studenthub_user', JSON.stringify(currentUser));
             closeModal('editProfile');
-            showApp(); // Refresh UI
+            btn.textContent = 'Save Changes';
+            btn.disabled = false;
+            showApp();
         }
 
         // --- ACTIONS ---
@@ -572,26 +1196,40 @@
             const filtered = allProjects.filter(p => 
                 p.title.toLowerCase().includes(term) || 
                 p.authorName.toLowerCase().includes(term) ||
-                p.tech.toLowerCase().includes(term)
+                (p.tech && p.tech.toLowerCase().includes(term))
             );
             renderProjects(filtered);
         }
 
         function updateTrending(list) {
-            const sorted = [...list].sort((a,b) => b.upvotes - a.upvotes).slice(0,3);
-            document.getElementById('trendingList').innerHTML = sorted.map(p => `
-                <div style="margin-bottom: 0.8rem; cursor: pointer" onclick="location.href='profiles.html?email=${p.authorEmail}'">
-                    <div style="font-weight: 600; font-size: 0.9rem;">${escapeHtml(p.title)}</div>
-                    <div style="font-size: 0.8rem; color: var(--text-secondary);">${p.upvotes} upvotes • by ${escapeHtml(p.authorName)}</div>
+            const sorted = [...list].sort((a,b) => b.upvotes - a.upvotes).slice(0,5);
+            const trendingEl = document.getElementById('trendingList');
+            if(sorted.length === 0) {
+                trendingEl.innerHTML = '<p style="color: var(--text-secondary); font-size: 0.9rem;">No trending projects yet</p>';
+                return;
+            }
+            trendingEl.innerHTML = sorted.map((p, i) => `
+                <div class="trending-item" onclick="location.href='profiles.html?email=${p.authorEmail}'">
+                    <div style="display: flex; gap: 0.5rem; align-items: start;">
+                        <span style="font-size: 1.2rem; font-weight: 700; color: var(--accent);">${i+1}</span>
+                        <div style="flex: 1;">
+                            <div style="font-weight: 600; font-size: 0.9rem; color: var(--primary); line-height: 1.3;">${escapeHtml(p.title)}</div>
+                            <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.25rem;">
+                                👍 ${p.upvotes} • by ${escapeHtml(p.authorName)}
+                            </div>
+                        </div>
+                    </div>
                 </div>
             `).join('');
         }
 
         async function upvote(id, btn) {
-            let count = parseInt(btn.textContent.split(' ')[1]);
+            const countSpan = btn.querySelector('span');
+            let count = parseInt(countSpan.textContent);
             count++;
-            btn.textContent = `👍 ${count}`;
+            countSpan.textContent = count;
             btn.classList.add('active');
+            btn.disabled = true;
             await postData('updateUpvotes', { projectId: id, upvotes: count });
         }
 
@@ -599,26 +1237,29 @@
         async function openComments(id) {
             currentCommentProjectId = id;
             document.getElementById('commentsModal').classList.add('active');
-            document.getElementById('commentsList').innerHTML = 'Loading...';
+            document.getElementById('commentsList').innerHTML = '<div class="loading"><div class="loading-spinner">⏳</div><p>Loading comments...</p></div>';
             
             const res = await fetch(`${SHEET_URL}?action=getComments&projectId=${id}`);
             const json = await res.json();
             
             if(json.data.length === 0) {
-                document.getElementById('commentsList').innerHTML = '<p style="color:#888">No comments yet.</p>';
+                document.getElementById('commentsList').innerHTML = '<p style="color: var(--text-secondary); text-align: center; padding: 2rem;">No comments yet. Be the first to comment!</p>';
                 return;
             }
 
             document.getElementById('commentsList').innerHTML = json.data.map(c => `
-                <div style="margin-bottom: 1rem; background: #f9f9f9; padding: 0.5rem; border-radius: 8px;">
-                    <div style="font-size: 0.8rem; font-weight: 600;">${escapeHtml(c.authorName)}</div>
-                    <div>${escapeHtml(c.comment)}</div>
+                <div class="comment-item">
+                    <div class="comment-author">${escapeHtml(c.authorName)}</div>
+                    <div class="comment-text">${escapeHtml(c.comment)}</div>
+                    <div style="font-size: 0.7rem; color: var(--text-secondary); margin-top: 0.5rem;">
+                        ${formatDate(c.timestamp)}
+                    </div>
                 </div>
             `).join('');
         }
 
         async function submitComment() {
-            const txt = document.getElementById('commentInput').value;
+            const txt = document.getElementById('commentInput').value.trim();
             if(!txt) return;
             
             const data = {
@@ -631,13 +1272,34 @@
             
             await postData('addComment', { data });
             document.getElementById('commentInput').value = '';
-            openComments(currentCommentProjectId); // Refresh
+            openComments(currentCommentProjectId);
         }
 
         // --- UTILS ---
-        function escapeHtml(text) { return text ? text.replace(/</g, "&lt;").replace(/>/g, "&gt;") : ''; }
-        function closeModal(id) { document.getElementById(id+'Modal').classList.remove('active'); }
-        function openModal(id) { document.getElementById(id+'Modal').classList.add('active'); }
+        function escapeHtml(text) {
+            if(!text) return '';
+            return text.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        }
+        
+        function formatDate(timestamp) {
+            const date = new Date(timestamp);
+            const now = new Date();
+            const diff = now - date;
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            
+            if(days === 0) return 'Today';
+            if(days === 1) return 'Yesterday';
+            if(days < 7) return `${days} days ago`;
+            return date.toLocaleDateString();
+        }
+        
+        function closeModal(id) {
+            document.getElementById(id+'Modal').classList.remove('active');
+        }
+        
+        function openModal(id) {
+            document.getElementById(id+'Modal').classList.add('active');
+        }
 
         async function postData(action, payload) {
             return fetch(SHEET_URL, {
