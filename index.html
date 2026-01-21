@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>NIELIT StudentHub - Feed</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
     <link rel="icon" type="image/x-icon" href="logo.png">
     <style>
         :root {
@@ -28,6 +28,7 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
         }
         
         body {
@@ -35,6 +36,8 @@
             background: var(--background);
             color: var(--text-primary);
             line-height: 1.6;
+            overflow-x: hidden; /* Prevent horizontal scroll */
+            padding-bottom: 70px; /* Space for mobile nav */
         }
         
         /* Navigation (Desktop) */
@@ -45,6 +48,7 @@
             top: 0;
             z-index: 1000;
             backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
         }
         
         .nav-container {
@@ -64,6 +68,7 @@
             display: flex;
             align-items: center;
             gap: 0.5rem;
+            white-space: nowrap;
         }
         
         .logo::before {
@@ -120,6 +125,7 @@
             box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
             justify-content: space-around;
             padding: 0.8rem 0.5rem;
+            padding-bottom: env(safe-area-inset-bottom); /* iPhone Home bar fix */
             z-index: 1001;
             border-top: 1px solid var(--border);
         }
@@ -135,11 +141,11 @@
             padding: 0.3rem 0.8rem;
             border-radius: 12px;
             transition: all 0.3s ease;
-            min-width: 70px;
+            min-width: 65px;
         }
         
         .mobile-nav-icon {
-            font-size: 1.5rem;
+            font-size: 1.4rem;
             margin-bottom: 4px;
         }
         
@@ -170,6 +176,7 @@
             box-shadow: var(--shadow-sm);
             margin-bottom: 1.5rem;
             transition: all 0.3s ease;
+            width: 100%;
         }
         
         .card:hover {
@@ -179,6 +186,7 @@
         .sidebar-card {
             position: sticky;
             top: 100px;
+            height: fit-content;
         }
         
         /* Enhanced Profile Sidebar */
@@ -223,6 +231,7 @@
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             border: 2px solid white;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            flex-shrink: 0;
         }
         
         .big-avatar {
@@ -239,12 +248,14 @@
             color: var(--primary);
             margin-bottom: 0.5rem;
             line-height: 1.3;
+            word-break: break-word;
         }
         
         .project-description {
             color: var(--text-secondary);
             margin-bottom: 1rem;
             line-height: 1.6;
+            word-wrap: break-word;
         }
         
         /* Enhanced Project Image */
@@ -266,7 +277,7 @@
 
         .project-footer {
             display: flex;
-            gap: 1rem;
+            gap: 0.8rem;
             padding-top: 1rem;
             border-top: 1px solid var(--border);
             align-items: center;
@@ -284,7 +295,7 @@
             font-weight: 600;
             font-family: 'Poppins', sans-serif;
             transition: all 0.2s ease;
-            padding: 0.5rem 1rem;
+            padding: 0.5rem 0.8rem;
             border-radius: 8px;
             font-size: 0.9rem;
         }
@@ -308,6 +319,7 @@
             padding: 4px 12px;
             border-radius: 20px;
             font-weight: 600;
+            white-space: nowrap;
         }
 
         /* Footer */
@@ -337,6 +349,7 @@
             padding: 1rem;
             position: relative;
             overflow: hidden;
+            z-index: 2000; /* Ensure on top */
         }
         
         .auth-page::before {
@@ -386,7 +399,7 @@
         }
         
         .form-group {
-            margin-bottom: 1.5rem;
+            margin-bottom: 1.2rem;
             text-align: left;
         }
         
@@ -406,6 +419,7 @@
             font-family: inherit;
             font-size: 0.95rem;
             transition: all 0.3s ease;
+            -webkit-appearance: none; /* Fix iOS styling */
         }
         
         .form-input:focus {
@@ -424,6 +438,10 @@
             transition: all 0.3s ease;
             font-size: 0.95rem;
             font-family: 'Poppins', sans-serif;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
         }
         
         .btn-primary {
@@ -472,6 +490,7 @@
             font-size: 1rem;
             transition: all 0.3s ease;
             background: white;
+            -webkit-appearance: none;
         }
         
         .search-input:focus {
@@ -493,7 +512,7 @@
             width: 100%;
             height: 100%;
             background: rgba(0,0,0,0.6);
-            z-index: 2000;
+            z-index: 3000;
             align-items: center;
             justify-content: center;
             backdrop-filter: blur(4px);
@@ -508,18 +527,19 @@
             background: white;
             padding: 2rem;
             border-radius: 20px;
-            width: 90%;
+            width: 100%;
             max-width: 600px;
             max-height: 90vh;
             overflow-y: auto;
             box-shadow: var(--shadow-lg);
             animation: modalSlide 0.3s ease-out;
+            margin: 0 1rem;
         }
         
         @keyframes modalSlide {
             from {
                 opacity: 0;
-                transform: translateY(-20px);
+                transform: translateY(20px);
             }
             to {
                 opacity: 1;
@@ -617,9 +637,14 @@
         .comment-text {
             color: var(--text-primary);
             line-height: 1.5;
+            font-size: 0.95rem;
+            word-wrap: break-word;
         }
         
-        /* Responsive */
+        /* -----------------------
+           RESPONSIVE BREAKPOINTS
+           ----------------------- */
+        
         @media (max-width: 1200px) {
             .main-layout {
                 grid-template-columns: 260px 1fr 280px;
@@ -630,20 +655,22 @@
         @media (max-width: 968px) {
             .main-layout {
                 grid-template-columns: 1fr;
-                gap: 1rem;
+                gap: 1.5rem;
+                display: flex;
+                flex-direction: column;
             }
             
             .sidebar-card,
             .right-sidebar {
-                display: none;
+                display: none; /* Hide sidebars on tablet/mobile */
             }
             
             .nav-links {
-                display: none;
+                display: none; /* Hide desktop menu */
             }
             
             .mobile-bottom-nav {
-                display: flex;
+                display: flex; /* Show mobile menu */
             }
             
             .container {
@@ -656,34 +683,36 @@
             }
             
             .project-image {
-                height: 220px;
-            }
-            
-            .card {
-                padding: 1.25rem;
-            }
-            
-            .auth-box {
-                padding: 2rem;
+                height: 250px;
             }
             
             .nav-container {
                 padding: 1rem;
             }
-            
-            .logo {
-                font-size: 1.3rem;
-            }
         }
         
         @media (max-width: 480px) {
+            /* Auth Page Mobile Fixes */
+            .auth-box {
+                padding: 1.5rem; /* Reduced from 3rem */
+                margin: 0 1rem;
+            }
+
+            .logo {
+                font-size: 1.3rem;
+            }
+
+            .project-title {
+                font-size: 1.1rem;
+            }
+            
             .project-footer {
-                font-size: 0.85rem;
+                gap: 0.5rem;
             }
             
             .action-btn {
-                padding: 0.4rem 0.7rem;
-                font-size: 0.85rem;
+                padding: 0.4rem 0.6rem;
+                font-size: 0.8rem;
             }
             
             .tech-badge {
@@ -692,12 +721,35 @@
             }
             
             .mobile-nav-item {
-                font-size: 0.65rem;
-                min-width: 60px;
+                font-size: 0.6rem;
+                min-width: 55px;
             }
             
             .mobile-nav-icon {
-                font-size: 1.3rem;
+                font-size: 1.2rem;
+            }
+            
+            .card {
+                padding: 1rem; /* Reduced padding on cards */
+            }
+            
+            .project-image {
+                height: 200px;
+                margin: 0.5rem 0;
+            }
+            
+            .modal-content {
+                padding: 1.5rem;
+                margin: 0.5rem;
+            }
+
+            h1.logo {
+                font-size: 2rem !important; /* Login logo size fix */
+            }
+            
+            /* Prevent input zoom on focus for iOS */
+            input, select, textarea {
+                font-size: 16px !important; 
             }
         }
         
@@ -708,7 +760,7 @@
         
         /* Custom scrollbar */
         ::-webkit-scrollbar {
-            width: 10px;
+            width: 8px;
         }
         
         ::-webkit-scrollbar-track {
@@ -716,7 +768,7 @@
         }
         
         ::-webkit-scrollbar-thumb {
-            background: var(--border);
+            background: #cbd5e1;
             border-radius: 5px;
         }
         
@@ -730,8 +782,8 @@
     <!-- LOGIN PAGE -->
     <div id="loginPage" class="auth-page">
         <div class="auth-box">
-            <h1 class="logo" style="font-size: 2.5rem; margin-bottom: 0.5rem;">StudentHub</h1>
-            <p style="color: var(--text-secondary); margin-bottom: 2.5rem; font-weight: 500;">NIELIT Ropar</p>
+            <h1 class="logo" style="font-size: 2.5rem; margin-bottom: 0.5rem; justify-content: center;">StudentHub</h1>
+            <p style="color: var(--text-secondary); margin-bottom: 2rem; font-weight: 500;">NIELIT Ropar</p>
             <form onsubmit="handleLogin(event)">
                 <div class="form-group">
                     <label>Email Address</label>
@@ -773,7 +825,7 @@
                 </div>
                 <div class="form-group">
                     <label>Major / Stream</label>
-                    <input type="text" id="signupMajor" class="form-input" placeholder="e.g. Computer Science, Electronics">
+                    <input type="text" id="signupMajor" class="form-input" placeholder="e.g. Computer Science">
                 </div>
                 <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Sign Up</button>
             </form>
@@ -790,11 +842,12 @@
             <div class="nav-container">
                 <div class="logo">StudentHub</div>
                 <div class="nav-links">
-                    <a href="index.html" class="nav-link active">Feed</a>
-                    <a href="profiles.html" class="nav-link">Profiles</a>
+                    <a href="#" onclick="showSection('feed'); return false;" class="nav-link active">Feed</a>
+                    <a href="#" onclick="showSection('profiles'); return false;" class="nav-link">Profiles</a>
                     <button class="btn btn-primary" onclick="openModal('project')">📝 Post Project</button>
                     <button class="btn-ghost" onclick="logout()">Logout</button>
                 </div>
+                <!-- Mobile only logout/post shortcut could go here if needed, but using bottom nav instead -->
             </div>
         </nav>
 
@@ -816,14 +869,14 @@
                 <!-- Feed -->
                 <main>
                     <div class="search-container">
-                        <input type="text" class="search-input" placeholder="🔍 Search projects by title, tech, or author..." onkeyup="filterProjects(this.value)">
+                        <input type="text" class="search-input" placeholder="🔍 Search projects..." onkeyup="filterProjects(this.value)">
                     </div>
                     
                     <!-- Projects Container -->
                     <div id="projectsList">
                         <div class="loading">
                             <div class="loading-spinner">⏳</div>
-                            <p style="margin-top: 1rem; font-size: 1.1rem; font-weight: 500;">Loading the latest innovations...</p>
+                            <p style="margin-top: 1rem; font-size: 1.1rem; font-weight: 500;">Loading...</p>
                         </div>
                     </div>
                 </main>
@@ -832,7 +885,7 @@
                 <aside class="right-sidebar">
                     <div class="card">
                         <h3 style="margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
-                            🔥 <span>Trending Projects</span>
+                            🔥 <span>Trending</span>
                         </h3>
                         <div id="trendingList"></div>
                     </div>
@@ -846,21 +899,18 @@
                 <p style="font-size: 1.2rem; font-weight: 700; color: var(--primary); margin-bottom: 0.5rem;">NIELIT Ropar</p>
             </div>
             <p>&copy; 2026 <strong>NIELIT Ropar</strong>. All rights reserved.</p>
-            <p style="font-size: 0.8rem; margin-top: 0.75rem; opacity: 0.7;">
-                National Institute of Electronics & Information Technology<br>
-                Deemed to be University under Distinct Category
-            </p>
         </footer>
 
         <!-- Mobile Bottom Nav -->
         <nav class="mobile-bottom-nav">
-            <a href="index.html" class="mobile-nav-item active">
+            <a href="#" onclick="showSection('feed'); return false;" class="mobile-nav-item active">
                 <span class="mobile-nav-icon">🏠</span>
                 <span>Feed</span>
             </a>
-            <a href="profiles.html" class="mobile-nav-item">
-                <span class="mobile-nav-icon">👥</span>
-                <span>Profiles</span>
+            <!-- Simplified Profile Logic for Mobile -->
+            <a href="#" onclick="openMyProfile(); return false;" class="mobile-nav-item">
+                <span class="mobile-nav-icon">👤</span>
+                <span>Me</span>
             </a>
             <a href="#" onclick="openModal('project'); return false;" class="mobile-nav-item">
                 <span class="mobile-nav-icon">➕</span>
@@ -868,7 +918,7 @@
             </a>
             <a href="#" onclick="logout(); return false;" class="mobile-nav-item">
                 <span class="mobile-nav-icon">🚪</span>
-                <span>Logout</span>
+                <span>Exit</span>
             </a>
         </nav>
     </div>
@@ -879,7 +929,7 @@
     <div id="projectModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>Share Your Project</h2>
+                <h2>Share Project</h2>
                 <button class="modal-close" onclick="closeModal('project')">&times;</button>
             </div>
             <form onsubmit="handlePostProject(event)">
@@ -897,15 +947,15 @@
                 </div>
                 <div class="form-group">
                     <label>🔗 Link (GitHub/Demo)</label>
-                    <input type="url" id="postLink" class="form-input" placeholder="https://github.com/username/project">
+                    <input type="url" id="postLink" class="form-input" placeholder="https://">
                 </div>
                 <div class="form-group">
                     <label>Tech Stack</label>
-                    <input type="text" id="postTech" class="form-input" placeholder="React, Python, Node.js">
+                    <input type="text" id="postTech" class="form-input" placeholder="React, Python...">
                 </div>
                 <div style="display: flex; gap: 1rem; justify-content: flex-end; margin-top: 1.5rem;">
                     <button type="button" class="btn btn-ghost" onclick="closeModal('project')">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Post Project</button>
+                    <button type="submit" class="btn btn-primary">Post</button>
                 </div>
             </form>
         </div>
@@ -940,16 +990,16 @@
                     <textarea id="editBio" class="form-input" rows="3" placeholder="Tell us about yourself..."></textarea>
                 </div>
                 <div class="form-group">
-                    <label>🔗 LinkedIn URL</label>
-                    <input type="url" id="editLinked" class="form-input" placeholder="https://linkedin.com/in/yourprofile">
+                    <label>🔗 LinkedIn</label>
+                    <input type="url" id="editLinked" class="form-input" placeholder="https://linkedin.com/in/...">
                 </div>
                 <div class="form-group">
-                    <label>🔗 GitHub URL</label>
-                    <input type="url" id="editGit" class="form-input" placeholder="https://github.com/yourusername">
+                    <label>🔗 GitHub</label>
+                    <input type="url" id="editGit" class="form-input" placeholder="https://github.com/...">
                 </div>
                 <div style="display: flex; gap: 1rem; justify-content: flex-end; margin-top: 1.5rem;">
                     <button type="button" class="btn btn-ghost" onclick="closeModal('editProfile')">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                    <button type="submit" class="btn btn-primary">Save</button>
                 </div>
             </form>
         </div>
@@ -1019,12 +1069,26 @@
 
             loadProjects();
         }
+        
+        // Navigation Logic (Mock)
+        function showSection(section) {
+            // In a real single-page app, you'd toggle visibility of 'main' sections here.
+            // For now, we mainly just reload or keep on Feed since it's a single page demo.
+            if(section === 'profiles') {
+                alert('Profiles view would open here');
+            }
+        }
 
         async function handleLogin(e) {
             e.preventDefault();
             const email = document.getElementById('loginEmail').value;
             const password = document.getElementById('loginPass').value;
             
+            const btn = e.target.querySelector('button[type="submit"]');
+            const originalText = btn.textContent;
+            btn.textContent = 'Verifying...';
+            btn.disabled = true;
+
             // Demo Mode Fallback
             if(email === 'demo@nielit.gov.in' && password === 'demo123') {
                 currentUser = { name: 'Demo User', email: 'demo@nielit.gov.in', major: 'CS', profilePicture: '' };
@@ -1036,8 +1100,17 @@
                 const res = await fetch(`${SHEET_URL}?action=login&email=${email}&password=${password}`);
                 const json = await res.json();
                 if(json.status === 'success') completeAuth(json.data);
-                else alert(json.data);
-            } catch(err) { alert('Login failed. Check console.'); console.error(err); }
+                else {
+                    alert(json.data);
+                    btn.textContent = originalText;
+                    btn.disabled = false;
+                }
+            } catch(err) { 
+                alert('Login failed. Check console.'); 
+                console.error(err);
+                btn.textContent = originalText;
+                btn.disabled = false;
+            }
         }
 
         async function handleSignup(e) {
@@ -1101,8 +1174,8 @@
                 <div class="project-card card">
                     <div class="project-header">
                         <img src="${p.authorPicture || 'https://via.placeholder.com/50'}" class="avatar">
-                        <div style="flex: 1;">
-                            <div style="font-weight: 600; cursor: pointer; color: var(--primary);" onclick="location.href='profiles.html?email=${p.authorEmail}'">
+                        <div style="flex: 1; min-width: 0;">
+                            <div style="font-weight: 600; cursor: pointer; color: var(--primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" onclick="alert('Profile click: ${p.authorName}')">
                                 ${escapeHtml(p.authorName)}
                             </div>
                             <div style="font-size: 0.8rem; color: var(--text-secondary);">${formatDate(p.timestamp)}</div>
@@ -1118,7 +1191,7 @@
                         <button class="action-btn" onclick="openComments('${p.id}')">
                             💬 <span>${p.commentCount || 0}</span>
                         </button>
-                        ${p.link ? `<a href="${p.link}" target="_blank" class="action-btn" style="text-decoration: none;">🔗 View Code</a>` : ''}
+                        ${p.link ? `<a href="${p.link}" target="_blank" class="action-btn" style="text-decoration: none;">🔗 Code</a>` : ''}
                         <span class="tech-badge">${escapeHtml(p.tech || 'Tech')}</span>
                     </div>
                 </div>
@@ -1150,7 +1223,7 @@
             await postData('addProject', { data: project });
             closeModal('project');
             e.target.reset();
-            btn.textContent = 'Post Project';
+            btn.textContent = 'Post';
             btn.disabled = false;
             loadProjects();
         }
@@ -1181,14 +1254,14 @@
             currentUser = { ...currentUser, ...updatedData };
             localStorage.setItem('studenthub_user', JSON.stringify(currentUser));
             closeModal('editProfile');
-            btn.textContent = 'Save Changes';
+            btn.textContent = 'Save';
             btn.disabled = false;
             showApp();
         }
 
         // --- ACTIONS ---
         function openMyProfile() {
-            location.href = `profiles.html?email=${currentUser.email}`;
+            alert(`Opening profile for ${currentUser.name}`);
         }
 
         function filterProjects(term) {
@@ -1209,13 +1282,13 @@
                 return;
             }
             trendingEl.innerHTML = sorted.map((p, i) => `
-                <div class="trending-item" onclick="location.href='profiles.html?email=${p.authorEmail}'">
+                <div class="trending-item" onclick="alert('Project: ${escapeHtml(p.title)}')">
                     <div style="display: flex; gap: 0.5rem; align-items: start;">
                         <span style="font-size: 1.2rem; font-weight: 700; color: var(--accent);">${i+1}</span>
                         <div style="flex: 1;">
                             <div style="font-weight: 600; font-size: 0.9rem; color: var(--primary); line-height: 1.3;">${escapeHtml(p.title)}</div>
                             <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.25rem;">
-                                👍 ${p.upvotes} • by ${escapeHtml(p.authorName)}
+                                👍 ${p.upvotes} • ${escapeHtml(p.authorName)}
                             </div>
                         </div>
                     </div>
@@ -1237,13 +1310,13 @@
         async function openComments(id) {
             currentCommentProjectId = id;
             document.getElementById('commentsModal').classList.add('active');
-            document.getElementById('commentsList').innerHTML = '<div class="loading"><div class="loading-spinner">⏳</div><p>Loading comments...</p></div>';
+            document.getElementById('commentsList').innerHTML = '<div class="loading"><div class="loading-spinner">⏳</div><p>Loading...</p></div>';
             
             const res = await fetch(`${SHEET_URL}?action=getComments&projectId=${id}`);
             const json = await res.json();
             
             if(json.data.length === 0) {
-                document.getElementById('commentsList').innerHTML = '<p style="color: var(--text-secondary); text-align: center; padding: 2rem;">No comments yet. Be the first to comment!</p>';
+                document.getElementById('commentsList').innerHTML = '<p style="color: var(--text-secondary); text-align: center; padding: 2rem;">No comments yet.</p>';
                 return;
             }
 
@@ -1289,7 +1362,7 @@
             
             if(days === 0) return 'Today';
             if(days === 1) return 'Yesterday';
-            if(days < 7) return `${days} days ago`;
+            if(days < 7) return `${days}d ago`;
             return date.toLocaleDateString();
         }
         
