@@ -804,6 +804,37 @@
         ::-webkit-scrollbar-thumb:hover {
             background: var(--text-secondary);
         }
+
+        /* App Download Button */
+.app-download-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: #1a1a1a; /* Dark background for contrast */
+    color: #ffffff !important; /* Force white text */
+    padding: 10px 20px;
+    border-radius: 50px; /* Pill shape */
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.9rem;
+    margin-top: 1.5rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    border: 1px solid transparent;
+}
+
+.app-download-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+    background: var(--accent); /* Changes to blue on hover */
+    border-color: var(--accent);
+}
+
+.app-icon {
+    font-size: 1.2rem;
+}
+
+        
     </style>
 </head>
 
@@ -934,11 +965,22 @@
 
         <!-- NIELIT Footer -->
         <footer class="site-footer">
-            <div class="footer-logo">
-                <p style="font-size: 1.2rem; font-weight: 700; color: var(--primary); margin-bottom: 0.5rem;">NIELIT
-                    Ropar</p>
-            </div>
-            <p>&copy; 2026 <strong>NIELIT Ropar</strong>. All rights reserved.</p>
+    <div class="footer-logo">
+        <p style="font-size: 1.2rem; font-weight: 700; color: var(--primary); margin-bottom: 0.5rem;">
+            🎓 NIELIT Ropar
+        </p>
+    </div>
+    
+    <p>&copy; 2026 <strong>StudentHub</strong>. All rights reserved.</p>
+    
+    <p style="font-size: 0.8rem; margin: 0.5rem 0; opacity: 0.7; max-width: 300px; margin-left: auto; margin-right: auto;">
+        National Institute of Electronics & Information Technology
+    </p>
+
+    <a href="https://github.com/nielitropar/nielitropar.github.io/releases/tag/v1.0" target="_blank" class="app-download-btn">
+        <span class="app-icon">🤖</span> 
+        <span>Download Android App</span>
+    </a>
         </footer>
 
         <!-- Mobile Bottom Nav -->
