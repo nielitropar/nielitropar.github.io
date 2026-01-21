@@ -1,10 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>NIELIT StudentHub - Feed</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@700;900&display=swap"
+        rel="stylesheet">
     <link rel="icon" type="image/x-icon" href="logo.png">
     <style>
         :root {
@@ -23,23 +26,25 @@
             --shadow-md: 0 4px 16px rgba(0, 51, 102, 0.12);
             --shadow-lg: 0 10px 40px rgba(0, 51, 102, 0.15);
         }
-        
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             -webkit-tap-highlight-color: transparent;
         }
-        
+
         body {
             font-family: 'Poppins', sans-serif;
             background: var(--background);
             color: var(--text-primary);
             line-height: 1.6;
-            overflow-x: hidden; /* Prevent horizontal scroll */
-            padding-bottom: 70px; /* Space for mobile nav */
+            overflow-x: hidden;
+            /* Prevent horizontal scroll */
+            padding-bottom: 70px;
+            /* Space for mobile nav */
         }
-        
+
         /* Navigation (Desktop) */
         nav.desktop-nav {
             background: var(--card-bg);
@@ -50,16 +55,17 @@
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
         }
-        
+
         .nav-container {
-            max-width: 1200px; /* Aligned with Profiles.html */
+            max-width: 1200px;
+            /* Aligned with Profiles.html */
             margin: 0 auto;
             padding: 1rem 2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
-        
+
         .logo {
             font-family: 'Playfair Display', serif;
             font-size: 1.5rem;
@@ -71,18 +77,18 @@
             white-space: nowrap;
             text-decoration: none;
         }
-        
+
         .logo::before {
             content: '🎓';
             font-size: 1.8rem;
         }
-        
+
         .nav-links {
             display: flex;
             gap: 2rem;
             align-items: center;
         }
-        
+
         .nav-link {
             color: var(--text-secondary);
             text-decoration: none;
@@ -92,17 +98,17 @@
             border-radius: 8px;
             position: relative;
         }
-        
+
         .nav-link:hover {
             color: var(--accent);
             background: rgba(0, 102, 204, 0.05);
         }
-        
+
         .nav-link.active {
             color: var(--accent);
             font-weight: 700;
         }
-        
+
         .nav-link.active::after {
             content: '';
             position: absolute;
@@ -123,14 +129,15 @@
             left: 0;
             width: 100%;
             background: var(--card-bg);
-            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
             justify-content: space-around;
             padding: 0.8rem 0.5rem;
-            padding-bottom: env(safe-area-inset-bottom); /* iPhone Home bar fix */
+            padding-bottom: env(safe-area-inset-bottom);
+            /* iPhone Home bar fix */
             z-index: 1001;
             border-top: 1px solid var(--border);
         }
-        
+
         .mobile-nav-item {
             display: flex;
             flex-direction: column;
@@ -144,12 +151,12 @@
             transition: all 0.3s ease;
             min-width: 65px;
         }
-        
+
         .mobile-nav-icon {
             font-size: 1.4rem;
             margin-bottom: 4px;
         }
-        
+
         .mobile-nav-item.active {
             color: var(--accent);
             background: rgba(0, 102, 204, 0.1);
@@ -157,18 +164,19 @@
 
         /* Layout */
         .container {
-            max-width: 1200px; /* Aligned with Profiles.html */
+            max-width: 1200px;
+            /* Aligned with Profiles.html */
             margin: 0 auto;
             padding: 2rem;
             min-height: 80vh;
         }
-        
+
         .main-layout {
             display: grid;
             grid-template-columns: 280px 1fr 300px;
             gap: 2rem;
         }
-        
+
         /* Cards */
         .card {
             background: var(--card-bg);
@@ -179,51 +187,51 @@
             transition: all 0.3s ease;
             width: 100%;
         }
-        
+
         .card:hover {
             box-shadow: var(--shadow-md);
         }
-        
+
         .sidebar-card {
             position: sticky;
             top: 100px;
             height: fit-content;
         }
-        
+
         /* Enhanced Profile Sidebar */
         .profile-sidebar {
             text-align: center;
             background: linear-gradient(135deg, rgba(0, 51, 102, 0.05), rgba(0, 102, 204, 0.05));
             border: 2px solid var(--border);
         }
-        
+
         .profile-header {
             position: relative;
             padding-bottom: 1rem;
             margin-bottom: 1rem;
             border-bottom: 2px solid var(--border);
         }
-        
+
         /* Project Card */
         .project-card {
             animation: fadeIn 0.5s ease-out;
             border: 1px solid var(--border);
             transition: all 0.3s ease;
         }
-        
+
         .project-card:hover {
             transform: translateY(-4px);
             box-shadow: var(--shadow-lg);
             border-color: var(--accent);
         }
-        
+
         .project-header {
             display: flex;
             gap: 1rem;
             margin-bottom: 1rem;
             align-items: center;
         }
-        
+
         .avatar {
             width: 48px;
             height: 48px;
@@ -231,18 +239,18 @@
             object-fit: cover;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             border: 2px solid white;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
             flex-shrink: 0;
         }
-        
+
         .big-avatar {
             width: 100px;
             height: 100px;
             margin: 0 auto 1rem;
             border: 4px solid var(--accent);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         }
-        
+
         .project-title {
             font-size: 1.25rem;
             font-weight: 700;
@@ -251,14 +259,14 @@
             line-height: 1.3;
             word-break: break-word;
         }
-        
+
         .project-description {
             color: var(--text-secondary);
             margin-bottom: 1rem;
             line-height: 1.6;
             word-wrap: break-word;
         }
-        
+
         /* Enhanced Project Image */
         .project-image {
             width: 100%;
@@ -271,7 +279,7 @@
             border: 1px solid var(--border);
             transition: all 0.3s ease;
         }
-        
+
         .project-card:hover .project-image {
             transform: scale(1.02);
         }
@@ -284,7 +292,7 @@
             align-items: center;
             flex-wrap: wrap;
         }
-        
+
         .action-btn {
             background: none;
             border: none;
@@ -300,18 +308,18 @@
             border-radius: 8px;
             font-size: 0.9rem;
         }
-        
+
         .action-btn:hover {
             color: var(--accent);
             background: rgba(0, 102, 204, 0.05);
             transform: translateY(-2px);
         }
-        
+
         .action-btn.active {
             color: var(--accent);
             background: rgba(0, 102, 204, 0.1);
         }
-        
+
         .tech-badge {
             margin-left: auto;
             font-size: 0.8rem;
@@ -333,7 +341,7 @@
             font-size: 0.9rem;
             margin-top: 3rem;
         }
-        
+
         .footer-logo {
             max-width: 200px;
             margin: 0 auto 1rem;
@@ -350,9 +358,10 @@
             padding: 1rem;
             position: relative;
             overflow: hidden;
-            z-index: 2000; /* Ensure on top */
+            z-index: 2000;
+            /* Ensure on top */
         }
-        
+
         .auth-page::before {
             content: '';
             position: absolute;
@@ -363,7 +372,7 @@
             top: -100px;
             right: -100px;
         }
-        
+
         .auth-page::after {
             content: '';
             position: absolute;
@@ -374,7 +383,7 @@
             bottom: -150px;
             left: -150px;
         }
-        
+
         .auth-box {
             background: white;
             padding: 3rem;
@@ -387,23 +396,24 @@
             z-index: 1;
             animation: slideUp 0.5s ease-out;
         }
-        
+
         @keyframes slideUp {
             from {
                 opacity: 0;
                 transform: translateY(30px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
             }
         }
-        
+
         .form-group {
             margin-bottom: 1.2rem;
             text-align: left;
         }
-        
+
         .form-group label {
             display: block;
             font-weight: 600;
@@ -411,7 +421,7 @@
             font-size: 0.9rem;
             color: var(--text-primary);
         }
-        
+
         .form-input {
             width: 100%;
             padding: 0.875rem;
@@ -420,15 +430,16 @@
             font-family: inherit;
             font-size: 0.95rem;
             transition: all 0.3s ease;
-            -webkit-appearance: none; /* Fix iOS styling */
+            -webkit-appearance: none;
+            /* Fix iOS styling */
         }
-        
+
         .form-input:focus {
             outline: none;
             border-color: var(--accent);
             box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
         }
-        
+
         /* Buttons */
         .btn {
             padding: 0.875rem 1.75rem;
@@ -445,36 +456,36 @@
             gap: 0.5rem;
             text-decoration: none;
         }
-        
+
         .btn-primary {
             background: var(--gradient-primary);
             color: white;
             box-shadow: 0 4px 12px rgba(0, 102, 204, 0.3);
         }
-        
+
         .btn-primary:hover {
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(0, 102, 204, 0.4);
         }
-        
+
         .btn-primary:active {
             transform: translateY(0);
         }
-        
+
         .btn-secondary {
             background: #F3F4F6;
             color: var(--text-primary);
         }
-        
+
         .btn-secondary:hover {
             background: #E5E7EB;
         }
-        
+
         .btn-ghost {
             background: transparent;
             color: var(--text-secondary);
         }
-        
+
         .btn-ghost:hover {
             background: rgba(0, 0, 0, 0.05);
         }
@@ -483,7 +494,7 @@
         .search-container {
             margin-bottom: 2rem;
         }
-        
+
         .search-input {
             width: 100%;
             padding: 1rem 1.25rem;
@@ -494,13 +505,13 @@
             background: white;
             -webkit-appearance: none;
         }
-        
+
         .search-input:focus {
             outline: none;
             border-color: var(--accent);
             box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
         }
-        
+
         .search-input::placeholder {
             color: var(--text-secondary);
         }
@@ -513,18 +524,18 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.6);
+            background: rgba(0, 0, 0, 0.6);
             z-index: 3000;
             align-items: center;
             justify-content: center;
             backdrop-filter: blur(4px);
             padding: 1rem;
         }
-        
+
         .modal.active {
             display: flex;
         }
-        
+
         .modal-content {
             background: white;
             padding: 2rem;
@@ -537,25 +548,26 @@
             animation: modalSlide 0.3s ease-out;
             margin: 0 1rem;
         }
-        
+
         @keyframes modalSlide {
             from {
                 opacity: 0;
                 transform: translateY(20px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
             }
         }
-        
+
         .modal-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 1.5rem;
         }
-        
+
         .modal-close {
             background: none;
             border: none;
@@ -566,12 +578,12 @@
             border-radius: 8px;
             transition: all 0.2s;
         }
-        
+
         .modal-close:hover {
-            background: rgba(0,0,0,0.05);
+            background: rgba(0, 0, 0, 0.05);
             color: var(--text-primary);
         }
-        
+
         /* Trending Section */
         .trending-item {
             margin-bottom: 1rem;
@@ -581,45 +593,51 @@
             transition: all 0.3s ease;
             border: 1px solid transparent;
         }
-        
+
         .trending-item:hover {
             background: rgba(0, 102, 204, 0.05);
             border-color: var(--accent);
             transform: translateX(5px);
         }
-        
+
         /* Utils */
         .hidden {
             display: none !important;
         }
-        
+
         .loading {
             text-align: center;
             padding: 3rem;
             color: var(--text-secondary);
         }
-        
+
         .loading-spinner {
             font-size: 3rem;
             animation: spin 2s linear infinite;
         }
-        
+
         @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
         }
-        
+
         @keyframes fadeIn {
             from {
                 opacity: 0;
                 transform: translateY(20px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
             }
         }
-        
+
         /* Comment Section */
         .comment-item {
             margin-bottom: 1rem;
@@ -628,32 +646,32 @@
             border-radius: 12px;
             border-left: 3px solid var(--accent);
         }
-        
+
         .comment-author {
             font-size: 0.85rem;
             font-weight: 600;
             color: var(--primary);
             margin-bottom: 0.25rem;
         }
-        
+
         .comment-text {
             color: var(--text-primary);
             line-height: 1.5;
             font-size: 0.95rem;
             word-wrap: break-word;
         }
-        
+
         /* -----------------------
            RESPONSIVE BREAKPOINTS
            ----------------------- */
-        
+
         @media (max-width: 1200px) {
             .main-layout {
                 grid-template-columns: 260px 1fr 280px;
                 gap: 1.5rem;
             }
         }
-        
+
         @media (max-width: 968px) {
             .main-layout {
                 grid-template-columns: 1fr;
@@ -661,42 +679,47 @@
                 display: flex;
                 flex-direction: column;
             }
-            
+
             .sidebar-card,
             .right-sidebar {
-                display: none; /* Hide sidebars on tablet/mobile */
+                display: none;
+                /* Hide sidebars on tablet/mobile */
             }
-            
+
             .nav-links {
-                display: none; /* Hide desktop menu */
+                display: none;
+                /* Hide desktop menu */
             }
-            
+
             .mobile-bottom-nav {
-                display: flex; /* Show mobile menu */
+                display: flex;
+                /* Show mobile menu */
             }
-            
+
             .container {
                 padding: 1rem;
                 padding-bottom: 100px;
             }
-            
+
             .site-footer {
                 padding-bottom: 120px;
             }
-            
+
             .project-image {
                 height: 250px;
             }
-            
+
             .nav-container {
                 padding: 1rem;
             }
         }
-        
+
         @media (max-width: 480px) {
+
             /* Auth Page Mobile Fixes */
             .auth-box {
-                padding: 1.5rem; /* Reduced from 3rem */
+                padding: 1.5rem;
+                /* Reduced from 3rem */
                 margin: 0 1rem;
             }
 
@@ -707,78 +730,83 @@
             .project-title {
                 font-size: 1.1rem;
             }
-            
+
             .project-footer {
                 gap: 0.5rem;
             }
-            
+
             .action-btn {
                 padding: 0.4rem 0.6rem;
                 font-size: 0.8rem;
             }
-            
+
             .tech-badge {
                 font-size: 0.7rem;
                 padding: 3px 8px;
             }
-            
+
             .mobile-nav-item {
                 font-size: 0.6rem;
                 min-width: 55px;
             }
-            
+
             .mobile-nav-icon {
                 font-size: 1.2rem;
             }
-            
+
             .card {
-                padding: 1rem; /* Reduced padding on cards */
+                padding: 1rem;
+                /* Reduced padding on cards */
             }
-            
+
             .project-image {
                 height: 200px;
                 margin: 0.5rem 0;
             }
-            
+
             .modal-content {
                 padding: 1.5rem;
                 margin: 0.5rem;
             }
 
             h1.logo {
-                font-size: 2rem !important; /* Login logo size fix */
+                font-size: 2rem !important;
+                /* Login logo size fix */
             }
-            
+
             /* Prevent input zoom on focus for iOS */
-            input, select, textarea {
-                font-size: 16px !important; 
+            input,
+            select,
+            textarea {
+                font-size: 16px !important;
             }
         }
-        
+
         /* Smooth scrolling */
         html {
             scroll-behavior: smooth;
         }
-        
+
         /* Custom scrollbar */
         ::-webkit-scrollbar {
             width: 8px;
         }
-        
+
         ::-webkit-scrollbar-track {
             background: var(--background);
         }
-        
+
         ::-webkit-scrollbar-thumb {
             background: #cbd5e1;
             border-radius: 5px;
         }
-        
+
         ::-webkit-scrollbar-thumb:hover {
             background: var(--text-secondary);
         }
     </style>
 </head>
+
 <body>
 
     <!-- LOGIN PAGE -->
@@ -799,7 +827,8 @@
                 <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Log In</button>
             </form>
             <p style="margin-top: 2rem; font-size: 0.9rem;">
-                No account? <a href="#" onclick="toggleAuth('signup')" style="color: var(--accent); font-weight: 600; text-decoration: none;">Sign up</a>
+                No account? <a href="#" onclick="toggleAuth('signup')"
+                    style="color: var(--accent); font-weight: 600; text-decoration: none;">Sign up</a>
             </p>
         </div>
     </div>
@@ -820,11 +849,13 @@
                 </div>
                 <div class="form-group">
                     <label>Email Address</label>
-                    <input type="email" id="signupEmail" class="form-input" required placeholder="student@nielit.gov.in">
+                    <input type="email" id="signupEmail" class="form-input" required
+                        placeholder="student@nielit.gov.in">
                 </div>
                 <div class="form-group">
                     <label>Password</label>
-                    <input type="password" id="signupPass" class="form-input" required minlength="6" placeholder="Minimum 6 characters">
+                    <input type="password" id="signupPass" class="form-input" required minlength="6"
+                        placeholder="Minimum 6 characters">
                 </div>
                 <div class="form-group">
                     <label>Major / Stream</label>
@@ -833,7 +864,8 @@
                 <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Sign Up</button>
             </form>
             <p style="margin-top: 1.5rem;">
-                <a href="#" onclick="toggleAuth('login')" style="color: var(--text-secondary); text-decoration: none; font-weight: 500;">← Back to Login</a>
+                <a href="#" onclick="toggleAuth('login')"
+                    style="color: var(--text-secondary); text-decoration: none; font-weight: 500;">← Back to Login</a>
             </p>
         </div>
     </div>
@@ -844,8 +876,8 @@
         <nav class="desktop-nav">
             <div class="nav-container">
                 <a href="index.html" class="logo">
-    <img src="logo.png" alt="StudentHub" style="height: 40px; width: auto;">
-</a>
+                    <img src="logo.png" alt="StudentHub" style="height: 40px; width: auto;">
+                </a>
                 <div class="nav-links">
                     <a href="#" onclick="showSection('feed'); return false;" class="nav-link active">Feed</a>
                     <a href="profiles.html" class="nav-link">Profiles</a>
@@ -865,17 +897,20 @@
                             <h3 id="sideName" style="margin-bottom: 0.25rem;">User</h3>
                             <p id="sideMajor" style="color: var(--text-secondary); font-size: 0.9rem;">Student</p>
                         </div>
-                        <button class="btn btn-secondary" onclick="openMyProfilePage()" style="width: 100%; margin-bottom: 0.75rem;">📁 My Projects</button>
-                        <button class="btn btn-ghost" onclick="openModal('editProfile')" style="width: 100%">✏️ Edit Profile</button>
+                        <button class="btn btn-secondary" onclick="openMyProfilePage()"
+                            style="width: 100%; margin-bottom: 0.75rem;">📁 My Projects</button>
+                        <button class="btn btn-ghost" onclick="openModal('editProfile')" style="width: 100%">✏️ Edit
+                            Profile</button>
                     </div>
                 </aside>
 
                 <!-- Feed -->
                 <main>
                     <div class="search-container">
-                        <input type="text" class="search-input" placeholder="🔍 Search projects..." onkeyup="filterProjects(this.value)">
+                        <input type="text" class="search-input" placeholder="🔍 Search projects..."
+                            onkeyup="filterProjects(this.value)">
                     </div>
-                    
+
                     <!-- Projects Container -->
                     <div id="projectsList">
                         <div class="loading">
@@ -900,7 +935,8 @@
         <!-- NIELIT Footer -->
         <footer class="site-footer">
             <div class="footer-logo">
-                <p style="font-size: 1.2rem; font-weight: 700; color: var(--primary); margin-bottom: 0.5rem;">NIELIT Ropar</p>
+                <p style="font-size: 1.2rem; font-weight: 700; color: var(--primary); margin-bottom: 0.5rem;">NIELIT
+                    Ropar</p>
             </div>
             <p>&copy; 2026 <strong>NIELIT Ropar</strong>. All rights reserved.</p>
         </footer>
@@ -927,7 +963,7 @@
     </div>
 
     <!-- MODALS -->
-    
+
     <!-- User Menu Modal (Mobile) -->
     <div id="userMenuModal" class="modal">
         <div class="modal-content" style="text-align: center;">
@@ -938,15 +974,16 @@
             <img id="menuAvatar" src="" class="avatar big-avatar">
             <h3 id="menuName">User</h3>
             <p id="menuMajor" style="color: var(--text-secondary); margin-bottom: 1.5rem;">Student</p>
-            
+
             <div style="display: flex; flex-direction: column; gap: 1rem;">
                 <button class="btn btn-secondary" onclick="openMyProfilePage()">📁 My Projects</button>
-                <button class="btn btn-primary" onclick="closeModal('userMenu'); openModal('editProfile')">✏️ Edit Profile</button>
+                <button class="btn btn-primary" onclick="closeModal('userMenu'); openModal('editProfile')">✏️ Edit
+                    Profile</button>
                 <button class="btn btn-ghost" onclick="logout()" style="color: #ef4444;">🚪 Logout</button>
             </div>
         </div>
     </div>
-    
+
     <!-- Post Project Modal -->
     <div id="projectModal" class="modal">
         <div class="modal-content">
@@ -965,7 +1002,8 @@
                 </div>
                 <div class="form-group">
                     <label>Description</label>
-                    <textarea id="postDesc" class="form-input" rows="4" required placeholder="Describe your project..."></textarea>
+                    <textarea id="postDesc" class="form-input" rows="4" required
+                        placeholder="Describe your project..."></textarea>
                 </div>
                 <div class="form-group">
                     <label>🔗 Link (GitHub/Demo)</label>
@@ -1009,7 +1047,8 @@
                 </div>
                 <div class="form-group">
                     <label>Bio</label>
-                    <textarea id="editBio" class="form-input" rows="3" placeholder="Tell us about yourself..."></textarea>
+                    <textarea id="editBio" class="form-input" rows="3"
+                        placeholder="Tell us about yourself..."></textarea>
                 </div>
                 <div class="form-group">
                     <label>🔗 LinkedIn</label>
@@ -1038,7 +1077,8 @@
                 <!-- Comments injected here -->
             </div>
             <div style="display: flex; gap: 0.75rem;">
-                <input type="text" id="commentInput" class="form-input" placeholder="Write a comment..." style="flex: 1;">
+                <input type="text" id="commentInput" class="form-input" placeholder="Write a comment..."
+                    style="flex: 1;">
                 <button onclick="submitComment()" class="btn btn-primary">Post</button>
             </div>
         </div>
@@ -1047,7 +1087,7 @@
     <script>
         // CONFIGURATION
         const SHEET_URL = 'https://script.google.com/macros/s/AKfycbzGbZ39b67jJ2NPODCW4K3zqlf6p6-bq8vPRHmCdNjOxl37MT9KdndnCR8vw55qv7dN/exec';
-        const CLOUDINARY_PRESET = 'studenthub_preset'; 
+        const CLOUDINARY_PRESET = 'studenthub_preset';
         const CLOUDINARY_NAME = 'dy8up08qd';
 
         // STATE
@@ -1057,11 +1097,11 @@
 
         // INIT
         window.onload = () => {
-            if(currentUser) {
+            if (currentUser) {
                 showApp();
-                
+
                 // Check if we need to open post modal (from navigation)
-                if(localStorage.getItem('openPostModal')) {
+                if (localStorage.getItem('openPostModal')) {
                     localStorage.removeItem('openPostModal');
                     openModal('project');
                 }
@@ -1081,12 +1121,12 @@
             document.getElementById('loginPage').classList.add('hidden');
             document.getElementById('signupPage').classList.add('hidden');
             document.getElementById('mainApp').classList.remove('hidden');
-            
+
             // Sidebar Update
             document.getElementById('sideName').textContent = currentUser.name;
             document.getElementById('sideMajor').textContent = currentUser.major || 'Student';
             document.getElementById('sideAvatar').src = currentUser.profilePicture || 'https://via.placeholder.com/150';
-            
+
             // Pre-fill Edit Form
             document.getElementById('editName').value = currentUser.name;
             document.getElementById('editUni').value = currentUser.university || '';
@@ -1097,12 +1137,12 @@
 
             loadProjects();
         }
-        
+
         // Navigation Logic
         function showSection(section) {
             // Main Feed logic is default
-            if(section === 'feed') {
-                window.scrollTo(0,0);
+            if (section === 'feed') {
+                window.scrollTo(0, 0);
             }
         }
 
@@ -1110,14 +1150,14 @@
             e.preventDefault();
             const email = document.getElementById('loginEmail').value;
             const password = document.getElementById('loginPass').value;
-            
+
             const btn = e.target.querySelector('button[type="submit"]');
             const originalText = btn.textContent;
             btn.textContent = 'Verifying...';
             btn.disabled = true;
 
             // Demo Mode Fallback
-            if(email === 'demo@nielit.gov.in' && password === 'demo123') {
+            if (email === 'demo@nielit.gov.in' && password === 'demo123') {
                 currentUser = { name: 'Demo User', email: 'demo@nielit.gov.in', major: 'CS', profilePicture: '' };
                 completeAuth(currentUser);
                 return;
@@ -1126,14 +1166,14 @@
             try {
                 const res = await fetch(`${SHEET_URL}?action=login&email=${email}&password=${password}`);
                 const json = await res.json();
-                if(json.status === 'success') completeAuth(json.data);
+                if (json.status === 'success') completeAuth(json.data);
                 else {
                     alert(json.data);
                     btn.textContent = originalText;
                     btn.disabled = false;
                 }
-            } catch(err) { 
-                alert('Login failed. Check console.'); 
+            } catch (err) {
+                alert('Login failed. Check console.');
                 console.error(err);
                 btn.textContent = originalText;
                 btn.disabled = false;
@@ -1145,10 +1185,10 @@
             const btn = e.target.querySelector('button[type="submit"]');
             btn.textContent = 'Creating Account...';
             btn.disabled = true;
-            
+
             const file = document.getElementById('signupPic').files[0];
             let picUrl = '';
-            if(file) picUrl = await uploadImage(file);
+            if (file) picUrl = await uploadImage(file);
 
             const data = {
                 name: document.getElementById('signupName').value,
@@ -1159,10 +1199,10 @@
             };
 
             const res = await postData('signup', { data });
-            if(res.status === 'success') completeAuth(data);
-            else { 
-                alert(res.data); 
-                btn.textContent = 'Sign Up'; 
+            if (res.status === 'success') completeAuth(data);
+            else {
+                alert(res.data);
+                btn.textContent = 'Sign Up';
                 btn.disabled = false;
             }
         }
@@ -1174,7 +1214,7 @@
         }
 
         function logout() {
-            if(confirm('Are you sure you want to logout?')) {
+            if (confirm('Are you sure you want to logout?')) {
                 localStorage.removeItem('studenthub_user');
                 location.reload();
             }
@@ -1184,7 +1224,7 @@
         async function loadProjects() {
             const res = await fetch(`${SHEET_URL}?action=getProjects`);
             const json = await res.json();
-            if(json.status === 'success') {
+            if (json.status === 'success') {
                 allProjects = json.data;
                 renderProjects(allProjects);
                 updateTrending(allProjects);
@@ -1193,7 +1233,7 @@
 
         function renderProjects(list) {
             const container = document.getElementById('projectsList');
-            if(list.length === 0) {
+            if (list.length === 0) {
                 container.innerHTML = '<div class="card" style="text-align: center; padding: 3rem;"><p style="color: var(--text-secondary); font-size: 1.1rem;">No projects yet. Be the first to share!</p></div>';
                 return;
             }
@@ -1211,16 +1251,19 @@
                     <div class="project-title">${escapeHtml(p.title)}</div>
                     <div class="project-description">${escapeHtml(p.description)}</div>
                     ${p.projectImage ? `<img src="${p.projectImage}" class="project-image" alt="${escapeHtml(p.title)}">` : ''}
-                    <div class="project-footer">
-                        <button class="action-btn" onclick="upvote('${p.id}', this)">
-                            👍 <span>${p.upvotes}</span>
-                        </button>
-                        <button class="action-btn" onclick="openComments('${p.id}')">
-                            💬 <span>${p.commentCount || 0}</span>
-                        </button>
-                        ${p.link ? `<a href="${p.link}" target="_blank" class="action-btn" style="text-decoration: none;">🔗 Code</a>` : ''}
-                        <span class="tech-badge">${escapeHtml(p.tech || 'Tech')}</span>
-                    </div>
+<div class="project-footer">
+    <button class="action-btn" onclick="upvote('${p.id}', this)">
+        👍 <span>${p.upvotes}</span>
+    </button>
+    <button class="action-btn" onclick="openComments('${p.id}')">
+        💬 <span>${p.commentCount || 0}</span>
+    </button>
+    <button class="action-btn" onclick="shareProject('${p.id}', '${escapeHtml(p.title).replace(/'/g, "\\'")}')">
+        📤 Share
+    </button>
+    ${p.link ? `<a href="${p.link}" target="_blank" class="action-btn" style="text-decoration: none;">🔗 Code</a>` : ''}
+    <span class="tech-badge">${escapeHtml(p.tech || 'Tech')}</span>
+</div>
                 </div>
             `).join('');
         }
@@ -1230,10 +1273,10 @@
             const btn = e.target.querySelector('button[type="submit"]');
             btn.textContent = 'Posting...';
             btn.disabled = true;
-            
+
             const file = document.getElementById('postImage').files[0];
             let imgUrl = '';
-            if(file) imgUrl = await uploadImage(file);
+            if (file) imgUrl = await uploadImage(file);
 
             const project = {
                 id: Date.now().toString(),
@@ -1260,10 +1303,10 @@
             const btn = e.target.querySelector('button[type="submit"]');
             btn.textContent = 'Saving...';
             btn.disabled = true;
-            
+
             const file = document.getElementById('editPic').files[0];
             let picUrl = currentUser.profilePicture;
-            if(file) picUrl = await uploadImage(file);
+            if (file) picUrl = await uploadImage(file);
 
             const updatedData = {
                 name: document.getElementById('editName').value,
@@ -1277,7 +1320,7 @@
             };
 
             await postData('updateProfile', { data: updatedData });
-            
+
             currentUser = { ...currentUser, ...updatedData };
             localStorage.setItem('studenthub_user', JSON.stringify(currentUser));
             closeModal('editProfile');
@@ -1306,8 +1349,8 @@
 
         function filterProjects(term) {
             term = term.toLowerCase();
-            const filtered = allProjects.filter(p => 
-                p.title.toLowerCase().includes(term) || 
+            const filtered = allProjects.filter(p =>
+                p.title.toLowerCase().includes(term) ||
                 p.authorName.toLowerCase().includes(term) ||
                 (p.tech && p.tech.toLowerCase().includes(term))
             );
@@ -1315,16 +1358,16 @@
         }
 
         function updateTrending(list) {
-            const sorted = [...list].sort((a,b) => b.upvotes - a.upvotes).slice(0,5);
+            const sorted = [...list].sort((a, b) => b.upvotes - a.upvotes).slice(0, 5);
             const trendingEl = document.getElementById('trendingList');
-            if(sorted.length === 0) {
+            if (sorted.length === 0) {
                 trendingEl.innerHTML = '<p style="color: var(--text-secondary); font-size: 0.9rem;">No trending projects yet</p>';
                 return;
             }
             trendingEl.innerHTML = sorted.map((p, i) => `
                 <div class="trending-item" onclick="window.location.href='profiles.html?email=${p.authorEmail}'">
                     <div style="display: flex; gap: 0.5rem; align-items: start;">
-                        <span style="font-size: 1.2rem; font-weight: 700; color: var(--accent);">${i+1}</span>
+                        <span style="font-size: 1.2rem; font-weight: 700; color: var(--accent);">${i + 1}</span>
                         <div style="flex: 1;">
                             <div style="font-weight: 600; font-size: 0.9rem; color: var(--primary); line-height: 1.3;">${escapeHtml(p.title)}</div>
                             <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.25rem;">
@@ -1351,11 +1394,11 @@
             currentCommentProjectId = id;
             document.getElementById('commentsModal').classList.add('active');
             document.getElementById('commentsList').innerHTML = '<div class="loading"><div class="loading-spinner">⏳</div><p>Loading...</p></div>';
-            
+
             const res = await fetch(`${SHEET_URL}?action=getComments&projectId=${id}`);
             const json = await res.json();
-            
-            if(json.data.length === 0) {
+
+            if (json.data.length === 0) {
                 document.getElementById('commentsList').innerHTML = '<p style="color: var(--text-secondary); text-align: center; padding: 2rem;">No comments yet.</p>';
                 return;
             }
@@ -1373,8 +1416,8 @@
 
         async function submitComment() {
             const txt = document.getElementById('commentInput').value.trim();
-            if(!txt) return;
-            
+            if (!txt) return;
+
             const data = {
                 id: Date.now().toString(),
                 projectId: currentCommentProjectId,
@@ -1382,7 +1425,7 @@
                 authorEmail: currentUser.email,
                 comment: txt
             };
-            
+
             await postData('addComment', { data });
             document.getElementById('commentInput').value = '';
             openComments(currentCommentProjectId);
@@ -1390,28 +1433,28 @@
 
         // --- UTILS ---
         function escapeHtml(text) {
-            if(!text) return '';
+            if (!text) return '';
             return text.replace(/</g, "&lt;").replace(/>/g, "&gt;");
         }
-        
+
         function formatDate(timestamp) {
             const date = new Date(timestamp);
             const now = new Date();
             const diff = now - date;
             const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-            
-            if(days === 0) return 'Today';
-            if(days === 1) return 'Yesterday';
-            if(days < 7) return `${days}d ago`;
+
+            if (days === 0) return 'Today';
+            if (days === 1) return 'Yesterday';
+            if (days < 7) return `${days}d ago`;
             return date.toLocaleDateString();
         }
-        
+
         function closeModal(id) {
-            document.getElementById(id+'Modal').classList.remove('active');
+            document.getElementById(id + 'Modal').classList.remove('active');
         }
-        
+
         function openModal(id) {
-            document.getElementById(id+'Modal').classList.add('active');
+            document.getElementById(id + 'Modal').classList.add('active');
         }
 
         async function postData(action, payload) {
@@ -1431,4 +1474,5 @@
         }
     </script>
 </body>
+
 </html>
