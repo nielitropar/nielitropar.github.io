@@ -58,7 +58,11 @@ function doPost(e) {
       data = JSON.parse(e.postData.contents);
     } catch (parseError) {
       // Sometimes postData is sent as a string key
-      data = JSON.parse(Object.keys(e.postData.contents)[0] || "{}");
+      try {
+        data = JSON.parse(Object.keys(e.postData.contents)[0]);
+      } catch (e2) {
+        data = {}; // Fallback
+      }
     }
 
     const action = data.action;
