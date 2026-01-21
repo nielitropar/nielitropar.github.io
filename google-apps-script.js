@@ -1,11 +1,13 @@
 // ========================================
-// STUDENTHUB - ENHANCED GOOGLE APPS SCRIPT
+// STUDENTHUB - PRODUCTION GOOGLE APPS SCRIPT
 // ========================================
-// With Authentication & Image Support
+// Enhanced with Comments & Sharing Features
 
 const PROJECTS_SHEET = 'Projects';
 const PROFILES_SHEET = 'Profiles';
 const USERS_SHEET = 'Users';
+const COMMENTS_SHEET = 'Comments';
+const SHARES_SHEET = 'Shares';
 
 // ====== MAIN HANDLERS ======
 function doGet(e) {
@@ -22,12 +24,14 @@ function doGet(e) {
         return getProjects();
       case 'getProfiles':
         return getProfiles();
+      case 'getComments':
+        return getComments(e.parameter.projectId);
       case 'login':
         return login(e.parameter.email, e.parameter.password);
       case 'test':
         return createResponse('success', 'API is working!');
       default:
-        return createResponse('error', 'Invalid action. Available: getProjects, getProfiles, login, test');
+        return createResponse('error', 'Invalid action. Available: getProjects, getProfiles, getComments, login, test');
     }
   } catch (error) {
     Logger.log('doGet Error: ' + error.toString());
@@ -56,6 +60,10 @@ function doPost(e) {
         return updateProfile(data.data);
       case 'updateUpvotes':
         return updateUpvotes(data.projectId, data.upvotes);
+      case 'addComment':
+        return addComment(data.data);
+      case 'addShare':
+        return addShare(data.data);
       default:
         return createResponse('error', 'Invalid POST action');
     }
@@ -66,7 +74,6 @@ function doPost(e) {
 }
 
 // ====== TEST FUNCTION ======
-// Run this function to test if everything is working
 function testConnection() {
   Logger.log('Testing connection...');
   
@@ -74,10 +81,14 @@ function testConnection() {
   const usersSheet = getOrCreateSheet(USERS_SHEET);
   const projectsSheet = getOrCreateSheet(PROJECTS_SHEET);
   const profilesSheet = getOrCreateSheet(PROFILES_SHEET);
+  const commentsSheet = getOrCreateSheet(COMMENTS_SHEET);
+  const sharesSheet = getOrCreateSheet(SHARES_SHEET);
   
   Logger.log('✓ Users sheet: ' + usersSheet.getName());
   Logger.log('✓ Projects sheet: ' + projectsSheet.getName());
   Logger.log('✓ Profiles sheet: ' + profilesSheet.getName());
+  Logger.log('✓ Comments sheet: ' + commentsSheet.getName());
+  Logger.log('✓ Shares sheet: ' + sharesSheet.getName());
   
   return 'All sheets created successfully!';
 }
@@ -284,7 +295,6 @@ function updateProfilesSheet(profileData) {
   }
 }
 
-// Simple password hashing (for demonstration - use proper hashing in production)
 function hashPassword(password) {
   try {
     const digest = Utilities.computeDigest(
@@ -322,6 +332,11 @@ function getProjects() {
       });
       
       project.upvotes = parseInt(project.upvotes) || 0;
+      
+      // Get comment count for this project
+      project.commentCount = getCommentCount(project.id);
+      project.shareCount = getShareCount(project.id);
+      
       projects.push(project);
     }
     
@@ -384,8 +399,8 @@ function updateUpvotes(projectId, upvotes) {
     const data = sheet.getDataRange().getValues();
     
     for (let i = 1; i < data.length; i++) {
-      if (data[i][0] == projectId) { // Use == for type coercion
-        sheet.getRange(i + 1, 10).setValue(upvotes); // Column 10 is upvotes
+      if (data[i][0] == projectId) {
+        sheet.getRange(i + 1, 10).setValue(upvotes);
         Logger.log('Upvotes updated for project: ' + projectId);
         return createResponse('success', 'Upvotes updated');
       }
@@ -493,6 +508,162 @@ function addProfile(profileData) {
   }
 }
 
+// ====== COMMENTS OPERATIONS ======
+function getComments(projectId) {
+  try {
+    const sheet = getOrCreateSheet(COMMENTS_SHEET);
+    const data = sheet.getDataRange().getValues();
+    
+    if (data.length <= 1) {
+      return createResponse('success', []);
+    }
+    
+    const headers = data[0];
+    const projectIdIndex = headers.indexOf('projectId');
+    const comments = [];
+    
+    for (let i = 1; i < data.length; i++) {
+      const row = data[i];
+      if (projectId && row[projectIdIndex] !== projectId) {
+        continue;
+      }
+      
+      const comment = {};
+      headers.forEach((header, index) => {
+        comment[header] = row[index] || '';
+      });
+      comments.push(comment);
+    }
+    
+    Logger.log('Loaded ' + comments.length + ' comments for project: ' + projectId);
+    return createResponse('success', comments);
+  } catch (error) {
+    Logger.log('Get Comments Error: ' + error.toString());
+    return createResponse('error', error.toString());
+  }
+}
+
+function addComment(commentData) {
+  try {
+    const sheet = getOrCreateSheet(COMMENTS_SHEET);
+    
+    // Initialize sheet with headers if empty
+    if (sheet.getLastRow() === 0) {
+      sheet.appendRow([
+        'id',
+        'projectId',
+        'authorName',
+        'authorEmail',
+        'authorPicture',
+        'comment',
+        'timestamp'
+      ]);
+      Logger.log('Initialized Comments sheet with headers');
+    }
+    
+    // Add comment
+    sheet.appendRow([
+      commentData.id || Date.now().toString(),
+      commentData.projectId,
+      commentData.authorName,
+      commentData.authorEmail,
+      commentData.authorPicture || '',
+      commentData.comment,
+      commentData.timestamp || new Date().toISOString()
+    ]);
+    
+    Logger.log('Comment added to project: ' + commentData.projectId);
+    return createResponse('success', 'Comment added successfully');
+  } catch (error) {
+    Logger.log('Add Comment Error: ' + error.toString());
+    return createResponse('error', error.toString());
+  }
+}
+
+function getCommentCount(projectId) {
+  try {
+    const sheet = getOrCreateSheet(COMMENTS_SHEET);
+    const data = sheet.getDataRange().getValues();
+    
+    if (data.length <= 1) return 0;
+    
+    const headers = data[0];
+    const projectIdIndex = headers.indexOf('projectId');
+    let count = 0;
+    
+    for (let i = 1; i < data.length; i++) {
+      if (data[i][projectIdIndex] === projectId) {
+        count++;
+      }
+    }
+    
+    return count;
+  } catch (error) {
+    Logger.log('Get Comment Count Error: ' + error.toString());
+    return 0;
+  }
+}
+
+// ====== SHARES OPERATIONS ======
+function addShare(shareData) {
+  try {
+    const sheet = getOrCreateSheet(SHARES_SHEET);
+    
+    // Initialize sheet with headers if empty
+    if (sheet.getLastRow() === 0) {
+      sheet.appendRow([
+        'id',
+        'projectId',
+        'sharedBy',
+        'sharedWith',
+        'method',
+        'timestamp'
+      ]);
+      Logger.log('Initialized Shares sheet with headers');
+    }
+    
+    // Add share
+    sheet.appendRow([
+      shareData.id || Date.now().toString(),
+      shareData.projectId,
+      shareData.sharedBy,
+      shareData.sharedWith || '',
+      shareData.method || 'link',
+      shareData.timestamp || new Date().toISOString()
+    ]);
+    
+    Logger.log('Share recorded for project: ' + shareData.projectId);
+    return createResponse('success', 'Share recorded successfully');
+  } catch (error) {
+    Logger.log('Add Share Error: ' + error.toString());
+    return createResponse('error', error.toString());
+  }
+}
+
+function getShareCount(projectId) {
+  try {
+    const sheet = getOrCreateSheet(SHARES_SHEET);
+    const data = sheet.getDataRange().getValues();
+    
+    if (data.length <= 1) return 0;
+    
+    const headers = data[0];
+    const projectIdIndex = headers.indexOf('projectId');
+    let count = 0;
+    
+    for (let i = 1; i < data.length; i++) {
+      if (data[i][projectIdIndex] === projectId) {
+        count++;
+      }
+    }
+    
+    return count;
+  } catch (error) {
+    Logger.log('Get Share Count Error: ' + error.toString());
+    return 0;
+  }
+}
+
 // ====== UTILITY FUNCTIONS ======
 function getOrCreateSheet(sheetName) {
   try {
@@ -522,55 +693,72 @@ function createResponse(status, data) {
 }
 
 // ====== SAMPLE DATA INITIALIZATION ======
-// Run this function ONCE to populate your sheet with sample data
 function initializeSampleData() {
   Logger.log('Initializing sample data...');
   
   try {
-    // Create sample user
-    const signupResult = signup({
+    // Create sample users
+    signup({
       name: 'Demo Student',
-      email: 'demo@university.edu',
+      email: 'demo@nielit.gov.in',
       password: 'demo123',
-      university: 'Tech University',
+      university: 'NIELIT Ropar',
       major: 'Computer Science',
       timestamp: new Date().toISOString()
     });
     
-    Logger.log('Sample user created: demo@university.edu / demo123');
+    Logger.log('Sample user created: demo@nielit.gov.in / demo123');
     
-    // Add sample project
-    const projectResult = addProject({
-      id: Date.now().toString(),
-      authorName: 'Demo Student',
-      authorEmail: 'demo@university.edu',
-      authorPicture: '',
-      title: 'AI Study Assistant',
-      description: 'A machine learning application that helps students study more effectively by creating personalized quiz questions based on their learning patterns.',
-      link: 'https://github.com/demo/study-ai',
-      tech: 'Python, TensorFlow, React, Flask',
-      projectImage: '',
-      upvotes: 15,
-      timestamp: new Date().toISOString()
-    });
-    
-    Logger.log('Sample project added');
-    
-    // Add another sample user
     signup({
       name: 'Sarah Chen',
-      email: 'sarah@university.edu',
+      email: 'sarah@nielit.gov.in',
       password: 'sarah123',
-      university: 'Tech University',
+      university: 'NIELIT Ropar',
       major: 'Software Engineering',
       timestamp: new Date().toISOString()
     });
     
-    Logger.log('Second sample user created: sarah@university.edu / sarah123');
+    Logger.log('Second sample user created: sarah@nielit.gov.in / sarah123');
+    
+    // Add sample projects
+    const projects = [
+      {
+        id: Date.now().toString(),
+        authorName: 'Demo Student',
+        authorEmail: 'demo@nielit.gov.in',
+        authorPicture: '',
+        title: 'AI Study Assistant',
+        description: 'A machine learning application that helps students study more effectively by creating personalized quiz questions based on their learning patterns.',
+        link: 'https://github.com/demo/study-ai',
+        tech: 'Python, TensorFlow, React, Flask',
+        projectImage: '',
+        upvotes: 15,
+        timestamp: new Date().toISOString()
+      },
+      {
+        id: (Date.now() + 1).toString(),
+        authorName: 'Sarah Chen',
+        authorEmail: 'sarah@nielit.gov.in',
+        authorPicture: '',
+        title: 'Smart Campus Navigator',
+        description: 'An AR-based mobile app that helps students navigate the NIELIT campus with real-time directions.',
+        link: 'https://github.com/demo/campus-nav',
+        tech: 'React Native, ARCore, Firebase',
+        projectImage: '',
+        upvotes: 12,
+        timestamp: new Date().toISOString()
+      }
+    ];
+    
+    projects.forEach(project => {
+      addProject(project);
+    });
+    
+    Logger.log('Sample projects added');
     
     Logger.log('✓ Sample data initialized successfully!');
-    Logger.log('✓ Login with: demo@university.edu / demo123');
-    Logger.log('✓ Or: sarah@university.edu / sarah123');
+    Logger.log('✓ Login with: demo@nielit.gov.in / demo123');
+    Logger.log('✓ Or: sarah@nielit.gov.in / sarah123');
     
     return 'Sample data initialized! Check the logs for login credentials.';
     
