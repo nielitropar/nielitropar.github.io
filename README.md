@@ -863,9 +863,9 @@ SOFTWARE.
 - Email: princelv84@gmail.com
 - GitHub: [@lovnishverma](https://github.com/lovnishverma)
 
-**Nikshep Palliwal**
-- Email: niksheppalliwal@gmail.com
-- GitHub: [@niksheppaliwal](https://github.com/niksheppalliwal)
+**Nikshep Paliwal**
+- Email: niksheppaliwal@gmail.com
+- GitHub: [@niksheppaliwal](https://github.com/niksheppaliwal)
 
 ### Support
 
