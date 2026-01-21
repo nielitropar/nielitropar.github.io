@@ -3,1539 +3,267 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NIELIT StudentHub - Connect, Create, Inspire</title>
+    <title>NIELIT StudentHub - Feed</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
     <style>
         :root {
             /* NIELIT Theme Colors */
-            --primary: #003366;
-            --secondary: #FF6B35;
-            --accent: #0066CC;
-            --nielit-red: #DC143C;
-            --background: #F5F7FA;
-            --card-bg: #FFFFFF;
-            --text-primary: #1A1A1A;
-            --text-secondary: #6B7280;
-            --border: #E5E7EB;
-            --success: #10B981;
+            --primary: #003366; --secondary: #FF6B35; --accent: #0066CC;
+            --background: #F5F7FA; --card-bg: #FFFFFF; --text-primary: #1A1A1A;
+            --text-secondary: #6B7280; --border: #E5E7EB; --success: #10B981;
             --gradient-primary: linear-gradient(135deg, #003366 0%, #0066CC 100%);
-            --gradient-accent: linear-gradient(135deg, #0066CC 0%, #3399FF 100%);
             --shadow-sm: 0 2px 8px rgba(0, 51, 102, 0.08);
             --shadow-md: 0 4px 16px rgba(0, 51, 102, 0.12);
-            --shadow-lg: 0 12px 32px rgba(0, 51, 102, 0.16);
         }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Poppins', sans-serif;
-            background: var(--background);
-            color: var(--text-primary);
-            line-height: 1.6;
-            overflow-x: hidden;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Poppins', sans-serif; background: var(--background); color: var(--text-primary); line-height: 1.6; }
+        
         /* Navigation */
-        nav {
-            background: var(--card-bg);
-            box-shadow: var(--shadow-sm);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            animation: slideDown 0.5s ease-out;
-        }
+        nav { background: var(--card-bg); box-shadow: var(--shadow-sm); position: sticky; top: 0; z-index: 1000; }
+        .nav-container { max-width: 1400px; margin: 0 auto; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 900; color: var(--primary); }
+        .nav-links { display: flex; gap: 2rem; align-items: center; }
+        .nav-link { color: var(--text-secondary); text-decoration: none; font-weight: 500; transition: 0.3s; }
+        .nav-link.active { color: var(--accent); font-weight: 700; }
+        .nav-link:hover { color: var(--accent); }
 
-        @keyframes slideDown {
-            from { transform: translateY(-100%); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-
-        .nav-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .logo-container {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            cursor: pointer;
-        }
-
-        .nielit-logo {
-            height: 50px;
-            width: auto;
-        }
-
-        .logo {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.5rem;
-            font-weight: 900;
-            background: var(--gradient-accent);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            letter-spacing: -0.5px;
-        }
-
-        .logo-subtitle {
-            font-size: 0.75rem;
-            color: var(--text-secondary);
-            margin-top: -0.25rem;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 2rem;
-            align-items: center;
-        }
-
-        .nav-link {
-            color: var(--text-secondary);
-            text-decoration: none;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            position: relative;
-            white-space: nowrap;
-            cursor: pointer;
-        }
-
-        .nav-link:hover {
-            color: var(--accent);
-        }
-
-        .nav-link.active::after {
-            content: '';
-            position: absolute;
-            bottom: -5px;
-            left: 0;
-            width: 100%;
-            height: 3px;
-            background: var(--gradient-accent);
-            border-radius: 2px;
-        }
-
-        /* Mobile Menu */
-        .mobile-menu-btn {
-            display: none;
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: var(--primary);
-            padding: 0.5rem;
-        }
-
-        .mobile-nav {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: -100%;
-            width: 80%;
-            max-width: 300px;
-            height: 100vh;
-            background: var(--card-bg);
-            box-shadow: var(--shadow-lg);
-            z-index: 2000;
-            transition: left 0.3s ease;
-            overflow-y: auto;
-        }
-
-        .mobile-nav.active {
-            left: 0;
-        }
-
-        .mobile-nav-header {
-            padding: 1.5rem;
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .mobile-nav-links {
-            padding: 1rem;
-        }
-
-        .mobile-nav-link {
-            display: block;
-            padding: 1rem;
-            color: var(--text-primary);
-            text-decoration: none;
-            border-radius: 8px;
-            margin-bottom: 0.5rem;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-
-        .mobile-nav-link:hover,
-        .mobile-nav-link.active {
-            background: var(--gradient-accent);
-            color: white;
-        }
-
-        .mobile-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 1999;
-        }
-
-        .mobile-overlay.active {
-            display: block;
-        }
-
-        /* Search Bar */
-        .search-container {
-            position: relative;
-            width: 100%;
-            max-width: 500px;
-            margin-bottom: 2rem;
-        }
-
-        .search-input {
-            width: 100%;
-            padding: 0.875rem 1rem 0.875rem 3rem;
-            border: 2px solid var(--border);
-            border-radius: 12px;
-            font-family: 'Poppins', sans-serif;
-            font-size: 0.95rem;
-            transition: all 0.3s ease;
-        }
-
-        .search-input:focus {
-            outline: none;
-            border-color: var(--accent);
-            box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
-        }
-
-        .search-icon {
-            position: absolute;
-            left: 1rem;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--text-secondary);
-            font-size: 1.2rem;
-        }
-
-        .btn {
-            padding: 0.75rem 1.5rem;
-            border-radius: 12px;
-            border: none;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 0.95rem;
-            font-family: 'Poppins', sans-serif;
-            white-space: nowrap;
-        }
-
-        .btn-primary {
-            background: var(--gradient-accent);
-            color: white;
-            box-shadow: 0 4px 12px rgba(0, 102, 204, 0.3);
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(0, 102, 204, 0.4);
-        }
-
-        .btn-secondary {
-            background: var(--card-bg);
-            color: var(--primary);
-            border: 2px solid var(--border);
-        }
-
-        .btn-secondary:hover {
-            border-color: var(--accent);
-            color: var(--accent);
-        }
-
-        .btn-ghost {
-            background: transparent;
-            color: var(--text-secondary);
-            border: none;
-            padding: 0.5rem 1rem;
-        }
-
-        .btn-ghost:hover {
-            color: var(--accent);
-            background: var(--background);
-        }
-
-        /* Container */
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 2rem;
-        }
+        /* Layout */
+        .container { max-width: 1400px; margin: 0 auto; padding: 2rem; }
+        .main-layout { display: grid; grid-template-columns: 280px 1fr 320px; gap: 2rem; }
+        
+        /* Cards */
+        .card { background: var(--card-bg); border-radius: 16px; padding: 1.5rem; box-shadow: var(--shadow-sm); margin-bottom: 1.5rem; }
+        .sidebar-card { position: sticky; top: 100px; }
+        
+        /* Project Card */
+        .project-card { animation: fadeIn 0.5s ease-out; }
+        .project-header { display: flex; gap: 1rem; margin-bottom: 1rem; align-items: center; }
+        .avatar { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; background: #eee; }
+        .project-title { font-size: 1.25rem; font-weight: 700; color: var(--primary); margin-bottom: 0.5rem; }
+        .project-image { width: 100%; height: 300px; object-fit: cover; border-radius: 12px; margin: 1rem 0; }
+        .project-footer { display: flex; gap: 1rem; padding-top: 1rem; border-top: 1px solid var(--border); }
+        .action-btn { background: none; border: none; cursor: pointer; color: var(--text-secondary); display: flex; align-items: center; gap: 5px; font-weight: 600; font-family: 'Poppins', sans-serif; transition: 0.2s; }
+        .action-btn:hover, .action-btn.active { color: var(--accent); }
 
         /* Auth Pages */
-        .auth-page {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: var(--gradient-primary);
-            position: relative;
-            overflow: hidden;
-            padding: 1rem;
-        }
-
-        .auth-page::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            right: -20%;
-            width: 800px;
-            height: 800px;
-            background: rgba(255, 255, 255, 0.08);
-            border-radius: 50%;
-            filter: blur(80px);
-        }
-
-        .auth-page::after {
-            content: '';
-            position: absolute;
-            bottom: -30%;
-            left: -10%;
-            width: 600px;
-            height: 600px;
-            background: rgba(0, 102, 204, 0.1);
-            border-radius: 50%;
-            filter: blur(60px);
-        }
-
-        .auth-container {
-            background: var(--card-bg);
-            border-radius: 24px;
-            padding: 2rem;
-            width: 100%;
-            max-width: 480px;
-            box-shadow: var(--shadow-lg);
-            position: relative;
-            z-index: 1;
-            animation: scaleIn 0.5s ease-out;
-        }
-
-        @keyframes scaleIn {
-            from { transform: scale(0.95); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
-        }
-
-        .auth-logo-container {
-            text-align: center;
-            margin-bottom: 1.5rem;
-        }
-
-        .auth-nielit-logo {
-            height: 60px;
-            margin-bottom: 1rem;
-        }
-
-        .auth-logo {
-            font-family: 'Playfair Display', serif;
-            font-size: 2rem;
-            font-weight: 900;
-            background: var(--gradient-accent);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 0.5rem;
-        }
-
-        .auth-subtitle {
-            text-align: center;
-            color: var(--text-secondary);
-            margin-bottom: 2rem;
-            font-size: 0.9rem;
-        }
-
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .form-group label {
-            display: block;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-            color: var(--text-primary);
-        }
-
-        .form-group input,
-        .form-group textarea {
-            width: 100%;
-            padding: 0.875rem;
-            border: 2px solid var(--border);
-            border-radius: 10px;
-            font-family: 'Poppins', sans-serif;
-            font-size: 0.95rem;
-            transition: all 0.3s ease;
-        }
-
-        .form-group textarea {
-            resize: vertical;
-            min-height: 120px;
-        }
-
-        .form-group input:focus,
-        .form-group textarea:focus {
-            outline: none;
-            border-color: var(--accent);
-            box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
-        }
-
-        .image-upload-container {
-            text-align: center;
-            margin-bottom: 1.5rem;
-        }
-
-        .image-preview {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 4px solid var(--border);
-            margin: 0 auto 1rem;
-            display: block;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .image-preview:hover {
-            border-color: var(--accent);
-            transform: scale(1.05);
-        }
-
-        .image-preview.placeholder {
-            background: var(--gradient-accent);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 3rem;
-            color: white;
-            font-weight: 700;
-        }
-
-        .upload-btn {
-            display: inline-block;
-            padding: 0.5rem 1.5rem;
-            background: var(--background);
-            border: 2px dashed var(--border);
-            border-radius: 10px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-weight: 500;
-            font-size: 0.9rem;
-        }
-
-        .upload-btn:hover {
-            border-color: var(--accent);
-            color: var(--accent);
-        }
-
-        .file-input {
-            display: none;
-        }
-
-        .auth-switch {
-            text-align: center;
-            margin-top: 1.5rem;
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-        }
-
-        .auth-switch a {
-            color: var(--accent);
-            font-weight: 600;
-            text-decoration: none;
-        }
-
-        .auth-switch a:hover {
-            text-decoration: underline;
-        }
-
-        /* Hero Section */
-        .hero {
-            background: var(--gradient-primary);
-            color: white;
-            padding: 3rem 2rem;
-            text-align: center;
-            border-radius: 24px;
-            margin: 2rem auto;
-            max-width: 1400px;
-            position: relative;
-            overflow: hidden;
-            animation: fadeInUp 0.8s ease-out;
-        }
-
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .hero::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            right: -10%;
-            width: 500px;
-            height: 500px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 50%;
-            filter: blur(60px);
-        }
-
-        .hero h1 {
-            font-family: 'Playfair Display', serif;
-            font-size: 2.5rem;
-            font-weight: 900;
-            margin-bottom: 1rem;
-            position: relative;
-        }
-
-        .hero p {
-            font-size: 1.1rem;
-            opacity: 0.95;
-            margin-bottom: 2rem;
-            position: relative;
-        }
-
-        /* Main Layout */
-        .main-layout {
-            display: grid;
-            grid-template-columns: 280px 1fr 320px;
-            gap: 2rem;
-            margin-top: 2rem;
-        }
-
-        /* Sidebar */
-        .sidebar {
-            position: sticky;
-            top: 100px;
-            height: fit-content;
-        }
-
-        .sidebar-card {
-            background: var(--card-bg);
-            border-radius: 16px;
-            padding: 1.5rem;
-            box-shadow: var(--shadow-sm);
-            margin-bottom: 1.5rem;
-            animation: fadeInLeft 0.6s ease-out;
-        }
-
-        @keyframes fadeInLeft {
-            from { opacity: 0; transform: translateX(-20px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
-
-        .profile-header {
-            text-align: center;
-        }
-
-        .avatar {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 1rem;
-            font-weight: 700;
-            box-shadow: 0 4px 12px rgba(0, 102, 204, 0.3);
-            object-fit: cover;
-            cursor: pointer;
-        }
-
-        .avatar.placeholder {
-            background: var(--gradient-accent);
-            font-size: 2rem;
-            color: white;
-        }
-
-        .username {
-            font-weight: 600;
-            font-size: 1.1rem;
-            margin-bottom: 0.25rem;
-        }
-
-        .user-role {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-        }
-
-        .sidebar-menu {
-            list-style: none;
-        }
-
-        .sidebar-menu li {
-            padding: 0.75rem 1rem;
-            margin: 0.5rem 0;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            font-weight: 500;
-        }
-
-        .sidebar-menu li:hover {
-            background: var(--background);
-            color: var(--accent);
-            transform: translateX(5px);
-        }
-
-        .sidebar-menu li.active {
-            background: var(--gradient-accent);
-            color: white;
-        }
-
-        /* Feed */
-        .feed {
-            animation: fadeIn 0.8s ease-out;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        .create-post {
-            background: var(--card-bg);
-            border-radius: 16px;
-            padding: 1.5rem;
-            box-shadow: var(--shadow-sm);
-            margin-bottom: 2rem;
-        }
-
-        .post-input {
-            width: 100%;
-            padding: 1rem;
-            border: 2px solid var(--border);
-            border-radius: 12px;
-            font-family: 'Poppins', sans-serif;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-            resize: vertical;
-            min-height: 80px;
-        }
-
-        .post-input:focus {
-            outline: none;
-            border-color: var(--accent);
-            box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
-        }
-
-        .post-actions {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 1rem;
-            gap: 1rem;
-            flex-wrap: wrap;
-        }
-
-        /* Project Cards */
-        .project-card {
-            background: var(--card-bg);
-            border-radius: 16px;
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-            box-shadow: var(--shadow-sm);
-            transition: all 0.3s ease;
-            border: 2px solid transparent;
-            animation: fadeInUp 0.6s ease-out;
-        }
-
-        .project-card:hover {
-            box-shadow: var(--shadow-md);
-            transform: translateY(-4px);
-            border-color: var(--border);
-        }
-
-        .project-header {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            margin-bottom: 1rem;
-        }
-
-        .project-avatar {
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            object-fit: cover;
-            cursor: pointer;
-            flex-shrink: 0;
-        }
-
-        .project-avatar.placeholder {
-            background: var(--gradient-primary);
-            color: white;
-        }
-
-        .project-info {
-            flex: 1;
-            min-width: 0;
-        }
-
-        .project-info h3 {
-            font-size: 1.1rem;
-            font-weight: 600;
-            margin-bottom: 0.25rem;
-            cursor: pointer;
-            transition: color 0.3s ease;
-        }
-
-        .project-info h3:hover {
-            color: var(--accent);
-        }
-
-        .project-meta {
-            color: var(--text-secondary);
-            font-size: 0.85rem;
-        }
-
-        .project-title {
-            font-size: 1.3rem;
-            font-weight: 700;
-            margin-bottom: 0.75rem;
-            color: var(--primary);
-        }
-
-        .project-image {
-            width: 100%;
-            height: 300px;
-            object-fit: cover;
-            border-radius: 12px;
-            margin-bottom: 1rem;
-        }
-
-        .project-description {
-            color: var(--text-secondary);
-            line-height: 1.7;
-            margin-bottom: 1rem;
-        }
-
-        .project-link {
-            color: var(--accent);
-            text-decoration: none;
-            font-weight: 600;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            margin-bottom: 1rem;
-            transition: all 0.3s ease;
-        }
-
-        .project-link:hover {
-            gap: 0.75rem;
-        }
-
-        .project-footer {
-            display: flex;
-            gap: 1rem;
-            padding-top: 1rem;
-            border-top: 1px solid var(--border);
-            flex-wrap: wrap;
-        }
-
-        .action-btn {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
-            border: none;
-            background: transparent;
-            color: var(--text-secondary);
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-family: 'Poppins', sans-serif;
-            font-size: 0.9rem;
-        }
-
-        .action-btn:hover {
-            background: var(--background);
-            color: var(--accent);
-        }
-
-        .action-btn.upvoted {
-            color: var(--accent);
-            background: rgba(0, 102, 204, 0.1);
-        }
-
-        /* Right Sidebar */
-        .right-sidebar {
-            position: sticky;
-            top: 100px;
-            height: fit-content;
-            animation: fadeInRight 0.6s ease-out;
-        }
-
-        @keyframes fadeInRight {
-            from { opacity: 0; transform: translateX(20px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
-
-        .trending-card {
-            background: var(--card-bg);
-            border-radius: 16px;
-            padding: 1.5rem;
-            box-shadow: var(--shadow-sm);
-            margin-bottom: 1.5rem;
-        }
-
-        .trending-card h3 {
-            font-weight: 700;
-            margin-bottom: 1.5rem;
-            color: var(--primary);
-        }
-
-        .trending-item {
-            padding: 1rem;
-            border-radius: 10px;
-            margin-bottom: 0.75rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .trending-item:hover {
-            background: var(--background);
-        }
-
-        .trending-title {
-            font-weight: 600;
-            font-size: 0.95rem;
-            margin-bottom: 0.25rem;
-        }
-
-        .trending-meta {
-            color: var(--text-secondary);
-            font-size: 0.85rem;
-        }
-
-        /* User Profile View */
-        .user-profile-header {
-            background: var(--gradient-primary);
-            color: white;
-            border-radius: 16px;
-            padding: 2rem;
-            margin-bottom: 2rem;
-            display: flex;
-            align-items: center;
-            gap: 2rem;
-            flex-wrap: wrap;
-        }
-
-        .user-profile-avatar {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 4px solid white;
-            box-shadow: var(--shadow-lg);
-        }
-
-        .user-profile-avatar.placeholder {
-            background: white;
-            color: var(--primary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 3rem;
-            font-weight: 700;
-        }
-
-        .user-profile-info {
-            flex: 1;
-        }
-
-        .user-profile-name {
-            font-size: 2rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-        }
-
-        .user-profile-meta {
-            display: flex;
-            gap: 2rem;
-            margin-top: 1rem;
-            flex-wrap: wrap;
-        }
-
-        .user-profile-stat {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .stat-value {
-            font-size: 1.5rem;
-            font-weight: 700;
-        }
-
-        .stat-label {
-            font-size: 0.9rem;
-            opacity: 0.9;
-        }
-
-        .back-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.75rem 1.5rem;
-            background: var(--card-bg);
-            color: var(--primary);
-            border: none;
-            border-radius: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-bottom: 1rem;
-        }
-
-        .back-btn:hover {
-            transform: translateX(-5px);
-            box-shadow: var(--shadow-sm);
-        }
+        .auth-page { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: var(--gradient-primary); padding: 1rem; }
+        .auth-box { background: white; padding: 2.5rem; border-radius: 20px; width: 100%; max-width: 450px; text-align: center; box-shadow: var(--shadow-md); }
+        .form-group { margin-bottom: 1.5rem; text-align: left; }
+        .form-group label { display: block; font-weight: 600; margin-bottom: 0.5rem; font-size: 0.9rem; }
+        .form-input { width: 100%; padding: 0.75rem; border: 2px solid var(--border); border-radius: 8px; font-family: inherit; }
+        
+        /* Buttons */
+        .btn { padding: 0.75rem 1.5rem; border-radius: 8px; border: none; font-weight: 600; cursor: pointer; transition: 0.3s; }
+        .btn-primary { background: var(--accent); color: white; }
+        .btn-primary:hover { background: var(--primary); }
+        .btn-secondary { background: #eee; color: var(--text-primary); }
+        .btn-ghost { background: transparent; color: var(--text-secondary); }
+
+        /* Search */
+        .search-container { margin-bottom: 2rem; }
+        .search-input { width: 100%; padding: 1rem; border: 2px solid var(--border); border-radius: 12px; font-size: 1rem; }
 
         /* Modal */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(4px);
-            z-index: 2000;
-            align-items: center;
-            justify-content: center;
-            animation: fadeIn 0.3s ease-out;
-            padding: 1rem;
-        }
-
-        .modal.active {
-            display: flex;
-        }
-
-        .modal-content {
-            background: var(--card-bg);
-            border-radius: 20px;
-            padding: 2rem;
-            width: 90%;
-            max-width: 600px;
-            max-height: 90vh;
-            overflow-y: auto;
-            box-shadow: var(--shadow-lg);
-            animation: scaleIn 0.3s ease-out;
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-        }
-
-        .modal-header h2 {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.8rem;
-            color: var(--primary);
-        }
-
-        .close-btn {
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: var(--text-secondary);
-            width: 36px;
-            height: 36px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            transition: all 0.3s ease;
-        }
-
-        .close-btn:hover {
-            background: var(--background);
-            color: var(--accent);
-        }
-
-        /* Comments Section */
-        .comments-section {
-            margin-top: 1.5rem;
-            padding-top: 1.5rem;
-            border-top: 1px solid var(--border);
-        }
-
-        .comment-input-container {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .comment-input {
-            flex: 1;
-            padding: 0.75rem;
-            border: 2px solid var(--border);
-            border-radius: 10px;
-            font-family: 'Poppins', sans-serif;
-            resize: vertical;
-            min-height: 60px;
-        }
-
-        .comment-input:focus {
-            outline: none;
-            border-color: var(--accent);
-            box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
-        }
-
-        .comment {
-            padding: 1rem;
-            background: var(--background);
-            border-radius: 10px;
-            margin-bottom: 1rem;
-        }
-
-        .comment-header {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .comment-avatar {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            object-fit: cover;
-        }
-
-        .comment-avatar.placeholder {
-            background: var(--gradient-accent);
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 0.9rem;
-        }
-
-        .comment-author {
-            font-weight: 600;
-            font-size: 0.95rem;
-        }
-
-        .comment-time {
-            color: var(--text-secondary);
-            font-size: 0.85rem;
-        }
-
-        .comment-text {
-            color: var(--text-secondary);
-            line-height: 1.6;
-        }
-
-        .toast {
-            position: fixed;
-            bottom: 2rem;
-            right: 2rem;
-            background: var(--gradient-primary);
-            color: white;
-            padding: 1rem 1.5rem;
-            border-radius: 12px;
-            box-shadow: var(--shadow-lg);
-            display: none;
-            align-items: center;
-            gap: 1rem;
-            z-index: 3000;
-            animation: slideInRight 0.3s ease-out;
-            max-width: 90%;
-        }
-
-        @keyframes slideInRight {
-            from { transform: translateX(400px); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-        }
-
-        .toast.show {
-            display: flex;
-        }
-
-        .toast.success {
-            background: var(--success);
-        }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
+        .modal.active { display: flex; }
+        .modal-content { background: white; padding: 2rem; border-radius: 16px; width: 90%; max-width: 600px; max-height: 90vh; overflow-y: auto; }
         
-        .toast.error {
-            background: var(--nielit-red);
-        }
-
-        .loading {
-            text-align: center;
-            padding: 3rem;
-            color: var(--text-secondary);
-        }
-
-        .spinner {
-            border: 3px solid var(--border);
-            border-top: 3px solid var(--accent);
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 0.8s linear infinite;
-            margin: 0 auto 1rem;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 4rem 2rem;
-            color: var(--text-secondary);
-        }
-
-        .empty-state h3 {
-            font-size: 1.5rem;
-            margin-bottom: 0.5rem;
-            color: var(--text-primary);
-        }
-
-        .hidden {
-            display: none !important;
-        }
-
-        /* Profile Grid */
-        .profiles-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 1.5rem;
-        }
-
-        .profile-card {
-            background: var(--card-bg);
-            border-radius: 16px;
-            padding: 1.5rem;
-            box-shadow: var(--shadow-sm);
-            transition: all 0.3s ease;
-            text-align: center;
-            cursor: pointer;
-        }
-
-        .profile-card:hover {
-            box-shadow: var(--shadow-md);
-            transform: translateY(-4px);
-        }
-
-        .profile-card-avatar {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            margin: 0 auto 1rem;
-            object-fit: cover;
-        }
-
-        .profile-card-avatar.placeholder {
-            background: var(--gradient-accent);
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2rem;
-            font-weight: 700;
-        }
-
+        /* Utils */
+        .hidden { display: none !important; }
+        .loading { text-align: center; padding: 2rem; color: var(--text-secondary); }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
         /* Responsive */
-        @media (max-width: 1200px) {
-            .main-layout { grid-template-columns: 240px 1fr 280px; }
-        }
-
         @media (max-width: 968px) {
             .main-layout { grid-template-columns: 1fr; }
-            .sidebar, .right-sidebar { display: none; }
-            .hero h1 { font-size: 2rem; }
-            .hero p { font-size: 1rem; }
-            .mobile-menu-btn { display: block; }
-            .mobile-nav { display: block; }
-            .nav-links { display: none; }
-            .user-profile-header { flex-direction: column; text-align: center; }
-            .user-profile-name { font-size: 1.5rem; }
-            .user-profile-meta { justify-content: center; }
-        }
-
-        @media (max-width: 640px) {
-            .nav-container { padding: 1rem; }
-            .logo { font-size: 1.2rem; }
-            .nielit-logo { height: 40px; }
-            .hero { padding: 2rem 1.5rem; }
-            .hero h1 { font-size: 1.75rem; }
-            .container { padding: 1rem; }
-            .auth-container { padding: 1.5rem; }
-            .modal-content { padding: 1.5rem; }
-            .modal-header h2 { font-size: 1.5rem; }
-            .project-card { padding: 1rem; }
-            .project-footer { gap: 0.5rem; }
-            .action-btn { padding: 0.5rem 0.75rem; font-size: 0.85rem; }
-            .post-actions { flex-direction: column; align-items: stretch; }
-            .post-actions .btn { width: 100%; }
-            .profiles-grid { grid-template-columns: 1fr; }
-            .toast { bottom: 1rem; right: 1rem; left: 1rem; max-width: none; }
+            .sidebar-card, .right-sidebar { display: none; }
+            .nav-links { display: none; } /* Simplified mobile nav for brevity */
         }
     </style>
 </head>
 <body>
-    <!-- Login Page -->
+
+    <!-- LOGIN PAGE -->
     <div id="loginPage" class="auth-page">
-        <div class="auth-container">
-            <div class="auth-logo-container">
-                <img src="logo.png" alt="NIELIT Logo" class="auth-nielit-logo" onerror="this.style.display='none'">
-                <div class="auth-logo">StudentHub</div>
-                <div style="color: var(--text-secondary); font-size: 0.85rem;">NIELIT Ropar</div>
-            </div>
-            <p class="auth-subtitle">Welcome back! Log in to your account</p>
-            <form id="loginForm">
+        <div class="auth-box">
+            <h1 class="logo" style="font-size: 2.5rem; margin-bottom: 0.5rem;">StudentHub</h1>
+            <p style="color: var(--text-secondary); margin-bottom: 2rem;">NIELIT Ropar</p>
+            <form onsubmit="handleLogin(event)">
                 <div class="form-group">
                     <label>Email</label>
-                    <input type="email" id="loginEmail" required placeholder="your.email@nielit.gov.in">
+                    <input type="email" id="loginEmail" class="form-input" required placeholder="student@nielit.gov.in">
                 </div>
                 <div class="form-group">
                     <label>Password</label>
-                    <input type="password" id="loginPassword" required placeholder="Enter your password">
+                    <input type="password" id="loginPass" class="form-input" required>
                 </div>
-                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Log In</button>
+                <button type="submit" class="btn btn-primary" style="width: 100%">Log In</button>
             </form>
-            <div class="auth-switch">
-                Don't have an account? <a href="#" onclick="showSignup(); return false;">Sign up</a>
-            </div>
+            <p style="margin-top: 1.5rem; font-size: 0.9rem;">
+                No account? <a href="#" onclick="toggleAuth('signup')" style="color: var(--accent);">Sign up</a>
+            </p>
         </div>
     </div>
 
-    <!-- Signup Page -->
+    <!-- SIGNUP PAGE -->
     <div id="signupPage" class="auth-page hidden">
-        <div class="auth-container">
-            <div class="auth-logo-container">
-                <img src="logo.png" alt="NIELIT Logo" class="auth-nielit-logo" onerror="this.style.display='none'">
-                <div class="auth-logo">StudentHub</div>
-                <div style="color: var(--text-secondary); font-size: 0.85rem;">NIELIT Ropar</div>
-            </div>
-            <p class="auth-subtitle">Create your account and start sharing</p>
-            <form id="signupForm">
-                <div class="image-upload-container">
-                    <img id="signupProfilePreview" class="image-preview placeholder" src="" alt="Profile">
-                    <label for="signupProfileImage" class="upload-btn">
-                        📷 Upload Profile Picture
-                    </label>
-                    <input type="file" id="signupProfileImage" class="file-input" accept="image/*">
+        <div class="auth-box">
+            <h2 style="margin-bottom: 1.5rem;">Create Account</h2>
+            <form onsubmit="handleSignup(event)">
+                <div class="form-group">
+                    <label>Profile Picture</label>
+                    <input type="file" id="signupPic" class="form-input" accept="image/*">
                 </div>
                 <div class="form-group">
-                    <label>Full Name *</label>
-                    <input type="text" id="signupName" required placeholder="Enter your full name">
+                    <label>Full Name</label>
+                    <input type="text" id="signupName" class="form-input" required>
                 </div>
                 <div class="form-group">
-                    <label>Email *</label>
-                    <input type="email" id="signupEmail" required placeholder="your.email@nielit.gov.in">
+                    <label>Email</label>
+                    <input type="email" id="signupEmail" class="form-input" required>
                 </div>
                 <div class="form-group">
-                    <label>Password *</label>
-                    <input type="password" id="signupPassword" required placeholder="Create a strong password" minlength="6">
+                    <label>Password</label>
+                    <input type="password" id="signupPass" class="form-input" required minlength="6">
                 </div>
                 <div class="form-group">
-                    <label>University/Institute</label>
-                    <input type="text" id="signupUniversity" placeholder="NIELIT Ropar">
+                    <label>Major / Stream</label>
+                    <input type="text" id="signupMajor" class="form-input" placeholder="e.g. CS, Electronics">
                 </div>
-                <div class="form-group">
-                    <label>Major/Field of Study</label>
-                    <input type="text" id="signupMajor" placeholder="e.g., Computer Science">
-                </div>
-                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Create Account</button>
+                <button type="submit" class="btn btn-primary" style="width: 100%">Sign Up</button>
             </form>
-            <div class="auth-switch">
-                Already have an account? <a href="#" onclick="showLogin(); return false;">Log in</a>
-            </div>
+            <p style="margin-top: 1rem;">
+                <a href="#" onclick="toggleAuth('login')" style="color: var(--text-secondary);">Back to Login</a>
+            </p>
         </div>
     </div>
 
-    <!-- Main App -->
+    <!-- MAIN APP -->
     <div id="mainApp" class="hidden">
-        <!-- Mobile Overlay -->
-        <div id="mobileOverlay" class="mobile-overlay" onclick="closeMobileMenu()"></div>
-
-        <!-- Mobile Navigation -->
-        <nav class="mobile-nav" id="mobileNav">
-            <div class="mobile-nav-header">
-                <div class="logo">StudentHub</div>
-                <button class="close-btn" onclick="closeMobileMenu()">&times;</button>
-            </div>
-            <div class="mobile-nav-links">
-                <a href="#" class="mobile-nav-link active" data-view="feed" onclick="mobileNavClick('feed'); return false;">🏠 Feed</a>
-                <a href="#" class="mobile-nav-link" data-view="profiles" onclick="mobileNavClick('profiles'); return false;">👥 Profiles</a>
-                <a href="#" class="mobile-nav-link" onclick="closeMobileMenu(); openModal('project'); return false;">➕ Post Project</a>
-                <a href="#" class="mobile-nav-link" onclick="closeMobileMenu(); openModal('editProfile'); return false;">👤 Edit Profile</a>
-                <a href="#" class="mobile-nav-link" onclick="logout(); return false;">🚪 Logout</a>
-            </div>
-        </nav>
-
-        <!-- Navigation -->
         <nav>
             <div class="nav-container">
-                <button class="mobile-menu-btn" onclick="openMobileMenu()">☰</button>
-                <div class="logo-container" onclick="loadFeed()">
-                    <img src="logo.png" alt="NIELIT" class="nielit-logo" onerror="this.style.display='none'">
-                    <div>
-                        <div class="logo">StudentHub</div>
-                        <div class="logo-subtitle">NIELIT Ropar</div>
-                    </div>
-                </div>
+                <div class="logo">StudentHub</div>
                 <div class="nav-links">
-                    <a href="#" class="nav-link active" data-view="feed" onclick="loadFeed(); return false;">Feed</a>
-                    <a href="#" class="nav-link" data-view="profiles" onclick="showProfiles(); return false;">Profiles</a>
+                    <a href="index.html" class="nav-link active">Feed</a>
+                    <a href="profiles.html" class="nav-link">Profiles</a>
                     <button class="btn btn-primary" onclick="openModal('project')">Post Project</button>
                     <button class="btn-ghost" onclick="logout()">Logout</button>
                 </div>
             </div>
         </nav>
 
-        <!-- Hero Section -->
-        <div class="hero">
-            <h1>Showcase Your Innovation</h1>
-            <p>Connect with fellow students, share your projects, and get inspired by amazing work</p>
-            <button class="btn btn-primary" onclick="openModal('project')" style="font-size: 1rem; padding: 0.875rem 1.75rem;">Post Your Project</button>
-        </div>
-
-        <!-- Main Content -->
         <div class="container">
             <div class="main-layout">
-                <!-- Left Sidebar -->
-                <aside class="sidebar">
-                    <div class="sidebar-card">
-                        <div class="profile-header">
-                            <img id="sidebarAvatar" class="avatar placeholder" src="" alt="Profile" onclick="viewUserProfile(currentUser.email)">
-                            <div class="username" id="sidebarUsername">User</div>
-                            <div class="user-role">Student</div>
-                        </div>
-                    </div>
-                    <div class="sidebar-card">
-                        <ul class="sidebar-menu">
-                            <li class="active" onclick="loadFeed()">🏠 Home</li>
-                            <li onclick="openModal('editProfile')">👤 Edit Profile</li>
-                            <li onclick="viewMyProjects()">📁 My Projects</li>
-                            <li>⭐ Upvoted</li>
-                        </ul>
+                <!-- Sidebar -->
+                <aside class="sidebar-card">
+                    <div class="card" style="text-align: center;">
+                        <img id="sideAvatar" src="" class="avatar" style="width: 80px; height: 80px; margin-bottom: 1rem;">
+                        <h3 id="sideName">User</h3>
+                        <p id="sideMajor" style="color: var(--text-secondary); font-size: 0.9rem;">Student</p>
+                        <hr style="border: 0; border-top: 1px solid var(--border); margin: 1rem 0;">
+                        <button class="btn btn-secondary" onclick="openMyProfile()" style="width: 100%; margin-bottom: 0.5rem;">My Projects</button>
+                        <button class="btn btn-ghost" onclick="openModal('editProfile')" style="width: 100%">Edit Profile</button>
                     </div>
                 </aside>
 
-                <!-- Main Feed -->
-                <main class="feed">
-                    <!-- Feed View -->
-                    <div id="feedView">
-                        <div class="create-post">
-                            <h3 style="margin-bottom: 1rem; font-weight: 700;">Share Your Project</h3>
-                            <textarea class="post-input" id="quickProjectDesc" placeholder="What are you working on? Click 'Post Project' to share details..."></textarea>
-                            <div class="post-actions">
-                                <span style="color: var(--text-secondary); font-size: 0.9rem;">Share your innovation with the community</span>
-                                <button class="btn btn-primary" onclick="openModal('project')">Post Project</button>
-                            </div>
-                        </div>
-
-                        <!-- Search Bar -->
-                        <div class="search-container">
-                            <span class="search-icon">🔍</span>
-                            <input type="text" id="projectSearch" class="search-input" placeholder="Search projects by title, tech, or author...">
-                        </div>
-
-                        <div id="projectsContainer">
-                            <div class="loading">
-                                <div class="spinner"></div>
-                                <p>Loading amazing projects...</p>
-                            </div>
-                        </div>
+                <!-- Feed -->
+                <main>
+                    <div class="search-container">
+                        <input type="text" class="search-input" placeholder="Search projects by title, tech, or author..." onkeyup="filterProjects(this.value)">
                     </div>
-
-                    <!-- Profiles View -->
-                    <div id="profilesView" style="display: none;">
-                        <div class="sidebar-card" style="margin-bottom: 2rem;">
-                            <h2 style="font-family: 'Playfair Display', serif; margin-bottom: 1rem;">Student Profiles</h2>
-                            <p style="color: var(--text-secondary);">Discover talented students and their work</p>
-                        </div>
-
-                        <!-- Search Bar for Profiles -->
-                        <div class="search-container">
-                            <span class="search-icon">🔍</span>
-                            <input type="text" id="profileSearch" class="search-input" placeholder="Search students by name, email, or major...">
-                        </div>
-
-                        <div id="profilesContainer">
-                            <div class="loading">
-                                <div class="spinner"></div>
-                                <p>Loading profiles...</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- User Profile View -->
-                    <div id="userProfileView" style="display: none;">
-                        <button class="back-btn" onclick="goBackFromProfile()">← Back</button>
-                        <div class="user-profile-header">
-                            <img id="userProfileAvatar" class="user-profile-avatar placeholder" src="" alt="Profile">
-                            <div class="user-profile-info">
-                                <div class="user-profile-name" id="userProfileName">User Name</div>
-                                <div id="userProfileEmail" style="opacity: 0.9; margin-bottom: 0.5rem;"></div>
-                                <div id="userProfileUniversity" style="opacity: 0.9;"></div>
-                                <div id="userProfileMajor" style="opacity: 0.9;"></div>
-                                <div id="userProfileBio" style="margin-top: 1rem; opacity: 0.95;"></div>
-                                <div class="user-profile-meta">
-                                    <div class="user-profile-stat">
-                                        <span class="stat-value" id="userProjectCount">0</span>
-                                        <span class="stat-label">Projects</span>
-                                    </div>
-                                    <div class="user-profile-stat">
-                                        <span class="stat-value" id="userTotalUpvotes">0</span>
-                                        <span class="stat-label">Total Upvotes</span>
-                                    </div>
-                                </div>
-                                <div id="userProfileLinks" style="margin-top: 1rem; display: flex; gap: 1rem; flex-wrap: wrap;"></div>
-                            </div>
-                        </div>
-
-                        <h3 style="margin: 2rem 0 1rem; font-size: 1.5rem; color: var(--primary);">Projects by <span id="userProfileNameProjects"></span></h3>
-                        <div id="userProjectsContainer">
-                            <div class="loading">
-                                <div class="spinner"></div>
-                                <p>Loading projects...</p>
-                            </div>
+                    
+                    <!-- Projects Container -->
+                    <div id="projectsList">
+                        <div class="loading">
+                            <div style="font-size: 2rem;">⏳</div>
+                            <p>Loading the latest innovation...</p>
                         </div>
                     </div>
                 </main>
 
-                <!-- Right Sidebar -->
+                <!-- Trending -->
                 <aside class="right-sidebar">
-                    <div class="trending-card">
-                        <h3>🔥 Trending Projects</h3>
-                        <div id="trendingContainer">
-                            <div class="loading" style="padding: 2rem 1rem;">
-                                <div class="spinner"></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="trending-card">
-                        <h3>💡 Quick Stats</h3>
-                        <div style="padding: 1rem; background: var(--background); border-radius: 10px; margin-bottom: 0.75rem;">
-                            <div style="font-size: 2rem; font-weight: 700; color: var(--accent);" id="totalProjects">0</div>
-                            <div style="color: var(--text-secondary); font-size: 0.9rem;">Total Projects</div>
-                        </div>
-                        <div style="padding: 1rem; background: var(--background); border-radius: 10px;">
-                            <div style="font-size: 2rem; font-weight: 700; color: var(--primary);" id="totalStudents">0</div>
-                            <div style="color: var(--text-secondary); font-size: 0.9rem;">Active Students</div>
-                        </div>
+                    <div class="card">
+                        <h3>🔥 Trending</h3>
+                        <div id="trendingList" style="margin-top: 1rem;"></div>
                     </div>
                 </aside>
             </div>
+        </div>
+    </div>
+
+    <!-- MODALS -->
+    
+    <!-- Post Project Modal -->
+    <div id="projectModal" class="modal">
+        <div class="modal-content">
+            <h2 style="margin-bottom: 1rem;">Share Project</h2>
+            <form onsubmit="handlePostProject(event)">
+                <div class="form-group">
+                    <label>Project Image</label>
+                    <input type="file" id="postImage" class="form-input" accept="image/*">
+                </div>
+                <div class="form-group">
+                    <label>Title</label>
+                    <input type="text" id="postTitle" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea id="postDesc" class="form-input" rows="4" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Link (GitHub/Demo)</label>
+                    <input type="url" id="postLink" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label>Tech Stack</label>
+                    <input type="text" id="postTech" class="form-input" placeholder="React, Python, etc.">
+                </div>
+                <div style="display: flex; gap: 1rem; justify-content: flex-end;">
+                    <button type="button" class="btn btn-ghost" onclick="closeModal('project')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Post</button>
+                </div>
+            </form>
         </div>
     </div>
 
     <!-- Edit Profile Modal -->
     <div id="editProfileModal" class="modal">
         <div class="modal-content">
-            <div class="modal-header">
-                <h2>Edit Your Profile</h2>
-                <button class="close-btn" onclick="closeModal('editProfile')">&times;</button>
-            </div>
-            <form id="editProfileForm">
-                <div class="image-upload-container">
-                    <img id="editProfilePreview" class="image-preview placeholder" src="" alt="Profile">
-                    <label for="editProfileImage" class="upload-btn">
-                        📷 Change Profile Picture
-                    </label>
-                    <input type="file" id="editProfileImage" class="file-input" accept="image/*">
+            <h2 style="margin-bottom: 1rem;">Edit Profile</h2>
+            <form onsubmit="handleEditProfile(event)">
+                <div class="form-group">
+                    <label>New Profile Picture</label>
+                    <input type="file" id="editPic" class="form-input" accept="image/*">
                 </div>
                 <div class="form-group">
                     <label>Full Name</label>
-                    <input type="text" id="editName" required>
+                    <input type="text" id="editName" class="form-input" required>
                 </div>
                 <div class="form-group">
-                    <label>University/Institute</label>
-                    <input type="text" id="editUniversity">
+                    <label>University</label>
+                    <input type="text" id="editUni" class="form-input">
                 </div>
                 <div class="form-group">
-                    <label>Major/Field of Study</label>
-                    <input type="text" id="editMajor">
-                </div>
-                <div class="form-group">
-                    <label>LinkedIn</label>
-                    <input type="url" id="editLinkedIn" placeholder="https://linkedin.com/in/yourprofile">
-                </div>
-                <div class="form-group">
-                    <label>GitHub</label>
-                    <input type="url" id="editGitHub" placeholder="https://github.com/yourusername">
+                    <label>Major</label>
+                    <input type="text" id="editMajorInput" class="form-input">
                 </div>
                 <div class="form-group">
                     <label>Bio</label>
-                    <textarea id="editBio" placeholder="Tell us about yourself..."></textarea>
-                </div>
-                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Save Changes</button>
-            </form>
-        </div>
-    </div>
-
-    <!-- Project Post Modal -->
-    <div id="projectModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>Share Your Project</h2>
-                <button class="close-btn" onclick="closeModal('project')">&times;</button>
-            </div>
-            <form id="projectForm">
-                <div class="image-upload-container">
-                    <img id="projectImagePreview" style="width: 100%; height: 200px; object-fit: cover; border-radius: 12px; display: none; margin-bottom: 1rem;" src="" alt="Project">
-                    <label for="projectImage" class="upload-btn">
-                        🖼️ Upload Project Image (Optional)
-                    </label>
-                    <input type="file" id="projectImage" class="file-input" accept="image/*">
+                    <textarea id="editBio" class="form-input" rows="3"></textarea>
                 </div>
                 <div class="form-group">
-                    <label>Project Title *</label>
-                    <input type="text" id="projectTitle" required placeholder="Give your project an awesome name">
+                    <label>LinkedIn URL</label>
+                    <input type="url" id="editLinked" class="form-input">
                 </div>
                 <div class="form-group">
-                    <label>Description *</label>
-                    <textarea id="projectDescription" required placeholder="What's your project about? What problem does it solve?"></textarea>
+                    <label>GitHub URL</label>
+                    <input type="url" id="editGit" class="form-input">
                 </div>
-                <div class="form-group">
-                    <label>Project Link</label>
-                    <input type="url" id="projectLink" placeholder="https://github.com/yourproject or live demo URL">
+                <div style="display: flex; gap: 1rem; justify-content: flex-end;">
+                    <button type="button" class="btn btn-ghost" onclick="closeModal('editProfile')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
                 </div>
-                <div class="form-group">
-                    <label>Technologies Used</label>
-                    <input type="text" id="projectTech" placeholder="e.g., React, Node.js, Python, TensorFlow">
-                </div>
-                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Post Project</button>
             </form>
         </div>
     </div>
@@ -1543,656 +271,298 @@
     <!-- Comments Modal -->
     <div id="commentsModal" class="modal">
         <div class="modal-content">
-            <div class="modal-header">
-                <h2>Comments</h2>
-                <button class="close-btn" onclick="closeModal('comments')">&times;</button>
+            <h3 style="margin-bottom: 1rem;">Comments</h3>
+            <div id="commentsList" style="margin-bottom: 1.5rem; max-height: 300px; overflow-y: auto;">
+                <!-- Comments injected here -->
             </div>
-            <div id="commentsContent">
-                <div class="comment-input-container">
-                    <textarea id="commentInput" class="comment-input" placeholder="Write a comment..."></textarea>
-                    <button class="btn btn-primary" onclick="submitComment()" style="align-self: flex-start;">Post</button>
-                </div>
-                <div id="commentsList">
-                    <div class="loading">
-                        <div class="spinner"></div>
-                        <p>Loading comments...</p>
-                    </div>
-                </div>
+            <div style="display: flex; gap: 0.5rem;">
+                <input type="text" id="commentInput" class="form-input" placeholder="Write a comment...">
+                <button onclick="submitComment()" class="btn btn-primary">Post</button>
             </div>
+            <button onclick="closeModal('comments')" class="btn btn-ghost" style="margin-top: 1rem; width: 100%;">Close</button>
         </div>
-    </div>
-
-    <!-- Share Modal -->
-    <div id="shareModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>Share Project</h2>
-                <button class="close-btn" onclick="closeModal('share')">&times;</button>
-            </div>
-            <div style="padding: 1rem;">
-                <p style="margin-bottom: 1.5rem; color: var(--text-secondary);">Share this project with others:</p>
-                <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
-                    <button class="btn btn-secondary" onclick="shareViaLink()" style="flex: 1; min-width: 150px;">
-                        📋 Copy Link
-                    </button>
-                    <button class="btn btn-secondary" onclick="shareViaEmail()" style="flex: 1; min-width: 150px;">
-                        📧 Email
-                    </button>
-                    <button class="btn btn-secondary" onclick="shareViaWhatsApp()" style="flex: 1; min-width: 150px;">
-                        💬 WhatsApp
-                    </button>
-                </div>
-                <div id="shareLinkContainer" style="margin-top: 1.5rem; padding: 1rem; background: var(--background); border-radius: 10px; display: none;">
-                    <p style="font-weight: 600; margin-bottom: 0.5rem;">Project Link:</p>
-                    <input type="text" id="shareLink" readonly style="width: 100%; padding: 0.75rem; border: 2px solid var(--border); border-radius: 8px; font-family: 'Poppins', sans-serif;">
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Toast Notification -->
-    <div id="toast" class="toast">
-        <span id="toastMessage"></span>
     </div>
 
     <script>
-        // ====== CONFIGURATION ======
-        // ------------------------------------------------------------------
-        // IMPORTANT: REPLACE THE URL BELOW WITH YOUR DEPLOYED WEB APP URL
-        // 1. Go to your Google Apps Script
-        // 2. Click Deploy > New Deployment
-        // 3. Set 'Who has access' to 'Anyone'
-        // 4. Copy the URL ending in '/exec' and paste it below
-        // ------------------------------------------------------------------
-        const SHEET_URL = 'https://script.google.com/macros/s/AKfycby0JF4yhQbHP-O57o4gAa73QuozP8fCmruRTKJKVySwL6JIH8W0K8rr1zszstacrAYKPg/exec'; 
-        const CLOUDINARY_UPLOAD_PRESET = 'studenthub_preset';
-        const CLOUDINARY_CLOUD_NAME = 'dy8up08qd';
+        // CONFIGURATION
+        const SHEET_URL = 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL';
+        const CLOUDINARY_PRESET = 'studenthub_preset'; 
+        const CLOUDINARY_NAME = 'your_cloud_name';
 
-        // ====== STATE ======
-        let currentUser = null;
+        // STATE
         let allProjects = [];
-        let allProfiles = [];
-        let userUpvotes = new Set();
-        let currentView = 'feed';
-        let viewingUserEmail = null;
-        let currentProjectIdForComments = null;
-        let currentProjectForShare = null;
+        let currentUser = JSON.parse(localStorage.getItem('studenthub_user'));
+        let currentCommentProjectId = null;
 
-        // ====== INITIALIZATION ======
-        document.addEventListener('DOMContentLoaded', () => {
-            initializeApp();
-        });
-
-        function initializeApp() {
-            // Check if configuration is set
-            if (SHEET_URL.includes('YOUR_GOOGLE_APPS_SCRIPT_URL_HERE')) {
-                console.warn('⚠️ Google Apps Script URL not configured.');
-                showToast('SETUP REQUIRED: Please update SHEET_URL in index.html line 1230', false);
-            }
-            
-            checkAuth();
-            setupImagePreviewHandlers();
-            setupSearchHandlers();
-        }
-
-        // ====== API HANDLER (FIXED) ======
-        async function apiCall(action, data = null, method = 'GET') {
-            try {
-                if (SHEET_URL.includes('YOUR_GOOGLE_APPS_SCRIPT_URL_HERE')) {
-                    // Demo mode logic fallback if setup is missing
-                    return { status: 'error', data: 'SETUP REQUIRED: Update SHEET_URL in code' };
-                }
-
-                let response;
-                
-                if (method === 'GET') {
-                    // Construct URL with params
-                    const url = new URL(SHEET_URL);
-                    url.searchParams.append('action', action);
-                    if (data) {
-                        Object.keys(data).forEach(key => url.searchParams.append(key, data[key]));
-                    }
-                    response = await fetch(url.toString());
-                } else if (method === 'POST') {
-                    // Use text/plain to avoid CORS preflight issues
-                    const payload = {
-                        action: action,
-                        ...data
-                    };
-                    
-                    response = await fetch(SHEET_URL, {
-                        method: 'POST',
-                        body: JSON.stringify(payload),
-                        headers: {
-                            "Content-Type": "text/plain;charset=utf-8"
-                        }
-                    });
-                }
-
-                // Robust Response Handling
-                const text = await response.text();
-                
-                try {
-                    return JSON.parse(text);
-                } catch (e) {
-                    // If JSON parse fails, it means Google returned an HTML error page
-                    // This usually happens due to Permissions or Code crashes
-                    console.error("SERVER ERROR (HTML returned instead of JSON):", text);
-                    
-                    if(text.includes("Google Drive - Access Denied") || text.includes("Meet Google Drive")) {
-                        throw new Error("PERMISSION ERROR: Set Deployment access to 'Anyone'");
-                    } else if (text.includes("ScriptError")) {
-                        throw new Error("SCRIPT ERROR: Check Apps Script logs");
-                    } else {
-                        throw new Error("SERVER ERROR: See console for details");
-                    }
-                }
-
-            } catch (error) {
-                console.error(`API Call Error (${action}):`, error);
-                throw error;
-            }
-        }
-
-        // ====== MOBILE MENU ======
-        function openMobileMenu() {
-            document.getElementById('mobileNav').classList.add('active');
-            document.getElementById('mobileOverlay').classList.add('active');
-        }
-
-        function closeMobileMenu() {
-            document.getElementById('mobileNav').classList.remove('active');
-            document.getElementById('mobileOverlay').classList.remove('active');
-        }
-
-        function mobileNavClick(view) {
-            const links = document.querySelectorAll('.mobile-nav-link');
-            links.forEach(link => link.classList.remove('active'));
-            event.target.classList.add('active');
-            closeMobileMenu();
-            if (view === 'feed') loadFeed();
-            else if (view === 'profiles') showProfiles();
-        }
-
-        // ====== SEARCH FUNCTIONALITY ======
-        function setupSearchHandlers() {
-            const projectSearch = document.getElementById('projectSearch');
-            if (projectSearch) {
-                projectSearch.addEventListener('input', (e) => filterProjects(e.target.value.toLowerCase()));
-            }
-            const profileSearch = document.getElementById('profileSearch');
-            if (profileSearch) {
-                profileSearch.addEventListener('input', (e) => filterProfiles(e.target.value.toLowerCase()));
-            }
-        }
-
-        function filterProjects(searchTerm) {
-            if (!searchTerm) {
-                renderProjects();
-                return;
-            }
-            const filtered = allProjects.filter(project => 
-                (project.title && project.title.toLowerCase().includes(searchTerm)) ||
-                (project.description && project.description.toLowerCase().includes(searchTerm)) ||
-                (project.authorName && project.authorName.toLowerCase().includes(searchTerm)) ||
-                (project.tech && project.tech.toLowerCase().includes(searchTerm))
-            );
-            renderProjects(filtered);
-        }
-
-        function filterProfiles(searchTerm) {
-            if (!searchTerm) {
-                renderProfiles();
-                return;
-            }
-            const filtered = allProfiles.filter(profile =>
-                (profile.name && profile.name.toLowerCase().includes(searchTerm)) ||
-                (profile.email && profile.email.toLowerCase().includes(searchTerm)) ||
-                (profile.major && profile.major.toLowerCase().includes(searchTerm)) ||
-                (profile.university && profile.university.toLowerCase().includes(searchTerm))
-            );
-            renderProfiles(filtered);
-        }
-
-        // ====== AUTHENTICATION ======
-        function checkAuth() {
-            const savedUser = localStorage.getItem('studenthub_user');
-            if (savedUser) {
-                currentUser = JSON.parse(savedUser);
-                showMainApp();
+        // INIT
+        window.onload = () => {
+            if(currentUser) {
+                showApp();
             } else {
-                showLogin();
+                toggleAuth('login');
             }
-        }
+        };
 
-        function showLogin() {
-            document.getElementById('loginPage').classList.remove('hidden');
-            document.getElementById('signupPage').classList.add('hidden');
+        // --- AUTH ---
+        function toggleAuth(view) {
+            document.getElementById('loginPage').classList.toggle('hidden', view !== 'login');
+            document.getElementById('signupPage').classList.toggle('hidden', view !== 'signup');
             document.getElementById('mainApp').classList.add('hidden');
         }
 
-        function showSignup() {
-            document.getElementById('loginPage').classList.add('hidden');
-            document.getElementById('signupPage').classList.remove('hidden');
-            document.getElementById('mainApp').classList.add('hidden');
-            document.getElementById('signupProfilePreview').textContent = '?';
-        }
-
-        function showMainApp() {
+        function showApp() {
             document.getElementById('loginPage').classList.add('hidden');
             document.getElementById('signupPage').classList.add('hidden');
             document.getElementById('mainApp').classList.remove('hidden');
-            updateUserUI();
-            loadData();
+            
+            // Sidebar Update
+            document.getElementById('sideName').textContent = currentUser.name;
+            document.getElementById('sideMajor').textContent = currentUser.major || 'Student';
+            document.getElementById('sideAvatar').src = currentUser.profilePicture || 'https://via.placeholder.com/150';
+            
+            // Pre-fill Edit Form
+            document.getElementById('editName').value = currentUser.name;
+            document.getElementById('editUni').value = currentUser.university || '';
+            document.getElementById('editMajorInput').value = currentUser.major || '';
+            document.getElementById('editBio').value = currentUser.bio || '';
+            document.getElementById('editLinked').value = currentUser.linkedin || '';
+            document.getElementById('editGit').value = currentUser.github || '';
+
+            loadProjects();
+        }
+
+        async function handleLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPass').value;
+            
+            // Demo Mode Fallback
+            if(email === 'demo@nielit.gov.in' && password === 'demo123') {
+                currentUser = { name: 'Demo User', email: 'demo@nielit.gov.in', major: 'CS', profilePicture: '' };
+                completeAuth(currentUser);
+                return;
+            }
+
+            try {
+                const res = await fetch(`${SHEET_URL}?action=login&email=${email}&password=${password}`);
+                const json = await res.json();
+                if(json.status === 'success') completeAuth(json.data);
+                else alert(json.data);
+            } catch(err) { alert('Login failed. Check console.'); console.error(err); }
+        }
+
+        async function handleSignup(e) {
+            e.preventDefault();
+            const btn = e.target.querySelector('button');
+            btn.textContent = 'Creating...';
+            
+            const file = document.getElementById('signupPic').files[0];
+            let picUrl = '';
+            if(file) picUrl = await uploadImage(file);
+
+            const data = {
+                name: document.getElementById('signupName').value,
+                email: document.getElementById('signupEmail').value,
+                password: document.getElementById('signupPass').value,
+                major: document.getElementById('signupMajor').value,
+                profilePicture: picUrl
+            };
+
+            const res = await postData('signup', { data });
+            if(res.status === 'success') completeAuth(data);
+            else { alert(res.data); btn.textContent = 'Sign Up'; }
+        }
+
+        function completeAuth(user) {
+            currentUser = user;
+            localStorage.setItem('studenthub_user', JSON.stringify(user));
+            showApp();
         }
 
         function logout() {
             localStorage.removeItem('studenthub_user');
-            localStorage.removeItem('studenthub_session');
-            currentUser = null;
-            closeMobileMenu();
-            showLogin();
-            showToast('Logged out successfully', true);
+            location.reload();
         }
 
-        // ====== IMAGE UPLOAD ======
-        function setupImagePreviewHandlers() {
-            ['signupProfileImage', 'editProfileImage', 'projectImage'].forEach(id => {
-                const input = document.getElementById(id);
-                if (input) {
-                    input.addEventListener('change', (e) => {
-                        const previewId = id.replace('Image', 'Preview');
-                        previewImage(e.target, previewId, id !== 'projectImage');
-                    });
-                }
-            });
-        }
-
-        function previewImage(input, previewId, isCircle) {
-            const preview = document.getElementById(previewId);
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    preview.src = e.target.result;
-                    preview.classList.remove('placeholder');
-                    if (!isCircle) preview.style.display = 'block';
-                };
-                reader.readAsDataURL(input.files[0]);
+        // --- PROJECTS ---
+        async function loadProjects() {
+            const res = await fetch(`${SHEET_URL}?action=getProjects`);
+            const json = await res.json();
+            if(json.status === 'success') {
+                allProjects = json.data;
+                renderProjects(allProjects);
+                updateTrending(allProjects);
             }
         }
 
-        async function uploadToCloudinary(file) {
-            if (!file) return null;
-            if (CLOUDINARY_CLOUD_NAME.includes('YOUR_CLOUDINARY_CLOUD_NAME')) {
-                console.warn('⚠️ Cloudinary not configured.');
-                return null;
-            }
-
-            const formData = new FormData();
-            formData.append('file', file);
-            formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
-
-            try {
-                const response = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`, {
-                    method: 'POST',
-                    body: formData
-                });
-                if (!response.ok) throw new Error('Upload failed');
-                const data = await response.json();
-                return data.secure_url;
-            } catch (error) {
-                console.error('Error uploading image:', error);
-                showToast('Image upload failed. Continuing without image.', false);
-                return null;
-            }
-        }
-
-        // ====== USER MANAGEMENT ======
-        function updateUserUI() {
-            if (currentUser) {
-                const sidebarAvatar = document.getElementById('sidebarAvatar');
-                if (currentUser.profilePicture) {
-                    sidebarAvatar.src = currentUser.profilePicture;
-                    sidebarAvatar.classList.remove('placeholder');
-                } else {
-                    sidebarAvatar.textContent = currentUser.name.charAt(0).toUpperCase();
-                    sidebarAvatar.classList.add('placeholder');
-                }
-                document.getElementById('sidebarUsername').textContent = currentUser.name;
-            }
-        }
-
-        function viewUserProfile(email) {
-            viewingUserEmail = email;
-            const profile = allProfiles.find(p => p.email === email) || currentUser;
-            
-            document.getElementById('feedView').style.display = 'none';
-            document.getElementById('profilesView').style.display = 'none';
-            document.getElementById('userProfileView').style.display = 'block';
-            
-            const avatar = document.getElementById('userProfileAvatar');
-            if (profile.profilePicture) {
-                avatar.src = profile.profilePicture;
-                avatar.classList.remove('placeholder');
-            } else {
-                avatar.textContent = profile.name.charAt(0).toUpperCase();
-                avatar.classList.add('placeholder');
-            }
-            
-            document.getElementById('userProfileName').textContent = profile.name;
-            document.getElementById('userProfileNameProjects').textContent = profile.name;
-            document.getElementById('userProfileEmail').textContent = profile.email;
-            document.getElementById('userProfileUniversity').textContent = profile.university ? `🎓 ${profile.university}` : '';
-            document.getElementById('userProfileMajor').textContent = profile.major ? `📚 ${profile.major}` : '';
-            document.getElementById('userProfileBio').textContent = profile.bio || '';
-            
-            const linksContainer = document.getElementById('userProfileLinks');
-            linksContainer.innerHTML = '';
-            if (profile.linkedin) linksContainer.innerHTML += `<a href="${profile.linkedin}" target="_blank" class="btn btn-secondary" style="padding: 0.5rem 1rem;">LinkedIn</a>`;
-            if (profile.github) linksContainer.innerHTML += `<a href="${profile.github}" target="_blank" class="btn btn-secondary" style="padding: 0.5rem 1rem;">GitHub</a>`;
-            
-            const userProjects = allProjects.filter(p => p.authorEmail === email);
-            document.getElementById('userProjectCount').textContent = userProjects.length;
-            document.getElementById('userTotalUpvotes').textContent = userProjects.reduce((sum, p) => sum + (parseInt(p.upvotes) || 0), 0);
-            
-            renderProjects(userProjects, 'userProjectsContainer');
-        }
-
-        function goBackFromProfile() {
-            document.getElementById('userProfileView').style.display = 'none';
-            if (currentView === 'profiles') showProfiles();
-            else loadFeed();
-            viewingUserEmail = null;
-        }
-
-        function viewMyProjects() {
-            if (currentUser) viewUserProfile(currentUser.email);
-        }
-
-        // ====== FORM SUBMISSIONS (LOGIN) ======
-        document.getElementById('loginForm')?.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const email = document.getElementById('loginEmail').value.trim();
-            const password = document.getElementById('loginPassword').value;
-
-            if (!email || !password) return showToast('Please enter both email and password', false);
-            
-            // Demo credentials check for when API is down
-            if (email === 'demo@nielit.gov.in' && password === 'demo123') {
-                 currentUser = { name: 'Demo Student', email: 'demo@nielit.gov.in', profilePicture: '', university: 'NIELIT Ropar', major: 'Computer Science', bio: 'I am a demo user.' };
-                 localStorage.setItem('studenthub_user', JSON.stringify(currentUser));
-                 showMainApp();
-                 return showToast('Logged in as Demo User', true);
-            }
-
-            try {
-                showToast('Logging in...', true); // Feedback
-                const result = await apiCall('login', { email, password }, 'GET');
-
-                if (result.status === 'success' && result.data) {
-                    currentUser = result.data;
-                    localStorage.setItem('studenthub_user', JSON.stringify(currentUser));
-                    localStorage.setItem('studenthub_session', Date.now().toString());
-                    showMainApp();
-                    showToast('Welcome back! 👋', true);
-                } else {
-                    showToast(result.data || 'Invalid email or password', false);
-                }
-            } catch (error) {
-                console.error('Login error:', error);
-                showToast('Login Failed: ' + error.message, false);
-            }
-        });
-
-        // ====== FORM SUBMISSIONS (SIGNUP) ======
-        document.getElementById('signupForm')?.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const name = document.getElementById('signupName').value.trim();
-            const email = document.getElementById('signupEmail').value.trim();
-            const password = document.getElementById('signupPassword').value;
-
-            if (!name || !email || !password) return showToast('Please fill in all required fields', false);
-            if (password.length < 6) return showToast('Password must be at least 6 characters', false);
-
-            let profilePictureUrl = null;
-            const profileImageFile = document.getElementById('signupProfileImage').files[0];
-            if (profileImageFile) {
-                showToast('Uploading profile picture...', true);
-                profilePictureUrl = await uploadToCloudinary(profileImageFile);
-            }
-
-            const userData = {
-                name, email, password,
-                university: document.getElementById('signupUniversity').value.trim(),
-                major: document.getElementById('signupMajor').value.trim(),
-                profilePicture: profilePictureUrl,
-                timestamp: new Date().toISOString()
-            };
-
-            try {
-                showToast('Creating account...', true);
-                const result = await apiCall('signup', { data: userData }, 'POST');
-
-                if (result.status === 'success') {
-                    currentUser = result.data;
-                    localStorage.setItem('studenthub_user', JSON.stringify(currentUser));
-                    localStorage.setItem('studenthub_session', Date.now().toString());
-                    showMainApp();
-                    showToast('Account created successfully! 🎉', true);
-                } else {
-                    showToast(result.data || 'Signup failed', false);
-                }
-            } catch (error) {
-                console.error('Signup error:', error);
-                showToast('Signup Failed: ' + error.message, false);
-            }
-        });
-
-        // ====== DATA LOADING ======
-        async function loadData() {
-            try {
-                let projectsLoaded = false;
-                try {
-                    const projectsData = await apiCall('getProjects', null, 'GET');
-                    if (projectsData.status === 'success') {
-                        allProjects = Array.isArray(projectsData.data) ? projectsData.data : [];
-                        projectsLoaded = true;
-                    }
-                } catch (e) { console.error("Error loading projects:", e); }
-
-                let profilesLoaded = false;
-                try {
-                    const profilesData = await apiCall('getProfiles', null, 'GET');
-                    if (profilesData.status === 'success') {
-                        allProfiles = Array.isArray(profilesData.data) ? profilesData.data : [];
-                        profilesLoaded = true;
-                    }
-                } catch (e) { console.error("Error loading profiles:", e); }
-
-                if (!projectsLoaded && !profilesLoaded) {
-                    console.log('Using demo data fallback due to load failure');
-                    showToast("Could not load data from Sheet. Check console.", false);
-                    loadDemoData();
-                } else {
-                    renderProjects();
-                    renderProfiles();
-                    updateTrending();
-                    updateStats();
-                }
-            } catch (error) {
-                console.error('Load data fatal error:', error);
-                showToast("Fatal Data Error: " + error.message, false);
-                loadDemoData();
-            }
-        }
-
-        function loadDemoData() {
-            allProjects = [
-                {
-                    id: '1', authorName: 'Demo Student', authorEmail: 'demo@nielit.gov.in', authorPicture: '',
-                    title: 'AI Study Companion', description: 'An intelligent study assistant...', link: '#', tech: 'Python',
-                    projectImage: '', upvotes: 42, commentCount: 8, shareCount: 12, timestamp: new Date().toISOString()
-                }
-            ];
-            allProfiles = [
-                {
-                    name: 'Demo Student', email: 'demo@nielit.gov.in', university: 'NIELIT Ropar', major: 'CS',
-                    bio: 'AI Enthusiast', profilePicture: '', timestamp: new Date().toISOString()
-                }
-            ];
-            renderProjects();
-            renderProfiles();
-            updateTrending();
-            updateStats();
-        }
-
-        // ====== RENDERING & ACTIONS ======
-        function loadFeed() {
-            currentView = 'feed';
-            document.getElementById('feedView').style.display = 'block';
-            document.getElementById('profilesView').style.display = 'none';
-            document.getElementById('userProfileView').style.display = 'none';
-            document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
-            document.querySelector('.nav-link[data-view="feed"]').classList.add('active');
-            renderProjects();
-        }
-
-        function renderProjects(projects = null, containerId = 'projectsContainer') {
-            const container = document.getElementById(containerId);
-            if (!container) return;
-            const list = projects || allProjects;
-            
-            if (list.length === 0) {
-                container.innerHTML = `<div class="empty-state"><h3>No Projects</h3></div>`;
-                return;
-            }
-
+        function renderProjects(list) {
+            const container = document.getElementById('projectsList');
             container.innerHTML = list.map(p => `
-                <div class="project-card">
+                <div class="project-card card">
                     <div class="project-header">
-                        ${p.authorPicture ? `<img src="${p.authorPicture}" class="project-avatar">` : `<div class="project-avatar placeholder">${p.authorName[0]}</div>`}
-                        <div class="project-info">
-                            <h3 onclick="viewUserProfile('${p.authorEmail}')">${escapeHtml(p.authorName)}</h3>
-                            <div class="project-meta">${getTimeAgo(p.timestamp)}</div>
+                        <img src="${p.authorPicture || 'https://via.placeholder.com/50'}" class="avatar">
+                        <div>
+                            <!-- Link to Profile Page -->
+                            <div style="font-weight: 600; cursor: pointer" onclick="location.href='profiles.html?email=${p.authorEmail}'">
+                                ${escapeHtml(p.authorName)}
+                            </div>
+                            <div style="font-size: 0.8rem; color: var(--text-secondary);">${new Date(p.timestamp).toLocaleDateString()}</div>
                         </div>
                     </div>
                     <div class="project-title">${escapeHtml(p.title)}</div>
+                    <div style="color: var(--text-secondary); margin-bottom: 0.5rem;">${escapeHtml(p.description)}</div>
                     ${p.projectImage ? `<img src="${p.projectImage}" class="project-image">` : ''}
-                    <div class="project-description">${escapeHtml(p.description)}</div>
-                    ${p.link ? `<a href="${p.link}" target="_blank" class="project-link">🔗 View Project</a>` : ''}
-                    <div style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1rem;">
-                        ${p.tech ? `🛠️ ${escapeHtml(p.tech)}` : ''}
-                    </div>
                     <div class="project-footer">
-                        <button class="action-btn ${userUpvotes.has(p.id) ? 'upvoted' : ''}" onclick="toggleUpvote('${p.id}')">👍 ${p.upvotes}</button>
+                        <button class="action-btn" onclick="upvote('${p.id}', this)">👍 ${p.upvotes}</button>
                         <button class="action-btn" onclick="openComments('${p.id}')">💬 ${p.commentCount || 0}</button>
-                        <button class="action-btn" onclick="openShare('${p.id}')">🔗 ${p.shareCount || 0}</button>
+                        ${p.link ? `<a href="${p.link}" target="_blank" class="action-btn">🔗 Code</a>` : ''}
+                        <span style="margin-left: auto; font-size: 0.8rem; background: #eee; padding: 2px 8px; border-radius: 4px;">${escapeHtml(p.tech || 'Tech')}</span>
                     </div>
                 </div>
             `).join('');
         }
 
-        function renderProfiles(profiles = null) {
-            const container = document.getElementById('profilesContainer');
-            if (!container) return;
-            const list = profiles || allProfiles;
-            
-            if (list.length === 0) {
-                 container.innerHTML = `<div class="empty-state"><h3>No Profiles Found</h3></div>`;
-                 return;
-            }
+        async function handlePostProject(e) {
+            e.preventDefault();
+            const file = document.getElementById('postImage').files[0];
+            let imgUrl = '';
+            if(file) imgUrl = await uploadImage(file);
 
-            container.innerHTML = `<div class="profiles-grid">` + list.map(p => `
-                <div class="profile-card" onclick="viewUserProfile('${p.email}')">
-                    ${p.profilePicture ? `<img src="${p.profilePicture}" class="profile-card-avatar">` : `<div class="profile-card-avatar placeholder">${p.name[0]}</div>`}
-                    <h3>${escapeHtml(p.name)}</h3>
-                    <div>${escapeHtml(p.major || '')}</div>
-                </div>
-            `).join('') + `</div>`;
+            const project = {
+                id: Date.now().toString(),
+                authorName: currentUser.name,
+                authorEmail: currentUser.email,
+                authorPicture: currentUser.profilePicture,
+                title: document.getElementById('postTitle').value,
+                description: document.getElementById('postDesc').value,
+                link: document.getElementById('postLink').value,
+                tech: document.getElementById('postTech').value,
+                projectImage: imgUrl
+            };
+
+            await postData('addProject', { data: project });
+            closeModal('project');
+            loadProjects(); // Reload
         }
 
-        function updateTrending() { 
-            const sorted = [...allProjects].sort((a,b) => b.upvotes - a.upvotes).slice(0, 3);
-            const container = document.getElementById('trendingContainer');
-            if(!container) return;
-            container.innerHTML = sorted.map(p => `
-                <div class="trending-item" onclick="viewUserProfile('${p.authorEmail}')">
-                    <div class="trending-title">${escapeHtml(p.title)}</div>
-                    <div class="trending-meta">by ${escapeHtml(p.authorName)} • ${p.upvotes} upvotes</div>
+        async function handleEditProfile(e) {
+            e.preventDefault();
+            const file = document.getElementById('editPic').files[0];
+            let picUrl = currentUser.profilePicture;
+            if(file) picUrl = await uploadImage(file);
+
+            const updatedData = {
+                name: document.getElementById('editName').value,
+                email: currentUser.email, // Identity key
+                university: document.getElementById('editUni').value,
+                major: document.getElementById('editMajorInput').value,
+                bio: document.getElementById('editBio').value,
+                linkedin: document.getElementById('editLinked').value,
+                github: document.getElementById('editGit').value,
+                profilePicture: picUrl
+            };
+
+            await postData('updateProfile', { data: updatedData });
+            
+            // Update Local State
+            currentUser = { ...currentUser, ...updatedData };
+            localStorage.setItem('studenthub_user', JSON.stringify(currentUser));
+            closeModal('editProfile');
+            showApp(); // Refresh UI
+        }
+
+        // --- ACTIONS ---
+        function openMyProfile() {
+            location.href = `profiles.html?email=${currentUser.email}`;
+        }
+
+        function filterProjects(term) {
+            term = term.toLowerCase();
+            const filtered = allProjects.filter(p => 
+                p.title.toLowerCase().includes(term) || 
+                p.authorName.toLowerCase().includes(term) ||
+                p.tech.toLowerCase().includes(term)
+            );
+            renderProjects(filtered);
+        }
+
+        function updateTrending(list) {
+            const sorted = [...list].sort((a,b) => b.upvotes - a.upvotes).slice(0,3);
+            document.getElementById('trendingList').innerHTML = sorted.map(p => `
+                <div style="margin-bottom: 0.8rem; cursor: pointer" onclick="location.href='profiles.html?email=${p.authorEmail}'">
+                    <div style="font-weight: 600; font-size: 0.9rem;">${escapeHtml(p.title)}</div>
+                    <div style="font-size: 0.8rem; color: var(--text-secondary);">${p.upvotes} upvotes • by ${escapeHtml(p.authorName)}</div>
                 </div>
             `).join('');
         }
-        
-        function updateStats() { 
-            document.getElementById('totalProjects').textContent = allProjects.length;
-            document.getElementById('totalStudents').textContent = allProfiles.length;
+
+        async function upvote(id, btn) {
+            let count = parseInt(btn.textContent.split(' ')[1]);
+            count++;
+            btn.textContent = `👍 ${count}`;
+            btn.classList.add('active');
+            await postData('updateUpvotes', { projectId: id, upvotes: count });
         }
 
-        async function toggleUpvote(id) {
-            const p = allProjects.find(x => x.id === id);
-            if (!p) return;
-            
-            if (userUpvotes.has(id)) {
-                p.upvotes--; userUpvotes.delete(id);
-            } else {
-                p.upvotes++; userUpvotes.add(id);
-            }
-            renderProjects(); // Re-render to show new count
-            
-            if (!SHEET_URL.includes('YOUR_GOOGLE_APPS_SCRIPT_URL_HERE')) {
-                await apiCall('updateUpvotes', { projectId: id, upvotes: p.upvotes }, 'POST');
-            }
-        }
-
-        // Comment & Share functions follow similar pattern...
+        // --- COMMENTS ---
         async function openComments(id) {
-            currentProjectIdForComments = id;
-            openModal('comments');
-            const res = await apiCall('getComments', { projectId: id }, 'GET');
-            const comments = (res && res.status === 'success') ? res.data : [];
-            document.getElementById('commentsList').innerHTML = comments.map(c => `
-                <div class="comment"><b>${escapeHtml(c.authorName)}</b>: ${escapeHtml(c.comment)}</div>
-            `).join('') || 'No comments yet.';
+            currentCommentProjectId = id;
+            document.getElementById('commentsModal').classList.add('active');
+            document.getElementById('commentsList').innerHTML = 'Loading...';
+            
+            const res = await fetch(`${SHEET_URL}?action=getComments&projectId=${id}`);
+            const json = await res.json();
+            
+            if(json.data.length === 0) {
+                document.getElementById('commentsList').innerHTML = '<p style="color:#888">No comments yet.</p>';
+                return;
+            }
+
+            document.getElementById('commentsList').innerHTML = json.data.map(c => `
+                <div style="margin-bottom: 1rem; background: #f9f9f9; padding: 0.5rem; border-radius: 8px;">
+                    <div style="font-size: 0.8rem; font-weight: 600;">${escapeHtml(c.authorName)}</div>
+                    <div>${escapeHtml(c.comment)}</div>
+                </div>
+            `).join('');
         }
 
         async function submitComment() {
-            const text = document.getElementById('commentInput').value.trim();
-            if(!text) return;
-            const data = { id: Date.now().toString(), projectId: currentProjectIdForComments, authorName: currentUser.name, authorEmail: currentUser.email, authorPicture: currentUser.profilePicture, comment: text, timestamp: new Date().toISOString() };
+            const txt = document.getElementById('commentInput').value;
+            if(!txt) return;
             
-            await apiCall('addComment', { data }, 'POST');
+            const data = {
+                id: Date.now().toString(),
+                projectId: currentCommentProjectId,
+                authorName: currentUser.name,
+                authorEmail: currentUser.email,
+                comment: txt
+            };
+            
+            await postData('addComment', { data });
             document.getElementById('commentInput').value = '';
-            openComments(currentProjectIdForComments);
+            openComments(currentCommentProjectId); // Refresh
         }
 
-        function openShare(id) {
-            currentProjectForShare = allProjects.find(p => p.id === id);
-            openModal('share');
-        }
-
+        // --- UTILS ---
+        function escapeHtml(text) { return text ? text.replace(/</g, "&lt;").replace(/>/g, "&gt;") : ''; }
         function closeModal(id) { document.getElementById(id+'Modal').classList.remove('active'); }
         function openModal(id) { document.getElementById(id+'Modal').classList.add('active'); }
-        
-        async function showProfiles() {
-            currentView = 'profiles';
-            document.getElementById('feedView').style.display = 'none';
-            document.getElementById('profilesView').style.display = 'block';
-            document.getElementById('userProfileView').style.display = 'none';
-            document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
-            document.querySelector('.nav-link[data-view="profiles"]').classList.add('active');
-            
-            // Force refresh data when showing profiles to ensure latest list
-            await loadData();
-            renderProfiles();
+
+        async function postData(action, payload) {
+            return fetch(SHEET_URL, {
+                method: 'POST',
+                body: JSON.stringify({ action, ...payload })
+            }).then(r => r.json());
         }
 
-        function getTimeAgo(ts) { 
-            if(!ts) return '';
-            const date = new Date(ts);
-            return date.toLocaleDateString(); 
+        async function uploadImage(file) {
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('upload_preset', CLOUDINARY_PRESET);
+            const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_NAME}/image/upload`, { method: 'POST', body: formData });
+            const data = await res.json();
+            return data.secure_url;
         }
-        
-        function escapeHtml(text) { return text ? text.replace(/</g, "&lt;").replace(/>/g, "&gt;") : ''; }
     </script>
 </body>
 </html>
