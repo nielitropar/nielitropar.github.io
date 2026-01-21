@@ -71,7 +71,7 @@ Cloudinary provides free image hosting perfect for this project.
 
 1. In your sheet: `Extensions` → `Apps Script`
 2. Delete existing code
-3. Copy **ALL** code from `google-apps-script-enhanced.js`
+3. Copy **ALL** code from `google-apps-script.js`
 4. Paste into editor
 5. Click **Save** (💾 icon)
 6. Name the project: "StudentHub API"
