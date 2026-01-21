@@ -857,7 +857,7 @@ SOFTWARE.
 **Dr. Sarwan Singh**
 - Email: sarwan@nielit.gov.in
 - Institute: NIELIT Ropar
-- GitHub: [@lovnishverma](https://github.com/sarwansingh)
+- GitHub: [@sarwansingh](https://github.com/sarwansingh)
 
 **Lovnish Verma**
 - Email: princelv84@gmail.com
