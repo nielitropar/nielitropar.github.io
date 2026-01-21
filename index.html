@@ -106,6 +106,7 @@
             transition: all 0.3s ease;
             position: relative;
             white-space: nowrap;
+            cursor: pointer;
         }
 
         .nav-link:hover {
@@ -173,6 +174,7 @@
             border-radius: 8px;
             margin-bottom: 0.5rem;
             transition: all 0.3s ease;
+            cursor: pointer;
         }
 
         .mobile-nav-link:hover,
@@ -1311,8 +1313,8 @@
                     </div>
                 </div>
                 <div class="nav-links">
-                    <a href="#" class="nav-link active" data-view="feed" onclick="return false;">Feed</a>
-                    <a href="#" class="nav-link" data-view="profiles" onclick="return false;">Profiles</a>
+                    <a href="#" class="nav-link active" data-view="feed" onclick="loadFeed(); return false;">Feed</a>
+                    <a href="#" class="nav-link" data-view="profiles" onclick="showProfiles(); return false;">Profiles</a>
                     <button class="btn btn-primary" onclick="openModal('project')">Post Project</button>
                     <button class="btn-ghost" onclick="logout()">Logout</button>
                 </div>
@@ -1602,7 +1604,7 @@
         // 3. Set 'Who has access' to 'Anyone'
         // 4. Copy the URL ending in '/exec' and paste it below
         // ------------------------------------------------------------------
-        const SHEET_URL = 'https://script.google.com/macros/s/AKfycby7MI0J2RbQ0ulCtLlj_oCn0FOo9C1AF5YxY8omsDHnfPIsx-LTYV2yrnNPfhX8Tw-Xqg/exec'; 
+        const SHEET_URL = 'https://script.google.com/macros/s/AKfycbzJmt5I9xIVYOhFtcX-n89YMYkfRQYbfvI9iIWiuhz-jgGYF4uFyEtmJE_2U-XaYRNMYA/exec'; 
         const CLOUDINARY_UPLOAD_PRESET = 'studenthub_preset';
         const CLOUDINARY_CLOUD_NAME = 'dy8up08qd';
 
