@@ -1131,6 +1131,9 @@
         let allProjects = [];
         let currentUser = JSON.parse(localStorage.getItem('studenthub_user'));
         let currentCommentProjectId = null;
+        let currentPage = 1;
+        const itemsPerPage = 20; // This controls how many render at once
+        let currentList = []; // Keeps track of what list we are currently showing (for search)
 
         // INIT
         window.onload = () => {
@@ -1268,42 +1271,96 @@
             }
         }
 
-        function renderProjects(list) {
-            const container = document.getElementById('projectsList');
-            if (list.length === 0) {
-                container.innerHTML = '<div class="card" style="text-align: center; padding: 3rem;"><p style="color: var(--text-secondary); font-size: 1.1rem;">No projects yet. Be the first to share!</p></div>';
-                return;
-            }
-            container.innerHTML = list.map(p => `
-                <div class="project-card card">
-                    <div class="project-header">
-                        <img src="${p.authorPicture || 'https://via.placeholder.com/50'}" class="avatar">
-                        <div style="flex: 1; min-width: 0;">
-                            <div style="font-weight: 600; cursor: pointer; color: var(--primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" onclick="window.location.href='profiles.html?email=${p.authorEmail}'">
-                                ${escapeHtml(p.authorName)}
-                            </div>
-                            <div style="font-size: 0.8rem; color: var(--text-secondary);">${formatDate(p.timestamp)}</div>
-                        </div>
+function renderProjects(list, append = false) {
+    const container = document.getElementById('projectsList');
+    
+    // If this is a NEW list (like search results or first load), reset everything
+    if (!append) {
+        currentPage = 1;
+        currentList = list; // Update the current reference list
+        container.innerHTML = ''; // Clear existing content
+    }
+
+    // Calculate which items to show
+    const start = (currentPage - 1) * itemsPerPage;
+    const end = start + itemsPerPage;
+    const chunk = currentList.slice(start, end); // Get just the 20 items for this page
+
+    // If no items found (and it's the first page)
+    if (chunk.length === 0 && currentPage === 1) {
+        container.innerHTML = '<div class="card" style="text-align: center; padding: 3rem;"><p style="color: var(--text-secondary); font-size: 1.1rem;">No projects found.</p></div>';
+        removeLoadMoreBtn();
+        return;
+    }
+
+    // Generate HTML for just this chunk
+    const html = chunk.map(p => `
+        <div class="project-card card">
+            <div class="project-header">
+                <img src="${p.authorPicture || 'https://via.placeholder.com/50'}" class="avatar">
+                <div style="flex: 1; min-width: 0;">
+                    <div style="font-weight: 600; cursor: pointer; color: var(--primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" onclick="window.location.href='profiles.html?email=${p.authorEmail}'">
+                        ${escapeHtml(p.authorName)}
                     </div>
-                    <div class="project-title">${escapeHtml(p.title)}</div>
-                    <div class="project-description">${escapeHtml(p.description)}</div>
-                    ${p.projectImage ? `<img src="${p.projectImage}" class="project-image" alt="${escapeHtml(p.title)}" loading="lazy">` : ''}
-<div class="project-footer">
-    <button class="action-btn" onclick="upvote('${p.id}', this)">
-        👍 <span>${p.upvotes}</span>
-    </button>
-    <button class="action-btn" onclick="openComments('${p.id}')">
-        💬 <span>${p.commentCount || 0}</span>
-    </button>
-    <button class="action-btn" onclick="shareProject('${p.id}', '${escapeHtml(p.title).replace(/'/g, "\\'")}')">
-        📤 Share
-    </button>
-    ${p.link ? `<a href="${p.link}" target="_blank" class="action-btn" style="text-decoration: none;">🔗 Code</a>` : ''}
-    <span class="tech-badge">${escapeHtml(p.tech || 'Tech')}</span>
-</div>
+                    <div style="font-size: 0.8rem; color: var(--text-secondary);">${formatDate(p.timestamp)}</div>
                 </div>
-            `).join('');
+            </div>
+            <div class="project-title">${escapeHtml(p.title)}</div>
+            <div class="project-description">${escapeHtml(p.description)}</div>
+            ${p.projectImage ? `<img src="${p.projectImage}" class="project-image" alt="${escapeHtml(p.title)}" loading="lazy">` : ''}
+            <div class="project-footer">
+                <button class="action-btn" onclick="upvote('${p.id}', this)">
+                    👍 <span>${p.upvotes}</span>
+                </button>
+                <button class="action-btn" onclick="openComments('${p.id}')">
+                    💬 <span>${p.commentCount || 0}</span>
+                </button>
+                <button class="action-btn" onclick="shareProject('${p.id}', '${escapeHtml(p.title).replace(/'/g, "\\'")}')">
+                    📤 Share
+                </button>
+                ${p.link ? `<a href="${p.link}" target="_blank" class="action-btn" style="text-decoration: none;">🔗 Code</a>` : ''}
+                <span class="tech-badge">${escapeHtml(p.tech || 'Tech')}</span>
+            </div>
+        </div>
+    `).join('');
+
+    // Append new items or set initial content
+    if (append) {
+        // Insert BEFORE the "Load More" button if it exists, or just at the end
+        const loadMoreBtn = document.getElementById('loadMoreContainer');
+        if (loadMoreBtn) {
+            loadMoreBtn.insertAdjacentHTML('beforebegin', html);
+        } else {
+            container.insertAdjacentHTML('beforeend', html);
         }
+    } else {
+        container.innerHTML = html;
+    }
+
+    // Handle "Load More" Button Logic
+    removeLoadMoreBtn(); // Remove old button first
+    
+    // If there are still more items to show in the list
+    if (end < currentList.length) {
+        container.insertAdjacentHTML('beforeend', `
+            <div id="loadMoreContainer" style="text-align: center; padding: 2rem;">
+                <button onclick="loadMore()" class="btn btn-secondary" style="width: 200px;">Load More</button>
+                <p style="margin-top:0.5rem; font-size:0.8rem; color:#666;">Showing ${end} of ${currentList.length}</p>
+            </div>
+        `);
+    }
+}
+
+// Helper functions for pagination
+function loadMore() {
+    currentPage++;
+    renderProjects(currentList, true); // true = append mode
+}
+
+function removeLoadMoreBtn() {
+    const btn = document.getElementById('loadMoreContainer');
+    if (btn) btn.remove();
+}
 
         async function handlePostProject(e) {
             e.preventDefault();
