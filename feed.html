@@ -1656,14 +1656,24 @@ function removeLoadMoreBtn() {
             return data.secure_url;
         }
 
-        // NEW: Generic upload function for PDFs
+// NEW: Upload function specifically for Resumes (Force 'raw' type)
 async function uploadFile(file) {
     const formData = new FormData();
     formData.append('file', file);
     formData.append('upload_preset', CLOUDINARY_PRESET);
-    // Use 'auto' to let Cloudinary detect PDF/Image
-    const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_NAME}/auto/upload`, { method: 'POST', body: formData });
+    
+    // CHANGE: Use 'raw' instead of 'auto' or 'image'
+    // This ensures PDFs are treated as downloadable files, not images
+    const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_NAME}/raw/upload`, { 
+        method: 'POST', 
+        body: formData 
+    });
+    
     const data = await res.json();
+    if (data.error) {
+        alert("Upload failed: " + data.error.message);
+        return null;
+    }
     return data.secure_url;
 }
 
