@@ -60,9 +60,7 @@
             color: var(--text-primary);
             line-height: 1.6;
             overflow-x: hidden;
-            /* Prevent horizontal scroll */
             padding-bottom: 70px;
-            /* Space for mobile nav */
         }
 
         /* Navigation (Desktop) */
@@ -78,7 +76,6 @@
 
         .nav-container {
             max-width: 1200px;
-            /* Aligned with index.html */
             margin: 0 auto;
             padding: 1rem 2rem;
             display: flex;
@@ -153,7 +150,6 @@
             justify-content: space-around;
             padding: 0.8rem 0.5rem;
             padding-bottom: env(safe-area-inset-bottom);
-            /* iPhone Home bar fix */
             z-index: 1001;
             border-top: 1px solid var(--border);
         }
@@ -185,7 +181,6 @@
         /* Layout */
         .container {
             max-width: 1200px;
-            /* Aligned with index.html */
             margin: 0 auto;
             padding: 2rem;
             min-height: 80vh;
@@ -379,7 +374,6 @@
             position: relative;
             overflow: hidden;
             z-index: 2000;
-            /* Ensure on top */
         }
 
         .auth-page::before {
@@ -451,7 +445,6 @@
             font-size: 0.95rem;
             transition: all 0.3s ease;
             -webkit-appearance: none;
-            /* Fix iOS styling */
         }
 
         .form-input:focus {
@@ -681,9 +674,7 @@
             word-wrap: break-word;
         }
 
-        /* -----------------------
-           RESPONSIVE BREAKPOINTS
-           ----------------------- */
+        /* RESPONSIVE BREAKPOINTS */
 
         @media (max-width: 1200px) {
             .main-layout {
@@ -703,17 +694,14 @@
             .sidebar-card,
             .right-sidebar {
                 display: none;
-                /* Hide sidebars on tablet/mobile */
             }
 
             .nav-links {
                 display: none;
-                /* Hide desktop menu */
             }
 
             .mobile-bottom-nav {
                 display: flex;
-                /* Show mobile menu */
             }
 
             .container {
@@ -736,10 +724,8 @@
 
         @media (max-width: 480px) {
 
-            /* Auth Page Mobile Fixes */
             .auth-box {
                 padding: 1.5rem;
-                /* Reduced from 3rem */
                 margin: 0 1rem;
             }
 
@@ -776,7 +762,6 @@
 
             .card {
                 padding: 1rem;
-                /* Reduced padding on cards */
             }
 
             .project-image {
@@ -791,10 +776,8 @@
 
             h1.logo {
                 font-size: 2rem !important;
-                /* Login logo size fix */
             }
 
-            /* Prevent input zoom on focus for iOS */
             input,
             select,
             textarea {
@@ -802,12 +785,10 @@
             }
         }
 
-        /* Smooth scrolling */
         html {
             scroll-behavior: smooth;
         }
 
-        /* Custom scrollbar */
         ::-webkit-scrollbar {
             width: 8px;
         }
@@ -830,10 +811,10 @@
     display: inline-flex;
     align-items: center;
     gap: 10px;
-    background: #1a1a1a; /* Dark background for contrast */
-    color: #ffffff !important; /* Force white text */
+    background: #1a1a1a;
+    color: #ffffff !important;
     padding: 10px 20px;
-    border-radius: 50px; /* Pill shape */
+    border-radius: 50px;
     text-decoration: none;
     font-weight: 500;
     font-size: 0.9rem;
@@ -846,7 +827,7 @@
 .app-download-btn:hover {
     transform: translateY(-3px);
     box-shadow: 0 6px 20px rgba(0,0,0,0.15);
-    background: var(--accent); /* Changes to blue on hover */
+    background: var(--accent);
     border-color: var(--accent);
 }
 
@@ -863,7 +844,6 @@
     <!-- LOGIN PAGE -->
     <div id="loginPage" class="auth-page">
         <div class="auth-box">
-            <!-- <img src="logo.png" alt="StudentHub" class="logo" style="width: 150px; height: auto; display: block; margin: 0 auto;"> -->
             <img src="logo.png" alt="StudentHub" style="width: 150px; height: auto;">
             <p style="color: var(--text-secondary); margin-bottom: 2rem; font-weight: 500;">NIELIT Ropar</p>
             <form onsubmit="handleLogin(event)">
@@ -958,8 +938,8 @@
                 <!-- Feed -->
                 <main>
                     <div class="search-container">
-                        <input type="text" class="search-input" placeholder="🔍 Search projects..."
-                            onkeyup="filterProjects(this.value)">
+                        <input type="text" id="searchInput" class="search-input" placeholder="🔍 Search projects..."
+                            onkeyup="handleSearch(this.value)">
                     </div>
 
                     <!-- Projects Container -->
@@ -1201,19 +1181,20 @@
         const CLOUDINARY_NAME = 'dy8up08qd';
 
         // STATE
-        let allProjects = [];
+        let allProjects = []; // For trending sidebar only
         let currentUser = JSON.parse(localStorage.getItem('studenthub_user'));
         let currentCommentProjectId = null;
         let currentPage = 1;
-        const itemsPerPage = 20; // This controls how many render at once
-        let currentList = []; // Keeps track of what list we are currently showing (for search)
+        let currentSearchTerm = '';
+        let hasMoreProjects = true;
+        let isLoading = false;
+        let searchTimeout = null;
 
         // INIT
         window.onload = () => {
             if (currentUser) {
                 showApp();
 
-                // Check if we need to open post modal (from navigation)
                 if (localStorage.getItem('openPostModal')) {
                     localStorage.removeItem('openPostModal');
                     openModal('project');
@@ -1235,34 +1216,30 @@
             document.getElementById('signupPage').classList.add('hidden');
             document.getElementById('mainApp').classList.remove('hidden');
 
-            // Sidebar Update
             document.getElementById('sideName').textContent = currentUser.name;
             document.getElementById('sideMajor').textContent = currentUser.major || 'Student';
             document.getElementById('sideAvatar').src = currentUser.profilePicture || 'default-avatar.png';
 
-            // Pre-fill Edit Form
             document.getElementById('editName').value = currentUser.name;
             document.getElementById('editUni').value = currentUser.university || '';
             document.getElementById('editMajorInput').value = currentUser.major || '';
             document.getElementById('editBio').value = currentUser.bio || '';
             document.getElementById('editLinked').value = currentUser.linkedin || '';
             document.getElementById('editGit').value = currentUser.github || '';
-            // NEW: Show current resume link if exists
-const resumeLinkBtn = document.getElementById('currentResumeLink');
-if (currentUser.resume) {
-    resumeLinkBtn.href = currentUser.resume;
-    resumeLinkBtn.classList.remove('hidden');
-    resumeLinkBtn.textContent = "📄 View Current Resume";
-} else {
-    resumeLinkBtn.classList.add('hidden');
-}
+            
+            const resumeLinkBtn = document.getElementById('currentResumeLink');
+            if (currentUser.resume) {
+                resumeLinkBtn.href = currentUser.resume;
+                resumeLinkBtn.classList.remove('hidden');
+                resumeLinkBtn.textContent = "📄 View Current Resume";
+            } else {
+                resumeLinkBtn.classList.add('hidden');
+            }
 
             loadProjects();
         }
 
-        // Navigation Logic
         function showSection(section) {
-            // Main Feed logic is default
             if (section === 'feed') {
                 window.scrollTo(0, 0);
             }
@@ -1278,7 +1255,6 @@ if (currentUser.resume) {
             btn.textContent = 'Verifying...';
             btn.disabled = true;
 
-            // Demo Mode Fallback
             if (email === 'demo@nielit.gov.in' && password === 'demo123') {
                 currentUser = { name: 'Demo User', email: 'demo@nielit.gov.in', major: 'CS', profilePicture: '' };
                 completeAuth(currentUser);
@@ -1342,109 +1318,126 @@ if (currentUser.resume) {
             }
         }
 
-        // --- PROJECTS ---
-async function loadProjects() {
-    // [CHANGE] Pass user email to check which projects they already liked
-    const emailParam = currentUser ? `&userEmail=${encodeURIComponent(currentUser.email)}` : '';
-    const res = await fetch(`${SHEET_URL}?action=getProjects${emailParam}`);
-    const json = await res.json();
-    if (json.status === 'success') {
-        allProjects = json.data;
-        renderProjects(allProjects);
-        updateTrending(allProjects);
-    }
-}
+        // --- PROJECTS (SERVER-SIDE PAGINATION) ---
+        async function loadProjects(append = false) {
+            if (isLoading) return;
+            isLoading = true;
 
-function renderProjects(list, append = false) {
-    const container = document.getElementById('projectsList');
-    
-    // If this is a NEW list (like search results or first load), reset everything
-    if (!append) {
-        currentPage = 1;
-        currentList = list; // Update the current reference list
-        container.innerHTML = ''; // Clear existing content
-    }
+            if (!append) {
+                currentPage = 1;
+                hasMoreProjects = true;
+            }
 
-    // Calculate which items to show
-    const start = (currentPage - 1) * itemsPerPage;
-    const end = start + itemsPerPage;
-    const chunk = currentList.slice(start, end); // Get just the 20 items for this page
-
-    // If no items found (and it's the first page)
-    if (chunk.length === 0 && currentPage === 1) {
-        container.innerHTML = '<div class="card" style="text-align: center; padding: 3rem;"><p style="color: var(--text-secondary); font-size: 1.1rem;">No projects found.</p></div>';
-        removeLoadMoreBtn();
-        return;
-    }
-
-    // Generate HTML for just this chunk
-    const html = chunk.map(p => `
-        <div class="project-card card">
-            <div class="project-header">
-                <img src="${p.authorPicture || 'default-avatar.png'}" class="avatar">
-                <div style="flex: 1; min-width: 0;">
-                    <div style="font-weight: 600; cursor: pointer; color: var(--primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" onclick="window.location.href='index.html?email=${p.authorEmail}'">
-                        ${escapeHtml(p.authorName)}
-                    </div>
-                    <div style="font-size: 0.8rem; color: var(--text-secondary);">${formatDate(p.timestamp)}</div>
-                </div>
-            </div>
-            <div class="project-title">${escapeHtml(p.title)}</div>
-            <div class="project-description">${escapeHtml(p.description)}</div>
-            ${p.projectImage ? `<img src="${p.projectImage}" class="project-image" alt="${escapeHtml(p.title)}" loading="lazy">` : ''}
-            <div class="project-footer">
-<button class="action-btn ${p.isLiked ? 'active' : ''}" onclick="upvote('${p.id}', this)">
-    👍 <span>${p.upvotes}</span>
-</button>
-                <button class="action-btn" onclick="openComments('${p.id}')">
-                    💬 <span>${p.commentCount || 0}</span>
-                </button>
-                <button class="action-btn" onclick="shareProject('${p.id}', '${escapeHtml(p.title).replace(/'/g, "\\'")}')">
-                    📤 Share
-                </button>
-                ${p.link ? `<a href="${p.link}" target="_blank" class="action-btn" style="text-decoration: none;">🔗 Code</a>` : ''}
-                <span class="tech-badge">${escapeHtml(p.tech || 'Tech')}</span>
-            </div>
-        </div>
-    `).join('');
-
-    // Append new items or set initial content
-    if (append) {
-        // Insert BEFORE the "Load More" button if it exists, or just at the end
-        const loadMoreBtn = document.getElementById('loadMoreContainer');
-        if (loadMoreBtn) {
-            loadMoreBtn.insertAdjacentHTML('beforebegin', html);
-        } else {
-            container.insertAdjacentHTML('beforeend', html);
+            try {
+                const emailParam = currentUser ? `&userEmail=${encodeURIComponent(currentUser.email)}` : '';
+                const searchParam = currentSearchTerm ? `&searchTerm=${encodeURIComponent(currentSearchTerm)}` : '';
+                
+                const res = await fetch(`${SHEET_URL}?action=getProjects&page=${currentPage}${emailParam}${searchParam}`);
+                const json = await res.json();
+                
+                if (json.status === 'success') {
+                    const { items, hasMore } = json.data;
+                    hasMoreProjects = hasMore;
+                    
+                    if (!append) {
+                        allProjects = items; // For trending
+                        renderProjects(items, false);
+                        updateTrending(items);
+                    } else {
+                        allProjects = allProjects.concat(items);
+                        renderProjects(items, true);
+                    }
+                }
+            } catch(err) {
+                console.error('Load error:', err);
+            } finally {
+                isLoading = false;
+            }
         }
-    } else {
-        container.innerHTML = html;
-    }
 
-    // Handle "Load More" Button Logic
-    removeLoadMoreBtn(); // Remove old button first
-    
-    // If there are still more items to show in the list
-    if (end < currentList.length) {
-        container.insertAdjacentHTML('beforeend', `
-            <div id="loadMoreContainer" style="text-align: center; padding: 2rem;">
-                <button onclick="loadMore()" class="btn btn-secondary" style="width: 200px;">Load More</button>
-                <p style="margin-top:0.5rem; font-size:0.8rem; color:#666;">Showing ${end} of ${currentList.length}</p>
-            </div>
-        `);
-    }
-}
+        function renderProjects(list, append = false) {
+            const container = document.getElementById('projectsList');
+            
+            if (!append) {
+                container.innerHTML = '';
+            }
 
-// Helper functions for pagination
-function loadMore() {
-    currentPage++;
-    renderProjects(currentList, true); // true = append mode
-}
+            if (list.length === 0 && !append) {
+                container.innerHTML = '<div class="card" style="text-align: center; padding: 3rem;"><p style="color: var(--text-secondary); font-size: 1.1rem;">No projects found.</p></div>';
+                return;
+            }
 
-function removeLoadMoreBtn() {
-    const btn = document.getElementById('loadMoreContainer');
-    if (btn) btn.remove();
-}
+            const html = list.map(p => `
+                <div class="project-card card">
+                    <div class="project-header">
+                        <img src="${p.authorPicture || 'default-avatar.png'}" class="avatar">
+                        <div style="flex: 1; min-width: 0;">
+                            <div style="font-weight: 600; cursor: pointer; color: var(--primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" onclick="window.location.href='index.html?email=${p.authorEmail}'">
+                                ${escapeHtml(p.authorName)}
+                            </div>
+                            <div style="font-size: 0.8rem; color: var(--text-secondary);">${formatDate(p.timestamp)}</div>
+                        </div>
+                    </div>
+                    <div class="project-title">${escapeHtml(p.title)}</div>
+                    <div class="project-description">${escapeHtml(p.description)}</div>
+                    ${p.projectImage ? `<img src="${p.projectImage}" class="project-image" alt="${escapeHtml(p.title)}" loading="lazy">` : ''}
+                    <div class="project-footer">
+                        <button class="action-btn ${p.isLiked ? 'active' : ''}" onclick="upvote('${p.id}', this)">
+                            👍 <span>${p.upvotes}</span>
+                        </button>
+                        <button class="action-btn" onclick="openComments('${p.id}')">
+                            💬 <span>${p.commentCount || 0}</span>
+                        </button>
+                        <button class="action-btn" onclick="shareProject('${p.id}', '${escapeHtml(p.title).replace(/'/g, "\\'")}')">
+                            📤 Share
+                        </button>
+                        ${p.link ? `<a href="${p.link}" target="_blank" class="action-btn" style="text-decoration: none;">🔗 Code</a>` : ''}
+                        <span class="tech-badge">${escapeHtml(p.tech || 'Tech')}</span>
+                    </div>
+                </div>
+            `).join('');
+
+            if (append) {
+                const loadMoreBtn = document.getElementById('loadMoreContainer');
+                if (loadMoreBtn) {
+                    loadMoreBtn.insertAdjacentHTML('beforebegin', html);
+                } else {
+                    container.insertAdjacentHTML('beforeend', html);
+                }
+            } else {
+                container.innerHTML = html;
+            }
+
+            updateLoadMoreButton();
+        }
+
+        function updateLoadMoreButton() {
+            const container = document.getElementById('projectsList');
+            const existingBtn = document.getElementById('loadMoreContainer');
+            if (existingBtn) existingBtn.remove();
+
+            if (hasMoreProjects && !isLoading) {
+                container.insertAdjacentHTML('beforeend', `
+                    <div id="loadMoreContainer" style="text-align: center; padding: 2rem;">
+                        <button onclick="loadMore()" class="btn btn-secondary" style="width: 200px;">Load More</button>
+                    </div>
+                `);
+            }
+        }
+
+        function loadMore() {
+            currentPage++;
+            loadProjects(true);
+        }
+
+        // Search with debounce
+        function handleSearch(term) {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                currentSearchTerm = term;
+                loadProjects(false);
+            }, 500);
+        }
 
         async function handlePostProject(e) {
             e.preventDefault();
@@ -1473,80 +1466,62 @@ function removeLoadMoreBtn() {
             e.target.reset();
             btn.textContent = 'Post';
             btn.disabled = false;
-            loadProjects();
+            loadProjects(false);
         }
 
-async function handleEditProfile(e) {
-    e.preventDefault();
-    const btn = e.target.querySelector('button[type="submit"]');
-    btn.textContent = 'Saving...';
-    btn.disabled = true;
+        async function handleEditProfile(e) {
+            e.preventDefault();
+            const btn = e.target.querySelector('button[type="submit"]');
+            btn.textContent = 'Saving...';
+            btn.disabled = true;
 
-    // 1. Handle Profile Picture (Existing)
-    const imgFile = document.getElementById('editPic').files[0];
-    let picUrl = currentUser.profilePicture;
-    if (imgFile) picUrl = await uploadImage(imgFile);
+            const imgFile = document.getElementById('editPic').files[0];
+            let picUrl = currentUser.profilePicture;
+            if (imgFile) picUrl = await uploadImage(imgFile);
 
-    // 2. Handle Resume PDF (NEW CODE)
-    const resumeFile = document.getElementById('editResumeFile').files[0];
-    let resumeUrl = currentUser.resume || ''; // Keep existing if no new file
-    if (resumeFile) {
-        // Call the NEW uploadFile function
-        resumeUrl = await uploadFile(resumeFile);
-    }
+            const resumeFile = document.getElementById('editResumeFile').files[0];
+            let resumeUrl = currentUser.resume || '';
+            if (resumeFile) {
+                resumeUrl = await uploadFile(resumeFile);
+            }
 
-    // 3. Prepare Data
-    const updatedData = {
-        name: document.getElementById('editName').value,
-        email: currentUser.email,
-        university: document.getElementById('editUni').value,
-        major: document.getElementById('editMajorInput').value,
-        bio: document.getElementById('editBio').value,
-        linkedin: document.getElementById('editLinked').value,
-        github: document.getElementById('editGit').value,
-        profilePicture: picUrl,
-        resume: resumeUrl // <--- Don't forget this!
-    };
+            const updatedData = {
+                name: document.getElementById('editName').value,
+                email: currentUser.email,
+                university: document.getElementById('editUni').value,
+                major: document.getElementById('editMajorInput').value,
+                bio: document.getElementById('editBio').value,
+                linkedin: document.getElementById('editLinked').value,
+                github: document.getElementById('editGit').value,
+                profilePicture: picUrl,
+                resume: resumeUrl
+            };
 
-    // 4. Send to Backend
-    await postData('updateProfile', { data: updatedData });
+            await postData('updateProfile', { data: updatedData });
 
-    // 5. Update Local State & UI
-    currentUser = { ...currentUser, ...updatedData };
-    localStorage.setItem('studenthub_user', JSON.stringify(currentUser));
-    
-    closeModal('editProfile');
-    btn.textContent = 'Save';
-    btn.disabled = false;
-    showApp();
-}
+            currentUser = { ...currentUser, ...updatedData };
+            localStorage.setItem('studenthub_user', JSON.stringify(currentUser));
+            
+            closeModal('editProfile');
+            btn.textContent = 'Save';
+            btn.disabled = false;
+            showApp();
+        }
 
         // --- ACTIONS ---
         function openMyProfile() {
-            // For mobile, we open the User Menu
             if (window.innerWidth <= 968) {
                 document.getElementById('menuAvatar').src = currentUser.profilePicture || 'default-avatar.png';
                 document.getElementById('menuName').textContent = currentUser.name;
                 document.getElementById('menuMajor').textContent = currentUser.major || 'Student';
                 openModal('userMenu');
             } else {
-                // Desktop behavior (optional, maybe redirect)
                 openMyProfilePage();
             }
         }
 
         function openMyProfilePage() {
             window.location.href = `index.html?email=${currentUser.email}`;
-        }
-
-        function filterProjects(term) {
-            term = term.toLowerCase();
-            const filtered = allProjects.filter(p =>
-                p.title.toLowerCase().includes(term) ||
-                p.authorName.toLowerCase().includes(term) ||
-                (p.tech && p.tech.toLowerCase().includes(term))
-            );
-            renderProjects(filtered);
         }
 
         function updateTrending(list) {
@@ -1571,45 +1546,37 @@ async function handleEditProfile(e) {
             `).join('');
         }
 
-async function upvote(id, btn) {
-    // 1. Check Auth
-    if (!currentUser) return alert('Please log in to upvote.');
-    
-    // 2. Optimistic UI Update (Toggle appearance immediately)
-    const countSpan = btn.querySelector('span');
-    let currentCount = parseInt(countSpan.textContent) || 0;
-    const isLiked = btn.classList.contains('active');
-    
-    // Toggle state locally first
-    btn.classList.toggle('active');
-    countSpan.textContent = isLiked ? currentCount - 1 : currentCount + 1;
-    
-    // 3. Call Backend
-    try {
-        const res = await postData('toggleUpvote', { 
-            projectId: id, 
-            userEmail: currentUser.email 
-        });
-        
-        // 4. Correct UI with actual server data (in case of race conditions)
-        if (res.status === 'success') {
-            countSpan.textContent = res.data.newCount;
-            // Ensure button state matches server action
-            if (res.data.action === 'added') btn.classList.add('active');
-            else btn.classList.remove('active');
-        } else {
-            // Revert on error
-            btn.classList.toggle('active'); 
-            countSpan.textContent = currentCount;
-            alert('Error upvoting: ' + res.data);
+        async function upvote(id, btn) {
+            if (!currentUser) return alert('Please log in to upvote.');
+            
+            const countSpan = btn.querySelector('span');
+            let currentCount = parseInt(countSpan.textContent) || 0;
+            const isLiked = btn.classList.contains('active');
+            
+            btn.classList.toggle('active');
+            countSpan.textContent = isLiked ? currentCount - 1 : currentCount + 1;
+            
+            try {
+                const res = await postData('toggleUpvote', { 
+                    projectId: id, 
+                    userEmail: currentUser.email 
+                });
+                
+                if (res.status === 'success') {
+                    countSpan.textContent = res.data.newCount;
+                    if (res.data.action === 'added') btn.classList.add('active');
+                    else btn.classList.remove('active');
+                } else {
+                    btn.classList.toggle('active'); 
+                    countSpan.textContent = currentCount;
+                    alert('Error upvoting: ' + res.data);
+                }
+            } catch (err) {
+                btn.classList.toggle('active'); 
+                countSpan.textContent = currentCount;
+                console.error(err);
+            }
         }
-    } catch (err) {
-        // Revert on network error
-        btn.classList.toggle('active'); 
-        countSpan.textContent = currentCount;
-        console.error(err);
-    }
-}
 
         // --- COMMENTS ---
         async function openComments(id) {
@@ -1695,121 +1662,101 @@ async function upvote(id, btn) {
             return data.secure_url;
         }
 
-// NEW: Upload function for Resumes (Fixed for direct PDF access)
-// Cloudinary supports PDF upload.
-// Free accounts block public delivery of PDF files by default.
-// Enabling “Allow delivery of PDF and ZIP files” in Security settings resolves the issue.
-    
-async function uploadFile(file) {
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('upload_preset', CLOUDINARY_PRESET);
+        async function uploadFile(file) {
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('upload_preset', CLOUDINARY_PRESET);
 
-    try {
-        const response = await fetch(
-            `https://api.cloudinary.com/v1_1/${CLOUDINARY_NAME}/auto/upload`,
-            { method: 'POST', body: formData }
-        );
+            try {
+                const response = await fetch(
+                    `https://api.cloudinary.com/v1_1/${CLOUDINARY_NAME}/auto/upload`,
+                    { method: 'POST', body: formData }
+                );
 
-        if (!response.ok) {
-            const err = await response.json();
-            throw new Error(err.error?.message || 'Cloudinary upload failed');
+                if (!response.ok) {
+                    const err = await response.json();
+                    throw new Error(err.error?.message || 'Cloudinary upload failed');
+                }
+
+                const data = await response.json();
+                return data.secure_url;
+
+            } catch (err) {
+                console.error('Upload Error:', err);
+                return null;
+            }
         }
 
-        const data = await response.json();
-        return data.secure_url;
+        // ===== SHARE FUNCTIONALITY =====
 
-    } catch (err) {
-        console.error('Upload Error:', err);
-        return null;
-    }
-}
+        let currentShareProjectId = null;
+        let currentShareProjectTitle = null;
 
+        function shareProject(projectId, projectTitle) {
+            currentShareProjectId = projectId;
+            currentShareProjectTitle = projectTitle;
+            
+            const path = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
+            const baseUrl = window.location.origin + path;
+            
+            const shareLink = `${baseUrl}project.html?id=${projectId}`;
+            document.getElementById('shareProjectLink').value = shareLink;
+            
+            openModal('shareProject');
+        }
 
+        function copyShareLink() {
+            const input = document.getElementById('shareProjectLink');
+            input.select();
+            input.setSelectionRange(0, 99999);
+            
+            try {
+                document.execCommand('copy');
+                
+                const btn = document.getElementById('copyShareBtn');
+                const originalText = btn.innerHTML;
+                btn.innerHTML = '✓ Copied!';
+                btn.style.background = 'var(--success)';
+                
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                    btn.style.background = '';
+                }, 2000);
+            } catch (err) {
+                alert('Failed to copy. Please copy the link manually.');
+            }
+        }
 
- // ===== SHARE FUNCTIONALITY =====
+        function shareViaEmail() {
+            const shareLink = document.getElementById('shareProjectLink').value;
+            const subject = encodeURIComponent(`Check out this project: ${currentShareProjectTitle}`);
+            const body = encodeURIComponent(`I found this interesting project on NIELIT StudentHub:\n\n${currentShareProjectTitle}\n\nView it here: ${shareLink}`);
+            window.open(`mailto:?subject=${subject}&body=${body}`);
+        }
 
-// Share Project Variables
-let currentShareProjectId = null;
-let currentShareProjectTitle = null;
+        function shareViaWhatsApp() {
+            const shareLink = document.getElementById('shareProjectLink').value;
+            const text = encodeURIComponent(`Check out this project on NIELIT StudentHub: ${currentShareProjectTitle}\n\n${shareLink}`);
+            
+            if (/Android|webOS|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+                window.open(`whatsapp://send?text=${text}`);
+            } else {
+                window.open(`https://web.whatsapp.com/send?text=${text}`, '_blank');
+            }
+        }
 
-// Open share modal
-function shareProject(projectId, projectTitle) {
-    currentShareProjectId = projectId;
-    currentShareProjectTitle = projectTitle;
-    
-    // FIX: Dynamically get the base path by stripping the current filename
-    // This works for feed.html, index.html, or any other file
-    const path = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
-    const baseUrl = window.location.origin + path;
-    
-    const shareLink = `${baseUrl}project.html?id=${projectId}`;
-    document.getElementById('shareProjectLink').value = shareLink;
-    
-    // Open modal
-    openModal('shareProject');
-}
+        function shareViaTwitter() {
+            const shareLink = document.getElementById('shareProjectLink').value;
+            const text = encodeURIComponent(`Check out this project: ${currentShareProjectTitle}`);
+            const url = encodeURIComponent(shareLink);
+            window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank', 'width=550,height=420');
+        }
 
-// Copy share link to clipboard
-function copyShareLink() {
-    const input = document.getElementById('shareProjectLink');
-    input.select();
-    input.setSelectionRange(0, 99999); // For mobile devices
-    
-    try {
-        document.execCommand('copy');
-        
-        const btn = document.getElementById('copyShareBtn');
-        const originalText = btn.innerHTML;
-        btn.innerHTML = '✓ Copied!';
-        btn.style.background = 'var(--success)';
-        
-        setTimeout(() => {
-            btn.innerHTML = originalText;
-            btn.style.background = '';
-        }, 2000);
-    } catch (err) {
-        // Fallback for older browsers
-        alert('Failed to copy. Please copy the link manually.');
-    }
-}
-
-// Share via Email
-function shareViaEmail() {
-    const shareLink = document.getElementById('shareProjectLink').value;
-    const subject = encodeURIComponent(`Check out this project: ${currentShareProjectTitle}`);
-    const body = encodeURIComponent(`I found this interesting project on NIELIT StudentHub:\n\n${currentShareProjectTitle}\n\nView it here: ${shareLink}`);
-    window.open(`mailto:?subject=${subject}&body=${body}`);
-}
-
-// Share via WhatsApp
-function shareViaWhatsApp() {
-    const shareLink = document.getElementById('shareProjectLink').value;
-    const text = encodeURIComponent(`Check out this project on NIELIT StudentHub: ${currentShareProjectTitle}\n\n${shareLink}`);
-    
-    // Check if mobile device
-    if (/Android|webOS|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-        window.open(`whatsapp://send?text=${text}`);
-    } else {
-        window.open(`https://web.whatsapp.com/send?text=${text}`, '_blank');
-    }
-}
-
-// Share via Twitter
-function shareViaTwitter() {
-    const shareLink = document.getElementById('shareProjectLink').value;
-    const text = encodeURIComponent(`Check out this project: ${currentShareProjectTitle}`);
-    const url = encodeURIComponent(shareLink);
-    window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank', 'width=550,height=420');
-}
-
-// Share via LinkedIn
-function shareViaLinkedIn() {
-    const shareLink = document.getElementById('shareProjectLink').value;
-    const url = encodeURIComponent(shareLink);
-    window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${url}`, '_blank', 'width=550,height=420');
-}
-
+        function shareViaLinkedIn() {
+            const shareLink = document.getElementById('shareProjectLink').value;
+            const url = encodeURIComponent(shareLink);
+            window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${url}`, '_blank', 'width=550,height=420');
+        }
         
     </script>
 </body>
