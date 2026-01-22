@@ -304,17 +304,15 @@
     </a>
     </footer>
 
-    <nav class="mobile-bottom-nav">
-        <a href="index.html" class="mobile-nav-item">
-            <span class="mobile-nav-icon">🏠</span><span>Feed</span>
-        </a>
-        <a href="profiles.html" class="mobile-nav-item active">
-            <span class="mobile-nav-icon">👥</span><span>Profiles</span>
-        </a>
-        <a href="index.html" onclick="localStorage.setItem('openPostModal', 'true');" class="mobile-nav-item">
-            <span class="mobile-nav-icon">➕</span><span>Post</span>
-        </a>
-    </nav>
+<nav class="mobile-bottom-nav">
+    <a href="feed.html" class="mobile-nav-item"> <span class="mobile-nav-icon">🏠</span><span>Feed</span>
+    </a>
+    <a href="index.html" class="mobile-nav-item active"> <span class="mobile-nav-icon">👥</span><span>Profiles</span>
+    </a>
+    <a href="feed.html" onclick="localStorage.setItem('openPostModal', 'true');" class="mobile-nav-item">
+        <span class="mobile-nav-icon">➕</span><span>Post</span>
+    </a>
+</nav>
 
     <script>
         // CONFIG
@@ -331,13 +329,30 @@
         let currentShareProjectId = null;
         let currentShareProjectTitle = null;
 
-        window.onload = async () => {
-            await Promise.all([loadProfiles(), loadProjects()]);
-            const params = new URLSearchParams(window.location.search);
-            const targetEmail = params.get('email');
-            if (targetEmail) showPortfolio(targetEmail);
-            else renderDirectory(allProfiles);
-        };
+window.onload = async () => {
+    // Load data
+    await Promise.all([loadProfiles(), loadProjects()]);
+
+    // Handle URL parameters (for direct profile links)
+    const params = new URLSearchParams(window.location.search);
+    const targetEmail = params.get('email');
+    
+    if (targetEmail) {
+        showPortfolio(targetEmail);
+    } else {
+        renderDirectory(allProfiles);
+    }
+
+    // Update Login Button if user is already logged in
+    if (currentUser) {
+        const btn = document.getElementById('loginBtn');
+        if (btn) {
+            btn.textContent = 'Go to Feed';
+            // Optional: You can also change the style or href here if needed
+            // btn.classList.add('btn-secondary'); 
+        }
+    }
+};
 
         async function loadProfiles() {
             try {
