@@ -1,4 +1,4 @@
-// STUDENTHUB - PRODUCTION BACKEND (v1.2 - Server-Side Pagination)
+// STUDENTHUB - PRODUCTION BACKEND (v1.3 - Deep Linking Support)
 
 const PROJECTS_SHEET = 'Projects';
 const PROFILES_SHEET = 'Profiles';
@@ -49,6 +49,10 @@ function handleRequest(e, method) {
         return getProjectsPaginated(params.userEmail, params.page, params.searchTerm);
       case 'getProfiles':
         return getProfilesPaginated(params.page, params.searchTerm);
+      case 'getProject': // [NEW] Fetch single project by ID
+        return getProject(params.id);
+      case 'getProfile': // [NEW] Fetch single profile by Email
+        return getProfile(params.email);
       case 'getComments':
         return getComments(params.projectId);
       case 'login':
@@ -73,6 +77,46 @@ function handleRequest(e, method) {
   } finally {
     lock.releaseLock();
   }
+}
+
+// ====== SINGLE ITEM LOOKUPS (BYPASS PAGINATION) ======
+
+function getProject(id) {
+  if (!id) return createResponse('error', 'No ID provided');
+  const sheet = getOrCreateSheet(PROJECTS_SHEET);
+  const data = sheet.getDataRange().getValues();
+  const headers = data[0];
+  
+  // Find row with matching ID (Column 0)
+  // Convert both to strings for safe comparison
+  const row = data.slice(1).find(r => String(r[0]) === String(id));
+  
+  if (!row) return createResponse('error', 'Project not found');
+  
+  let p = {};
+  headers.forEach((h, i) => p[h] = row[i]);
+  p.upvotes = parseInt(p.upvotes) || 0;
+  p.commentCount = getCommentCount(p.id);
+  
+  return createResponse('success', p);
+}
+
+function getProfile(email) {
+  if (!email) return createResponse('error', 'No email provided');
+  const sheet = getOrCreateSheet(PROFILES_SHEET);
+  const data = sheet.getDataRange().getValues();
+  const headers = data[0];
+  const cleanEmail = String(email).toLowerCase().trim();
+  
+  // Find row with matching Email (Column 1 in Profiles sheet)
+  const row = data.slice(1).find(r => String(r[1]).toLowerCase() === cleanEmail);
+  
+  if (!row) return createResponse('error', 'Profile not found');
+  
+  let p = {};
+  headers.forEach((h, i) => p[h] = row[i]);
+  
+  return createResponse('success', p);
 }
 
 // ====== PAGINATED QUERIES ======
