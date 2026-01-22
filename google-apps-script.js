@@ -1,10 +1,10 @@
-// STUDENTHUB - PRODUCTION BACKEND (v1.1)
+// STUDENTHUB - PRODUCTION BACKEND (v1.2 - Server-Side Pagination)
 
 const PROJECTS_SHEET = 'Projects';
 const PROFILES_SHEET = 'Profiles';
 const USERS_SHEET = 'Users';
 const COMMENTS_SHEET = 'Comments';
-const UPVOTES_SHEET = 'Upvotes'; // [NEW] Track individual votes
+const UPVOTES_SHEET = 'Upvotes';
 
 function doGet(e) {
   return handleRequest(e, 'GET');
@@ -46,10 +46,9 @@ function handleRequest(e, method) {
 
     switch (action) {
       case 'getProjects':
-        // [OPTIONAL] Pass userEmail to check which projects they liked
-        return getProjects(params.userEmail); 
+        return getProjectsPaginated(params.userEmail, params.page, params.searchTerm);
       case 'getProfiles':
-        return getProfiles();
+        return getProfilesPaginated(params.page, params.searchTerm);
       case 'getComments':
         return getComments(params.projectId);
       case 'login':
@@ -60,10 +59,12 @@ function handleRequest(e, method) {
         return addProject(params.data);
       case 'updateProfile':
         return updateProfile(params.data);
-      case 'toggleUpvote': // [CHANGED] Renamed from updateUpvotes
+      case 'toggleUpvote':
         return toggleUpvote(params.projectId, params.userEmail);
       case 'addComment':
         return addComment(params.data);
+      case 'getStats':
+        return getStats();
       default:
         return createResponse('error', `Unknown action: ${action}`);
     }
@@ -74,40 +75,125 @@ function handleRequest(e, method) {
   }
 }
 
-// ====== CORE LOGIC ======
+// ====== PAGINATED QUERIES ======
 
-function getProjects(currentUserEmail) {
+function getProjectsPaginated(currentUserEmail, page, searchTerm) {
   const sheet = getOrCreateSheet(PROJECTS_SHEET);
   const data = sheet.getDataRange().getValues();
-  if (data.length <= 1) return createResponse('success', []);
+  if (data.length <= 1) return createResponse('success', { items: [], total: 0, hasMore: false });
   
-  // [NEW] Get user's upvotes to mark them as "liked"
+  // Get user's upvotes
   let userUpvotes = new Set();
   if (currentUserEmail) {
     const upvoteSheet = getOrCreateSheet(UPVOTES_SHEET);
     const upvoteData = upvoteSheet.getDataRange().getValues();
     upvoteData.slice(1).forEach(row => {
       if (String(row[1]).toLowerCase() === String(currentUserEmail).toLowerCase()) {
-        userUpvotes.add(String(row[0])); // Store Project ID
+        userUpvotes.add(String(row[0]));
       }
     });
   }
 
   const headers = data[0];
-  const projects = data.slice(1)
-    .filter(row => row[0] && String(row[0]).trim() !== '') 
+  let projects = data.slice(1)
+    .filter(row => row[0] && String(row[0]).trim() !== '')
     .map(row => {
       let p = {};
       headers.forEach((h, i) => p[h] = row[i]);
       p.upvotes = parseInt(p.upvotes) || 0;
-      p.commentCount = getCommentCount(p.id);
-      // [NEW] Flag if current user liked this
-      p.isLiked = userUpvotes.has(String(p.id)); 
+      p.isLiked = userUpvotes.has(String(p.id));
       return p;
     });
   
-  return createResponse('success', projects.reverse());
+  // Filter by search term
+  if (searchTerm && searchTerm.trim() !== '') {
+    const term = searchTerm.toLowerCase();
+    projects = projects.filter(p => 
+      (p.title && p.title.toLowerCase().includes(term)) ||
+      (p.authorName && p.authorName.toLowerCase().includes(term)) ||
+      (p.tech && p.tech.toLowerCase().includes(term)) ||
+      (p.description && p.description.toLowerCase().includes(term))
+    );
+  }
+  
+  // Sort by timestamp (newest first)
+  projects.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+  
+  // Pagination
+  const itemsPerPage = 20;
+  const pageNum = parseInt(page) || 1;
+  const startIndex = (pageNum - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  
+  const paginatedProjects = projects.slice(startIndex, endIndex);
+  
+  // Add comment counts to paginated results only
+  paginatedProjects.forEach(p => {
+    p.commentCount = getCommentCount(p.id);
+  });
+  
+  return createResponse('success', {
+    items: paginatedProjects,
+    total: projects.length,
+    hasMore: endIndex < projects.length,
+    page: pageNum
+  });
 }
+
+function getProfilesPaginated(page, searchTerm) {
+  const sheet = getOrCreateSheet(PROFILES_SHEET);
+  const data = sheet.getDataRange().getValues();
+  if (data.length <= 1) return createResponse('success', { items: [], total: 0, hasMore: false });
+  
+  const headers = data[0];
+  let profiles = data.slice(1)
+    .filter(row => row[1] && String(row[1]).trim() !== '')
+    .map(row => {
+      let p = {};
+      headers.forEach((h, i) => p[h] = row[i]);
+      return p;
+    });
+  
+  // Filter by search term
+  if (searchTerm && searchTerm.trim() !== '') {
+    const term = searchTerm.toLowerCase();
+    profiles = profiles.filter(p => 
+      (p.name && p.name.toLowerCase().includes(term)) ||
+      (p.major && p.major.toLowerCase().includes(term)) ||
+      (p.university && p.university.toLowerCase().includes(term))
+    );
+  }
+  
+  // Pagination
+  const itemsPerPage = 24;
+  const pageNum = parseInt(page) || 1;
+  const startIndex = (pageNum - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  
+  const paginatedProfiles = profiles.slice(startIndex, endIndex);
+  
+  return createResponse('success', {
+    items: paginatedProfiles,
+    total: profiles.length,
+    hasMore: endIndex < profiles.length,
+    page: pageNum
+  });
+}
+
+function getStats() {
+  const profilesSheet = getOrCreateSheet(PROFILES_SHEET);
+  const projectsSheet = getOrCreateSheet(PROJECTS_SHEET);
+  
+  const profilesCount = profilesSheet.getLastRow() - 1; // Exclude header
+  const projectsCount = projectsSheet.getLastRow() - 1;
+  
+  return createResponse('success', {
+    totalStudents: Math.max(0, profilesCount),
+    totalProjects: Math.max(0, projectsCount)
+  });
+}
+
+// ====== EXISTING FUNCTIONS (UNCHANGED) ======
 
 function getProfiles() {
   const sheet = getOrCreateSheet(PROFILES_SHEET);
@@ -126,6 +212,8 @@ function getProfiles() {
   return createResponse('success', profiles);
 }
 
+// ====== UPDATED LOGIN WITH MIGRATION SUPPORT ======
+
 function login(email, password) {
   const sheet = getOrCreateSheet(USERS_SHEET);
   const data = sheet.getDataRange().getValues();
@@ -135,24 +223,49 @@ function login(email, password) {
     if (!data[i][0]) continue; 
 
     if (String(data[i][0]).toLowerCase() === cleanEmail) {
-      if (data[i][1] === hashPassword(password)) {
-        return createResponse('success', {
-          email: data[i][0],
-          name: data[i][2],
-          university: data[i][3],
-          major: data[i][4],
-          profilePicture: data[i][5],
-          linkedin: data[i][6],
-          github: data[i][7],
-          bio: data[i][8],
-          resume: data[i][10] || ''
-        });
-      } else {
+      const storedHash = data[i][1];
+      const newHash = hashPassword(password);    // Salted (New Security)
+      const oldHash = hashLegacy(password);      // Unsalted (Old Security)
+
+      if (storedHash === newHash) {
+        // CASE 1: User is already updated. Success.
+        return createResponse('success', getUserObj(data[i]));
+      } 
+      else if (storedHash === oldHash) {
+        // CASE 2: User has old password. Success + Auto-Migrate.
+        // We overwrite their old insecure hash with the new salted one immediately.
+        sheet.getRange(i + 1, 2).setValue(newHash);
+        return createResponse('success', getUserObj(data[i]));
+      } 
+      else {
         return createResponse('error', 'Incorrect password');
       }
     }
   }
   return createResponse('error', 'User not found');
+}
+
+// === REQUIRED HELPER FUNCTIONS ===
+
+// 1. The Old Hashing Algorithm (for verification only)
+function hashLegacy(raw) {
+  const digest = Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, raw);
+  return Utilities.base64Encode(digest);
+}
+
+// 2. Helper to format user object (keeps code clean)
+function getUserObj(row) {
+  return {
+    email: row[0],
+    name: row[2],
+    university: row[3],
+    major: row[4],
+    profilePicture: row[5],
+    linkedin: row[6],
+    github: row[7],
+    bio: row[8],
+    resume: row[10] || ''
+  };
 }
 
 function signup(data) {
@@ -223,7 +336,6 @@ function updateProfile(data) {
   return createResponse('success', 'Profile updated');
 }
 
-// [NEW] Toggle Upvote Function
 function toggleUpvote(projectId, userEmail) {
   if (!projectId || !userEmail) return createResponse('error', 'Missing data');
   
@@ -234,16 +346,14 @@ function toggleUpvote(projectId, userEmail) {
   const cleanEmail = String(userEmail).toLowerCase().trim();
   let foundRowIndex = -1;
 
-  // 1. Check if user already upvoted
   for (let i = 1; i < upvotesData.length; i++) {
     if (String(upvotesData[i][0]) === String(projectId) && 
         String(upvotesData[i][1]).toLowerCase() === cleanEmail) {
-      foundRowIndex = i + 1; // 1-based index for Sheet
+      foundRowIndex = i + 1;
       break;
     }
   }
 
-  // 2. Find Project Row to update count
   const projectData = projectSheet.getDataRange().getValues();
   let projectRowIndex = -1;
   let currentCount = 0;
@@ -251,7 +361,7 @@ function toggleUpvote(projectId, userEmail) {
   for (let i = 1; i < projectData.length; i++) {
     if (String(projectData[i][0]) === String(projectId)) {
       projectRowIndex = i + 1;
-      currentCount = parseInt(projectData[i][9]) || 0; // Column 10 is index 9
+      currentCount = parseInt(projectData[i][9]) || 0;
       break;
     }
   }
@@ -262,18 +372,15 @@ function toggleUpvote(projectId, userEmail) {
   let action = '';
 
   if (foundRowIndex !== -1) {
-    // REMOVE UPVOTE (Toggle Off)
     upvoteSheet.deleteRow(foundRowIndex);
     newCount = Math.max(0, currentCount - 1);
     action = 'removed';
   } else {
-    // ADD UPVOTE (Toggle On)
     upvoteSheet.appendRow([projectId, cleanEmail, new Date().toISOString()]);
     newCount = currentCount + 1;
     action = 'added';
   }
 
-  // Update Project Sheet Count
   projectSheet.getRange(projectRowIndex, 10).setValue(newCount);
 
   return createResponse('success', { action: action, newCount: newCount });
@@ -315,7 +422,7 @@ function getOrCreateSheet(name) {
       'Projects': ['id', 'authorName', 'authorEmail', 'authorPicture', 'title', 'description', 'link', 'tech', 'projectImage', 'upvotes', 'timestamp'],
       'Profiles': ['name', 'email', 'university', 'major', 'linkedin', 'github', 'bio', 'profilePicture', 'timestamp', 'resume'],
       'Comments': ['id', 'projectId', 'authorName', 'authorEmail', 'comment', 'timestamp'],
-      'Upvotes': ['projectId', 'userEmail', 'timestamp'] // [NEW] Headers for Upvotes
+      'Upvotes': ['projectId', 'userEmail', 'timestamp']
     };
     if (headers[name]) sheet.appendRow(headers[name]);
   }
@@ -323,7 +430,6 @@ function getOrCreateSheet(name) {
 }
 
 function hashPassword(raw) {
-  // [SECURITY IMPROVEMENT] Added simple salt to prevent rainbow table attacks
   const SALT = 'NIELIT_STUDENTHUB_SECURE_SALT_2026'; 
   const digest = Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, raw + SALT);
   return Utilities.base64Encode(digest);
