@@ -1,13 +1,7 @@
-// ========================================
-// STUDENTHUB - PRODUCTION BACKEND (v2.0)
-// ========================================
-
 const PROJECTS_SHEET = 'Projects';
 const PROFILES_SHEET = 'Profiles';
 const USERS_SHEET = 'Users';
 const COMMENTS_SHEET = 'Comments';
-
-// ====== MAIN HANDLERS ======
 
 function doGet(e) {
   return handleRequest(e, 'GET');
@@ -19,10 +13,9 @@ function doPost(e) {
 
 function handleRequest(e, method) {
   const lock = LockService.getScriptLock();
-  lock.tryLock(10000); // Wait up to 10 seconds for concurrent requests
+  lock.tryLock(10000);
   
   try {
-    // 1. Parse Parameters
     let action, params;
     
     if (method === 'GET') {
@@ -30,14 +23,12 @@ function handleRequest(e, method) {
       action = e.parameter.action;
       params = e.parameter;
     } else {
-      // Robust POST data parsing to handle different browser behaviors
       if (!e || !e.postData) return createResponse('error', 'No POST data');
       const rawData = e.postData.contents;
       let jsonData;
       try {
         jsonData = JSON.parse(rawData);
       } catch (err) {
-        // Fallback for form-encoded payloads or stringified keys
         try {
           jsonData = JSON.parse(Object.keys(e.parameter)[0] || '{}');
         } catch (err2) {
@@ -45,14 +36,12 @@ function handleRequest(e, method) {
         }
       }
       action = jsonData.action;
-      params = jsonData; // The entire body is params
+      params = jsonData;
     }
 
-    // 2. Route Request
     if (!action) return createResponse('error', 'No action specified');
 
     switch (action) {
-      // --- READ ACTIONS ---
       case 'getProjects':
         return getProjects();
       case 'getProfiles':
@@ -61,8 +50,6 @@ function handleRequest(e, method) {
         return getComments(params.projectId);
       case 'login':
         return login(params.email, params.password);
-      
-      // --- WRITE ACTIONS (POST) ---
       case 'signup':
         return signup(params.data);
       case 'addProject':
@@ -73,7 +60,6 @@ function handleRequest(e, method) {
         return updateUpvotes(params.projectId, params.upvotes);
       case 'addComment':
         return addComment(params.data);
-        
       default:
         return createResponse('error', `Unknown action: ${action}`);
     }
@@ -84,8 +70,6 @@ function handleRequest(e, method) {
   }
 }
 
-// ====== CORE LOGIC ======
-
 function getProjects() {
   const sheet = getOrCreateSheet(PROJECTS_SHEET);
   const data = sheet.getDataRange().getValues();
@@ -95,13 +79,12 @@ function getProjects() {
   const projects = data.slice(1).map(row => {
     let p = {};
     headers.forEach((h, i) => p[h] = row[i]);
-    // Clean up data types
     p.upvotes = parseInt(p.upvotes) || 0;
     p.commentCount = getCommentCount(p.id);
     return p;
   });
   
-  return createResponse('success', projects.reverse()); // Newest first
+  return createResponse('success', projects.reverse());
 }
 
 function getProfiles() {
@@ -124,11 +107,9 @@ function login(email, password) {
   const data = sheet.getDataRange().getValues();
   const cleanEmail = String(email).toLowerCase().trim();
   
-  // Skip header
   for (let i = 1; i < data.length; i++) {
     if (String(data[i][0]).toLowerCase() === cleanEmail) {
       if (data[i][1] === hashPassword(password)) {
-        // Return profile data including new resume field (Index 10 based on your new column)
         return createResponse('success', {
           email: data[i][0],
           name: data[i][2],
@@ -138,7 +119,7 @@ function login(email, password) {
           linkedin: data[i][6],
           github: data[i][7],
           bio: data[i][8],
-          resume: data[i][10] || '' // <--- NEW: Return resume URL
+          resume: data[i][10] || ''
         });
       } else {
         return createResponse('error', 'Incorrect password');
@@ -153,7 +134,6 @@ function signup(data) {
   const profilesSheet = getOrCreateSheet(PROFILES_SHEET);
   const cleanEmail = String(data.email).toLowerCase().trim();
 
-  // Check duplicate
   const users = usersSheet.getDataRange().getValues();
   for(let i=1; i<users.length; i++) {
     if(String(users[i][0]).toLowerCase() === cleanEmail) {
@@ -163,16 +143,14 @@ function signup(data) {
 
   const hashedPassword = hashPassword(data.password);
   
-  // Add to Users (Secure Sheet)
   usersSheet.appendRow([
     cleanEmail, hashedPassword, data.name, data.university, 
-    data.major, data.profilePicture, '', '', '', new Date().toISOString()
+    data.major, data.profilePicture, '', '', '', '', new Date().toISOString()
   ]);
 
-  // Add to Profiles (Public Sheet)
   profilesSheet.appendRow([
     data.name, cleanEmail, data.university, data.major, 
-    '', '', '', data.profilePicture, new Date().toISOString()
+    '', '', '', data.profilePicture, new Date().toISOString(), ''
   ]);
 
   return createResponse('success', { ...data, password: '' });
@@ -204,18 +182,16 @@ function updateProfile(data) {
     }
   };
 
-  // Update Users (Added index 10 for resume)
   updateRow(usersSheet, 0, {
     2: data.name, 3: data.university, 4: data.major, 
     5: data.profilePicture, 6: data.linkedin, 7: data.github, 8: data.bio,
-    10: data.resume // <--- NEW
+    10: data.resume 
   });
 
-  // Update Profiles (Added index 9 for resume - Profiles sheet has different structure)
   updateRow(profilesSheet, 1, {
     0: data.name, 2: data.university, 3: data.major,
     4: data.linkedin, 5: data.github, 6: data.bio, 7: data.profilePicture,
-    9: data.resume // <--- NEW
+    9: data.resume
   });
   
   return createResponse('success', 'Profile updated');
@@ -226,7 +202,7 @@ function updateUpvotes(id, count) {
   const data = sheet.getDataRange().getValues();
   for(let i=1; i<data.length; i++) {
     if(String(data[i][0]) === String(id)) {
-      sheet.getRange(i+1, 10).setValue(count); // Upvotes is col 10
+      sheet.getRange(i+1, 10).setValue(count);
       return createResponse('success', 'Updated');
     }
   }
@@ -245,7 +221,6 @@ function addComment(data) {
 function getComments(projectId) {
   const sheet = getOrCreateSheet(COMMENTS_SHEET);
   const data = sheet.getDataRange().getValues();
-  // Filter by projectId (col 1)
   const comments = data.slice(1)
     .filter(row => String(row[1]) === String(projectId))
     .map(row => ({
@@ -254,8 +229,6 @@ function getComments(projectId) {
     }));
   return createResponse('success', comments);
 }
-
-// ====== HELPERS ======
 
 function createResponse(status, data) {
   return ContentService.createTextOutput(JSON.stringify({ status, data }))
@@ -268,9 +241,9 @@ function getOrCreateSheet(name) {
   if (!sheet) {
     sheet = ss.insertSheet(name);
     const headers = {
-      'Users': ['email', 'password', 'name', 'university', 'major', 'profilePicture', 'linkedin', 'github', 'bio', 'timestamp'],
+      'Users': ['email', 'password', 'name', 'university', 'major', 'profilePicture', 'linkedin', 'github', 'bio', 'timestamp', 'resume'],
       'Projects': ['id', 'authorName', 'authorEmail', 'authorPicture', 'title', 'description', 'link', 'tech', 'projectImage', 'upvotes', 'timestamp'],
-      'Profiles': ['name', 'email', 'university', 'major', 'linkedin', 'github', 'bio', 'profilePicture', 'timestamp'],
+      'Profiles': ['name', 'email', 'university', 'major', 'linkedin', 'github', 'bio', 'profilePicture', 'timestamp', 'resume'],
       'Comments': ['id', 'projectId', 'authorName', 'authorEmail', 'comment', 'timestamp']
     };
     if (headers[name]) sheet.appendRow(headers[name]);
