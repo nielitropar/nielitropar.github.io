@@ -965,7 +965,7 @@
 
             const html = chunk.map(p => `
                 <div class="profile-card" onclick="openPortfolio('${p.email}')">
-                    <img src="${p.profilePicture || 'https://via.placeholder.com/150'}" class="profile-pic" loading="lazy" alt="${p.name}">
+                    <img src="${p.profilePicture || 'default-avatar.png'}" class="profile-pic" loading="lazy" alt="${p.name}">
                     <h3 class="card-name">${escapeHtml(p.name)}</h3>
                     <p class="card-major">${escapeHtml(p.major || 'Student')}</p>
                     <p class="card-uni">${escapeHtml(p.university || '')}</p>
@@ -1036,7 +1036,7 @@
             document.getElementById('portfolioView').classList.remove('hidden');
 
             document.getElementById('portfolioHeader').innerHTML = `
-                <img src="${profile.profilePicture || 'https://via.placeholder.com/150'}" class="big-avatar">
+                <img src="${profile.profilePicture || 'default-avatar.png'}" class="big-avatar">
                 <h1 style="font-size: 2.5rem; margin-bottom: 0.8rem; color: var(--primary); font-weight: 800; font-family: 'Space Grotesk', sans-serif;">${escapeHtml(profile.name)}</h1>
                 <p style="font-size: 1.15rem; color: var(--text-secondary); margin-bottom: 2rem; font-weight: 500;">
                     ${escapeHtml(profile.major)} ${profile.university ? '@ ' + escapeHtml(profile.university) : ''}
