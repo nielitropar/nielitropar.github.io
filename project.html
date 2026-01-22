@@ -18,7 +18,6 @@
     <meta property="og:url" content="https://nielitropar.github.io/project.html">
     <meta property="og:image" content="https://nielitropar.github.io/logo.png">
 
-<!-- Open Graph Meta Tags for Social Sharing -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:site" content="@NIELITRopar">
     <meta name="twitter:title" content="Project View - NIELIT StudentHub">
@@ -41,513 +40,94 @@
             --shadow-lg: 0 10px 40px rgba(0, 51, 102, 0.15);
         }
         
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         
-        body {
-            font-family: 'Poppins', sans-serif;
-            background: var(--background);
-            color: var(--text-primary);
-            line-height: 1.6;
-        }
+        body { font-family: 'Poppins', sans-serif; background: var(--background); color: var(--text-primary); line-height: 1.6; }
         
-        /* Navigation */
-        nav {
-            background: var(--card-bg);
-            box-shadow: var(--shadow-sm);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            backdrop-filter: blur(10px);
-        }
+        nav { background: var(--card-bg); box-shadow: var(--shadow-sm); position: sticky; top: 0; z-index: 1000; backdrop-filter: blur(10px); }
+        .nav-container { max-width: 1200px; margin: 0 auto; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 900; color: var(--primary); display: flex; align-items: center; gap: 0.5rem; text-decoration: none; }
+        .logo::before { content: '🎓'; font-size: 1.8rem; }
         
-        .nav-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+        .container { max-width: 900px; margin: 2rem auto; padding: 0 1rem; }
         
-        .logo {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.5rem;
-            font-weight: 900;
-            color: var(--primary);
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            text-decoration: none;
-        }
+        .project-detail-card { background: var(--card-bg); border-radius: 16px; padding: 2rem; box-shadow: var(--shadow-md); animation: fadeIn 0.5s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         
-        .logo::before {
-            content: '🎓';
-            font-size: 1.8rem;
-        }
+        .author-header { display: flex; gap: 1rem; margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 2px solid var(--border); align-items: center; }
+        .avatar { width: 60px; height: 60px; border-radius: 50%; object-fit: cover; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: 3px solid white; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+        .author-info { flex: 1; }
+        .author-name { font-size: 1.1rem; font-weight: 600; color: var(--primary); margin-bottom: 0.25rem; }
+        .post-date { font-size: 0.9rem; color: var(--text-secondary); }
         
-        /* Container */
-        .container {
-            max-width: 900px;
-            margin: 2rem auto;
-            padding: 0 1rem;
-        }
+        .project-title { font-size: 2rem; font-weight: 700; color: var(--primary); margin-bottom: 1rem; line-height: 1.3; }
+        .project-description { font-size: 1.05rem; color: var(--text-primary); line-height: 1.8; margin-bottom: 2rem; white-space: pre-wrap; }
+        .project-image { width: 100%; max-width: 100%; border-radius: 12px; margin: 2rem 0; box-shadow: var(--shadow-md); border: 1px solid var(--border); }
         
-        /* Project Card */
-        .project-detail-card {
-            background: var(--card-bg);
-            border-radius: 16px;
-            padding: 2rem;
-            box-shadow: var(--shadow-md);
-            animation: fadeIn 0.5s ease-out;
-        }
+        .project-meta { display: flex; gap: 1.5rem; flex-wrap: wrap; margin: 2rem 0; padding: 1.5rem; background: rgba(0, 102, 204, 0.05); border-radius: 12px; }
+        .meta-item { display: flex; align-items: center; gap: 0.5rem; font-size: 0.95rem; }
+        .meta-icon { font-size: 1.2rem; }
+        .meta-label { font-weight: 600; color: var(--text-secondary); }
+        .meta-value { color: var(--text-primary); }
+        .tech-badge { display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 6px 16px; border-radius: 20px; font-weight: 600; font-size: 0.9rem; }
         
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
+        .project-actions { display: flex; gap: 1rem; margin: 2rem 0; padding-top: 1.5rem; border-top: 1px solid var(--border); flex-wrap: wrap; }
+        .btn { padding: 0.75rem 1.5rem; border-radius: 10px; border: none; font-weight: 600; cursor: pointer; transition: all 0.3s ease; font-size: 0.95rem; font-family: 'Poppins', sans-serif; display: inline-flex; align-items: center; gap: 0.5rem; text-decoration: none; }
+        .btn-primary { background: linear-gradient(135deg, #003366 0%, #0066CC 100%); color: white; box-shadow: 0 4px 12px rgba(0, 102, 204, 0.3); }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0, 102, 204, 0.4); }
+        .btn-secondary { background: #F3F4F6; color: var(--text-primary); }
+        .btn-secondary:hover { background: #E5E7EB; }
         
-        /* Author Info */
-        .author-header {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 2rem;
-            padding-bottom: 1.5rem;
-            border-bottom: 2px solid var(--border);
-            align-items: center;
-        }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 3000; align-items: center; justify-content: center; backdrop-filter: blur(4px); padding: 1rem; }
+        .modal.active { display: flex; }
+        .modal-content { background: white; padding: 2rem; border-radius: 20px; width: 100%; max-width: 500px; box-shadow: var(--shadow-lg); animation: modalSlide 0.3s ease-out; }
+        @keyframes modalSlide { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
+        .modal-close { background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text-secondary); padding: 0.5rem; border-radius: 8px; }
         
-        .avatar {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            object-fit: cover;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border: 3px solid white;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-        }
+        .share-options { display: flex; flex-direction: column; gap: 1rem; }
+        .share-link-box { display: flex; gap: 0.5rem; padding: 1rem; background: var(--background); border-radius: 8px; border: 2px solid var(--border); }
+        .share-link-input { flex: 1; border: none; background: none; font-family: monospace; font-size: 0.9rem; color: var(--text-primary); outline: none; }
+        .copy-btn { background: var(--accent); color: white; border: none; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; font-weight: 600; transition: all 0.2s; }
+        .copy-btn:hover { background: var(--primary); }
+        .copy-btn.copied { background: var(--success); }
         
-        .author-info {
-            flex: 1;
-        }
+        .share-button { width: 100%; padding: 1rem; border: 2px solid var(--border); background: white; border-radius: 10px; cursor: pointer; font-size: 1rem; font-weight: 600; display: flex; align-items: center; gap: 1rem; transition: all 0.2s; }
+        .share-button:hover { background: var(--background); border-color: var(--accent); }
+        .share-icon { font-size: 1.5rem; }
         
-        .author-name {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: var(--primary);
-            margin-bottom: 0.25rem;
-        }
+        .comments-section { margin-top: 3rem; padding-top: 2rem; border-top: 2px solid var(--border); }
+        .comments-header { font-size: 1.3rem; font-weight: 700; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem; }
+        .comment-item { margin-bottom: 1.5rem; background: #F9FAFB; padding: 1.25rem; border-radius: 12px; border-left: 3px solid var(--accent); }
+        .comment-author { font-size: 0.9rem; font-weight: 600; color: var(--primary); margin-bottom: 0.5rem; }
+        .comment-text { color: var(--text-primary); line-height: 1.6; font-size: 0.95rem; }
+        .comment-date { font-size: 0.8rem; color: var(--text-secondary); margin-top: 0.5rem; }
         
-        .post-date {
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-        }
+        .loading { text-align: center; padding: 4rem 2rem; color: var(--text-secondary); }
+        .loading-spinner { font-size: 3rem; animation: spin 2s linear infinite; }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
         
-        /* Project Content */
-        .project-title {
-            font-size: 2rem;
-            font-weight: 700;
-            color: var(--primary);
-            margin-bottom: 1rem;
-            line-height: 1.3;
-        }
+        .error-message { text-align: center; padding: 3rem 2rem; background: white; border-radius: 16px; box-shadow: var(--shadow-sm); }
+        .error-icon { font-size: 3rem; margin-bottom: 1rem; }
         
-        .project-description {
-            font-size: 1.05rem;
-            color: var(--text-primary);
-            line-height: 1.8;
-            margin-bottom: 2rem;
-            white-space: pre-wrap;
-        }
+        .site-footer { text-align: center; padding: 3rem 2rem; background: var(--card-bg); border-top: 1px solid var(--border); color: var(--text-secondary); font-size: 0.9rem; margin-top: 3rem; }
         
-        .project-image {
-            width: 100%;
-            max-width: 100%;
-            border-radius: 12px;
-            margin: 2rem 0;
-            box-shadow: var(--shadow-md);
-            border: 1px solid var(--border);
-        }
-        
-        /* Metadata */
-        .project-meta {
-            display: flex;
-            gap: 1.5rem;
-            flex-wrap: wrap;
-            margin: 2rem 0;
-            padding: 1.5rem;
-            background: rgba(0, 102, 204, 0.05);
-            border-radius: 12px;
-        }
-        
-        .meta-item {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: 0.95rem;
-        }
-        
-        .meta-icon {
-            font-size: 1.2rem;
-        }
-        
-        .meta-label {
-            font-weight: 600;
-            color: var(--text-secondary);
-        }
-        
-        .meta-value {
-            color: var(--text-primary);
-        }
-        
-        .tech-badge {
-            display: inline-block;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 6px 16px;
-            border-radius: 20px;
-            font-weight: 600;
-            font-size: 0.9rem;
-        }
-        
-        /* Actions */
-        .project-actions {
-            display: flex;
-            gap: 1rem;
-            margin: 2rem 0;
-            padding-top: 1.5rem;
-            border-top: 1px solid var(--border);
-            flex-wrap: wrap;
-        }
-        
-        .btn {
-            padding: 0.75rem 1.5rem;
-            border-radius: 10px;
-            border: none;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 0.95rem;
-            font-family: 'Poppins', sans-serif;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            text-decoration: none;
-        }
-        
-        .btn-primary {
-            background: linear-gradient(135deg, #003366 0%, #0066CC 100%);
-            color: white;
-            box-shadow: 0 4px 12px rgba(0, 102, 204, 0.3);
-        }
-        
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0, 102, 204, 0.4);
-        }
-        
-        .btn-secondary {
-            background: #F3F4F6;
-            color: var(--text-primary);
-        }
-        
-        .btn-secondary:hover {
-            background: #E5E7EB;
-        }
-        
-        /* Share Modal */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.6);
-            z-index: 3000;
-            align-items: center;
-            justify-content: center;
-            backdrop-filter: blur(4px);
-            padding: 1rem;
-        }
-        
-        .modal.active {
-            display: flex;
-        }
-        
-        .modal-content {
-            background: white;
-            padding: 2rem;
-            border-radius: 20px;
-            width: 100%;
-            max-width: 500px;
-            box-shadow: var(--shadow-lg);
-            animation: modalSlide 0.3s ease-out;
-        }
-        
-        @keyframes modalSlide {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-        }
-        
-        .modal-close {
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: var(--text-secondary);
-            padding: 0.5rem;
-            border-radius: 8px;
-        }
-        
-        .share-options {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-        
-        .share-link-box {
-            display: flex;
-            gap: 0.5rem;
-            padding: 1rem;
-            background: var(--background);
-            border-radius: 8px;
-            border: 2px solid var(--border);
-        }
-        
-        .share-link-input {
-            flex: 1;
-            border: none;
-            background: none;
-            font-family: monospace;
-            font-size: 0.9rem;
-            color: var(--text-primary);
-            outline: none;
-        }
-        
-        .copy-btn {
-            background: var(--accent);
-            color: white;
-            border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.2s;
-        }
-        
-        .copy-btn:hover {
-            background: var(--primary);
-        }
-        
-        .copy-btn.copied {
-            background: var(--success);
-        }
-        
-        .share-button {
-            width: 100%;
-            padding: 1rem;
-            border: 2px solid var(--border);
-            background: white;
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: 1rem;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            transition: all 0.2s;
-        }
-        
-        .share-button:hover {
-            background: var(--background);
-            border-color: var(--accent);
-        }
-        
-        .share-icon {
-            font-size: 1.5rem;
-        }
-        
-        /* Comments Section */
-        .comments-section {
-            margin-top: 3rem;
-            padding-top: 2rem;
-            border-top: 2px solid var(--border);
-        }
-        
-        .comments-header {
-            font-size: 1.3rem;
-            font-weight: 700;
-            margin-bottom: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        
-        .comment-item {
-            margin-bottom: 1.5rem;
-            background: #F9FAFB;
-            padding: 1.25rem;
-            border-radius: 12px;
-            border-left: 3px solid var(--accent);
-        }
-        
-        .comment-author {
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: var(--primary);
-            margin-bottom: 0.5rem;
-        }
-        
-        .comment-text {
-            color: var(--text-primary);
-            line-height: 1.6;
-            font-size: 0.95rem;
-        }
-        
-        .comment-date {
-            font-size: 0.8rem;
-            color: var(--text-secondary);
-            margin-top: 0.5rem;
-        }
-        
-        /* Loading & Error States */
-        .loading {
-            text-align: center;
-            padding: 4rem 2rem;
-            color: var(--text-secondary);
-        }
-        
-        .loading-spinner {
-            font-size: 3rem;
-            animation: spin 2s linear infinite;
-        }
-        
-        @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-        
-        .error-message {
-            text-align: center;
-            padding: 3rem 2rem;
-            background: white;
-            border-radius: 16px;
-            box-shadow: var(--shadow-sm);
-        }
-        
-        .error-icon {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-        }
-        
-        /* Footer */
-        .site-footer {
-            text-align: center;
-            padding: 3rem 2rem;
-            background: var(--card-bg);
-            border-top: 1px solid var(--border);
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-            margin-top: 3rem;
-        }
-        
-        /* Responsive */
         @media (max-width: 768px) {
-            .nav-container {
-                padding: 1rem;
-            }
-            
-            .logo {
-                font-size: 1.3rem;
-            }
-            
-            .container {
-                padding: 0 0.5rem;
-            }
-            
-            .project-detail-card {
-                padding: 1.5rem;
-            }
-            
-            .project-title {
-                font-size: 1.5rem;
-            }
-            
-            .author-header {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            
-            .project-meta {
-                flex-direction: column;
-                gap: 1rem;
-            }
-            
-            .project-actions {
-                flex-direction: column;
-            }
-            
-            .btn {
-                width: 100%;
-                justify-content: center;
-            }
+            .nav-container { padding: 1rem; }
+            .logo { font-size: 1.3rem; }
+            .container { padding: 0 0.5rem; }
+            .project-detail-card { padding: 1.5rem; }
+            .project-title { font-size: 1.5rem; }
+            .author-header { flex-direction: column; align-items: flex-start; }
+            .project-meta { flex-direction: column; gap: 1rem; }
+            .project-actions { flex-direction: column; }
+            .btn { width: 100%; justify-content: center; }
         }
         
-        .hidden {
-            display: none;
-        }
-
-        /* App Download Button */
-.app-download-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    background: #1a1a1a; /* Dark background for contrast */
-    color: #ffffff !important; /* Force white text */
-    padding: 10px 20px;
-    border-radius: 50px; /* Pill shape */
-    text-decoration: none;
-    font-weight: 500;
-    font-size: 0.9rem;
-    margin-top: 1.5rem;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    border: 1px solid transparent;
-}
-
-.app-download-btn:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
-    background: var(--accent); /* Changes to blue on hover */
-    border-color: var(--accent);
-}
-
-.app-icon {
-    font-size: 1.2rem;
-}
+        .hidden { display: none; }
+        .app-download-btn { display: inline-flex; align-items: center; gap: 10px; background: #1a1a1a; color: #ffffff !important; padding: 10px 20px; border-radius: 50px; text-decoration: none; font-weight: 500; font-size: 0.9rem; margin-top: 1.5rem; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(0,0,0,0.1); border: 1px solid transparent; }
+        .app-download-btn:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0,0,0,0.15); background: var(--accent); border-color: var(--accent); }
+        .app-icon { font-size: 1.2rem; }
     </style>
 </head>
 <body>
@@ -564,13 +144,11 @@
     </nav>
 
     <div class="container">
-        <!-- Loading State -->
         <div id="loadingState" class="loading">
             <div class="loading-spinner">⏳</div>
             <p style="margin-top: 1rem; font-size: 1.1rem; font-weight: 500;">Loading project...</p>
         </div>
 
-        <!-- Error State -->
         <div id="errorState" class="error-message hidden">
             <div class="error-icon">😕</div>
             <h2 style="margin-bottom: 0.5rem;">Project Not Found</h2>
@@ -580,10 +158,8 @@
             <a href="index.html" class="btn btn-primary">Browse All Projects</a>
         </div>
 
-        <!-- Project Content -->
         <div id="projectContent" class="hidden">
             <div class="project-detail-card">
-                <!-- Author Header -->
                 <div class="author-header">
                     <img id="authorAvatar" src="" alt="Author" class="avatar">
                     <div class="author-info">
@@ -592,16 +168,12 @@
                     </div>
                 </div>
 
-                <!-- Project Title -->
                 <h1 class="project-title" id="projectTitle"></h1>
 
-                <!-- Project Description -->
                 <div class="project-description" id="projectDescription"></div>
 
-                <!-- Project Image -->
                 <img id="projectImage" src="" alt="Project" class="project-image hidden">
 
-                <!-- Project Metadata -->
                 <div class="project-meta">
                     <div class="meta-item">
                         <span class="meta-icon">👍</span>
@@ -619,7 +191,6 @@
                     </div>
                 </div>
 
-                <!-- Project Actions -->
                 <div class="project-actions">
                     <a id="projectLink" href="#" target="_blank" class="btn btn-primary hidden">
                         🔗 View Project
@@ -632,7 +203,6 @@
                     </a>
                 </div>
 
-                <!-- Comments Section -->
                 <div class="comments-section" id="commentsSection">
                     <h3 class="comments-header">
                         💬 Comments <span id="commentCount">(0)</span>
@@ -650,7 +220,6 @@
         </div>
     </div>
 
-    <!-- Share Modal -->
     <div id="shareModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -659,7 +228,6 @@
             </div>
             
             <div class="share-options">
-                <!-- Copy Link -->
                 <div style="margin-bottom: 1rem;">
                     <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; font-size: 0.9rem;">
                         Project Link
@@ -670,7 +238,6 @@
                     </div>
                 </div>
 
-                <!-- Share Buttons -->
                 <button onclick="shareViaEmail()" class="share-button">
                     <span class="share-icon">📧</span>
                     <span>Share via Email</span>
@@ -700,20 +267,18 @@
             🎓 NIELIT Ropar
         </p>
     </div>
-    
     <p>&copy; 2026 <strong>StudentHub</strong>. All rights reserved.</p>
-    
     <p style="font-size: 0.8rem; margin: 0.5rem 0; opacity: 0.7; max-width: 300px; margin-left: auto; margin-right: auto;">
         National Institute of Electronics & Information Technology
     </p>
-
     <a href="https://github.com/nielitropar/nielitropar.github.io/releases/tag/v1.0" target="_blank" class="app-download-btn">
         <span class="app-icon">🤖</span> 
         <span>Download Android App</span>
     </a>
     </footer>
+
     <script>
-        // CONFIGURATION - Update these with your actual values
+        // CONFIGURATION
         const SHEET_URL = 'https://script.google.com/macros/s/AKfycbzGbZ39b67jJ2NPODCW4K3zqlf6p6-bq8vPRHmCdNjOxl37MT9KdndnCR8vw55qv7dN/exec';
 
         let currentProject = null;
@@ -721,7 +286,6 @@
 
         // Initialize
         window.onload = () => {
-            // Get project ID from URL parameter
             const urlParams = new URLSearchParams(window.location.search);
             projectId = urlParams.get('id');
 
@@ -733,26 +297,20 @@
             loadProject(projectId);
         };
 
-        // Load project data
+        // --- NEW: Load specific project by ID ---
         async function loadProject(id) {
             try {
-                // Fetch all projects
-                const response = await fetch(`${SHEET_URL}?action=getProjects`);
+                // Call new 'getProject' action
+                const response = await fetch(`${SHEET_URL}?action=getProject&id=${id}`);
                 const json = await response.json();
 
                 if (json.status === 'success') {
-                    // Find the specific project
-                    // Convert both to strings to ensure they match
-                    currentProject = json.data.find(p => String(p.id) === String(id));
-
-                    if (currentProject) {
-                        renderProject(currentProject);
-                        loadComments(id);
-                        updateMetaTags(currentProject);
-                    } else {
-                        showError();
-                    }
+                    currentProject = json.data;
+                    renderProject(currentProject);
+                    loadComments(id);
+                    updateMetaTags(currentProject);
                 } else {
+                    console.error("Project not found:", json.data);
                     showError();
                 }
             } catch (error) {
@@ -761,31 +319,24 @@
             }
         }
 
-
-// Render project details
+        // Render project details
         function renderProject(project) {
             document.getElementById('loadingState').classList.add('hidden');
             document.getElementById('projectContent').classList.remove('hidden');
 
-            // Author info
             document.getElementById('authorAvatar').src = project.authorPicture || 'default-avatar.png';
             document.getElementById('authorName').textContent = project.authorName;
             document.getElementById('postDate').textContent = formatDate(project.timestamp);
 
-            // --- START: Make Author Header Clickable ---
-            // This links the name/avatar to the profile page
             const header = document.querySelector('.author-header');
             header.style.cursor = 'pointer';
             header.onclick = function() {
                 window.location.href = `index.html?email=${project.authorEmail}`;
             };
-            // --- END ---
 
-            // Project details
             document.getElementById('projectTitle').textContent = project.title;
             document.getElementById('projectDescription').textContent = project.description;
 
-            // Project image
             if (project.projectImage) {
                 const img = document.getElementById('projectImage');
                 img.src = project.projectImage;
@@ -793,7 +344,6 @@
                 img.classList.remove('hidden');
             }
 
-            // Metadata
             document.getElementById('projectUpvotes').textContent = project.upvotes || 0;
             document.getElementById('projectComments').textContent = project.commentCount || 0;
             
@@ -803,18 +353,15 @@
                 document.getElementById('techContainer').classList.add('hidden');
             }
 
-            // Project link
             if (project.link) {
                 const linkBtn = document.getElementById('projectLink');
                 linkBtn.href = project.link;
                 linkBtn.classList.remove('hidden');
             }
 
-            // Update page title
             document.title = `${project.title} - NIELIT StudentHub`;
         }
 
-        // Load comments
         async function loadComments(projectId) {
             try {
                 const response = await fetch(`${SHEET_URL}?action=getComments&projectId=${projectId}`);
@@ -828,7 +375,6 @@
             }
         }
 
-        // Render comments
         function renderComments(comments) {
             document.getElementById('commentCount').textContent = `(${comments.length})`;
 
@@ -843,7 +389,6 @@
             document.getElementById('commentsList').innerHTML = html;
         }
 
-        // Share functionality
         function openShareModal() {
             const shareLink = `${window.location.origin}${window.location.pathname}?id=${projectId}`;
             document.getElementById('shareLinkInput').value = shareLink;
@@ -858,11 +403,9 @@
             const input = document.getElementById('shareLinkInput');
             input.select();
             document.execCommand('copy');
-
             const btn = document.getElementById('copyBtn');
             btn.textContent = '✓ Copied!';
             btn.classList.add('copied');
-
             setTimeout(() => {
                 btn.textContent = 'Copy';
                 btn.classList.remove('copied');
@@ -891,69 +434,43 @@
             window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${url}`, '_blank');
         }
 
-        // Update meta tags for social sharing
         function updateMetaTags(project) {
-            // Update Open Graph tags
             let ogTitle = document.querySelector('meta[property="og:title"]');
-            if (!ogTitle) {
-                ogTitle = document.createElement('meta');
-                ogTitle.setAttribute('property', 'og:title');
-                document.head.appendChild(ogTitle);
-            }
+            if (!ogTitle) { ogTitle = document.createElement('meta'); ogTitle.setAttribute('property', 'og:title'); document.head.appendChild(ogTitle); }
             ogTitle.setAttribute('content', project.title);
 
             let ogDescription = document.querySelector('meta[property="og:description"]');
-            if (!ogDescription) {
-                ogDescription = document.createElement('meta');
-                ogDescription.setAttribute('property', 'og:description');
-                document.head.appendChild(ogDescription);
-            }
+            if (!ogDescription) { ogDescription = document.createElement('meta'); ogDescription.setAttribute('property', 'og:description'); document.head.appendChild(ogDescription); }
             ogDescription.setAttribute('content', project.description.substring(0, 200));
 
             if (project.projectImage) {
                 let ogImage = document.querySelector('meta[property="og:image"]');
-                if (!ogImage) {
-                    ogImage = document.createElement('meta');
-                    ogImage.setAttribute('property', 'og:image');
-                    document.head.appendChild(ogImage);
-                }
+                if (!ogImage) { ogImage = document.createElement('meta'); ogImage.setAttribute('property', 'og:image'); document.head.appendChild(ogImage); }
                 ogImage.setAttribute('content', project.projectImage);
             }
 
             let ogUrl = document.querySelector('meta[property="og:url"]');
-            if (!ogUrl) {
-                ogUrl = document.createElement('meta');
-                ogUrl.setAttribute('property', 'og:url');
-                document.head.appendChild(ogUrl);
-            }
+            if (!ogUrl) { ogUrl = document.createElement('meta'); ogUrl.setAttribute('property', 'og:url'); document.head.appendChild(ogUrl); }
             ogUrl.setAttribute('content', window.location.href);
         }
 
-        // Show error state
         function showError() {
             document.getElementById('loadingState').classList.add('hidden');
             document.getElementById('errorState').classList.remove('hidden');
         }
 
-        // Utility functions
-        function escapeHtml(text) {
-            if (!text) return '';
-            return text.replace(/</g, "&lt;").replace(/>/g, "&gt;");
-        }
-
+        function escapeHtml(text) { if (!text) return ''; return text.replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
         function formatDate(timestamp) {
             const date = new Date(timestamp);
             const now = new Date();
             const diff = now - date;
             const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-
             if (days === 0) return 'Today';
             if (days === 1) return 'Yesterday';
             if (days < 7) return `${days}d ago`;
             return date.toLocaleDateString();
         }
 
-        // Close modal on outside click
         document.getElementById('shareModal').addEventListener('click', (e) => {
             if (e.target.id === 'shareModal') {
                 closeShareModal();
