@@ -127,10 +127,8 @@ function login(email, password) {
   // Skip header
   for (let i = 1; i < data.length; i++) {
     if (String(data[i][0]).toLowerCase() === cleanEmail) {
-      // Password check (Column index 1)
-      // Note: In production, consider salting. Here we use simple SHA-256
       if (data[i][1] === hashPassword(password)) {
-        // Return public profile data (col indexes: 0=email, 2=name, 3=uni, 4=major, 5=pic, 6=linked, 7=git, 8=bio)
+        // Return profile data including new resume field (Index 10 based on your new column)
         return createResponse('success', {
           email: data[i][0],
           name: data[i][2],
@@ -139,7 +137,8 @@ function login(email, password) {
           profilePicture: data[i][5],
           linkedin: data[i][6],
           github: data[i][7],
-          bio: data[i][8]
+          bio: data[i][8],
+          resume: data[i][10] || '' // <--- NEW: Return resume URL
         });
       } else {
         return createResponse('error', 'Incorrect password');
@@ -194,7 +193,6 @@ function updateProfile(data) {
   const profilesSheet = getOrCreateSheet(PROFILES_SHEET);
   const cleanEmail = String(data.email).toLowerCase().trim();
   
-  // Helper to update
   const updateRow = (sheet, emailColIndex, newDataMap) => {
     const d = sheet.getDataRange().getValues();
     for(let i=1; i<d.length; i++) {
@@ -206,16 +204,18 @@ function updateProfile(data) {
     }
   };
 
-  // Update Users: name(2), uni(3), major(4), pic(5), link(6), git(7), bio(8)
+  // Update Users (Added index 10 for resume)
   updateRow(usersSheet, 0, {
     2: data.name, 3: data.university, 4: data.major, 
-    5: data.profilePicture, 6: data.linkedin, 7: data.github, 8: data.bio
+    5: data.profilePicture, 6: data.linkedin, 7: data.github, 8: data.bio,
+    10: data.resume // <--- NEW
   });
 
-  // Update Profiles: name(0), email(1-KEY), uni(2), major(3), link(4), git(5), bio(6), pic(7)
+  // Update Profiles (Added index 9 for resume - Profiles sheet has different structure)
   updateRow(profilesSheet, 1, {
     0: data.name, 2: data.university, 3: data.major,
-    4: data.linkedin, 5: data.github, 6: data.bio, 7: data.profilePicture
+    4: data.linkedin, 5: data.github, 6: data.bio, 7: data.profilePicture,
+    9: data.resume // <--- NEW
   });
   
   return createResponse('success', 'Profile updated');
