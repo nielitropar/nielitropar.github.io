@@ -761,7 +761,8 @@
             }
         }
 
-        // Render project details
+
+// Render project details
         function renderProject(project) {
             document.getElementById('loadingState').classList.add('hidden');
             document.getElementById('projectContent').classList.remove('hidden');
@@ -770,6 +771,15 @@
             document.getElementById('authorAvatar').src = project.authorPicture || 'default-avatar.png';
             document.getElementById('authorName').textContent = project.authorName;
             document.getElementById('postDate').textContent = formatDate(project.timestamp);
+
+            // --- START: Make Author Header Clickable ---
+            // This links the name/avatar to the profile page
+            const header = document.querySelector('.author-header');
+            header.style.cursor = 'pointer';
+            header.onclick = function() {
+                window.location.href = `index.html?email=${project.authorEmail}`;
+            };
+            // --- END ---
 
             // Project details
             document.getElementById('projectTitle').textContent = project.title;
