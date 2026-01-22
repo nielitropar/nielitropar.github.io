@@ -1227,7 +1227,7 @@
             // Sidebar Update
             document.getElementById('sideName').textContent = currentUser.name;
             document.getElementById('sideMajor').textContent = currentUser.major || 'Student';
-            document.getElementById('sideAvatar').src = currentUser.profilePicture || 'https://via.placeholder.com/150';
+            document.getElementById('sideAvatar').src = currentUser.profilePicture || 'default-avatar.png';
 
             // Pre-fill Edit Form
             document.getElementById('editName').value = currentUser.name;
@@ -1359,7 +1359,7 @@ function renderProjects(list, append = false) {
     const html = chunk.map(p => `
         <div class="project-card card">
             <div class="project-header">
-                <img src="${p.authorPicture || 'https://via.placeholder.com/50'}" class="avatar">
+                <img src="${p.authorPicture || 'default-avatar.png'}" class="avatar">
                 <div style="flex: 1; min-width: 0;">
                     <div style="font-weight: 600; cursor: pointer; color: var(--primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" onclick="window.location.href='profiles.html?email=${p.authorEmail}'">
                         ${escapeHtml(p.authorName)}
@@ -1489,7 +1489,7 @@ function removeLoadMoreBtn() {
         function openMyProfile() {
             // For mobile, we open the User Menu
             if (window.innerWidth <= 968) {
-                document.getElementById('menuAvatar').src = currentUser.profilePicture || 'https://via.placeholder.com/150';
+                document.getElementById('menuAvatar').src = currentUser.profilePicture || 'default-avatar.png';
                 document.getElementById('menuName').textContent = currentUser.name;
                 document.getElementById('menuMajor').textContent = currentUser.major || 'Student';
                 openModal('userMenu');
