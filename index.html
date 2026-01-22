@@ -1026,7 +1026,7 @@
             window.scrollTo(0,0);
         }
 
-        function showPortfolio(email) {
+function showPortfolio(email) {
             const profile = allProfiles.find(p => p.email.toLowerCase() === email.toLowerCase());
             if (!profile) return showDirectory();
 
@@ -1039,11 +1039,16 @@
                 <p style="font-size: 1.15rem; color: var(--text-secondary); margin-bottom: 2rem; font-weight: 500;">
                     ${escapeHtml(profile.major)} ${profile.university ? '@ ' + escapeHtml(profile.university) : ''}
                 </p>
+                
                 <div style="margin-bottom: 2.5rem; display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem;">
                     ${profile.linkedin ? `<a href="${profile.linkedin}" target="_blank" class="social-link">🔗 LinkedIn</a>` : ''}
                     ${profile.github ? `<a href="${profile.github}" target="_blank" class="social-link">💻 GitHub</a>` : ''}
+                    
+                    ${profile.resume ? `<a href="${profile.resume}" target="_blank" class="social-link" style="background: #ffeb3b; color: #333; border-color: #fbc02d;">📄 Download Resume</a>` : ''}
+                    
                     <a href="mailto:${profile.email}" class="social-link">📧 Email</a>
                 </div>
+
                 <div style="max-width: 700px; margin: 0 auto; line-height: 1.8; color: var(--text-primary); background: var(--background); padding: 2.5rem; border-radius: 16px; text-align: left; border: 2px solid var(--border);">
                     <h4 style="margin-bottom:1rem; color:var(--accent); font-size:0.85rem; text-transform:uppercase; letter-spacing:2px; font-weight: 700;">About Me</h4>
                     <p style="font-size: 1.05rem; line-height: 1.8;">${escapeHtml(profile.bio || 'No bio yet.')}</p>
