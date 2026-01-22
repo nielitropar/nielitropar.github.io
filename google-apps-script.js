@@ -1,9 +1,10 @@
-// STUDENTHUB - PRODUCTION BACKEND (v1.0)
+// STUDENTHUB - PRODUCTION BACKEND (v1.1)
 
 const PROJECTS_SHEET = 'Projects';
 const PROFILES_SHEET = 'Profiles';
 const USERS_SHEET = 'Users';
 const COMMENTS_SHEET = 'Comments';
+const UPVOTES_SHEET = 'Upvotes'; // [NEW] Track individual votes
 
 function doGet(e) {
   return handleRequest(e, 'GET');
@@ -45,7 +46,8 @@ function handleRequest(e, method) {
 
     switch (action) {
       case 'getProjects':
-        return getProjects();
+        // [OPTIONAL] Pass userEmail to check which projects they liked
+        return getProjects(params.userEmail); 
       case 'getProfiles':
         return getProfiles();
       case 'getComments':
@@ -58,8 +60,8 @@ function handleRequest(e, method) {
         return addProject(params.data);
       case 'updateProfile':
         return updateProfile(params.data);
-      case 'updateUpvotes':
-        return updateUpvotes(params.projectId, params.upvotes);
+      case 'toggleUpvote': // [CHANGED] Renamed from updateUpvotes
+        return toggleUpvote(params.projectId, params.userEmail);
       case 'addComment':
         return addComment(params.data);
       default:
@@ -74,19 +76,33 @@ function handleRequest(e, method) {
 
 // ====== CORE LOGIC ======
 
-function getProjects() {
+function getProjects(currentUserEmail) {
   const sheet = getOrCreateSheet(PROJECTS_SHEET);
   const data = sheet.getDataRange().getValues();
   if (data.length <= 1) return createResponse('success', []);
   
+  // [NEW] Get user's upvotes to mark them as "liked"
+  let userUpvotes = new Set();
+  if (currentUserEmail) {
+    const upvoteSheet = getOrCreateSheet(UPVOTES_SHEET);
+    const upvoteData = upvoteSheet.getDataRange().getValues();
+    upvoteData.slice(1).forEach(row => {
+      if (String(row[1]).toLowerCase() === String(currentUserEmail).toLowerCase()) {
+        userUpvotes.add(String(row[0])); // Store Project ID
+      }
+    });
+  }
+
   const headers = data[0];
   const projects = data.slice(1)
-    .filter(row => row[0] && String(row[0]).trim() !== '') // FIX: Filter out blank rows (checks ID column)
+    .filter(row => row[0] && String(row[0]).trim() !== '') 
     .map(row => {
       let p = {};
       headers.forEach((h, i) => p[h] = row[i]);
       p.upvotes = parseInt(p.upvotes) || 0;
       p.commentCount = getCommentCount(p.id);
+      // [NEW] Flag if current user liked this
+      p.isLiked = userUpvotes.has(String(p.id)); 
       return p;
     });
   
@@ -100,7 +116,7 @@ function getProfiles() {
   
   const headers = data[0];
   const profiles = data.slice(1)
-    .filter(row => row[1] && String(row[1]).trim() !== '') // FIX: Filter out blank rows (checks Email column at index 1)
+    .filter(row => row[1] && String(row[1]).trim() !== '')
     .map(row => {
       let p = {};
       headers.forEach((h, i) => p[h] = row[i]);
@@ -116,7 +132,6 @@ function login(email, password) {
   const cleanEmail = String(email).toLowerCase().trim();
   
   for (let i = 1; i < data.length; i++) {
-    // Check if cell is empty before accessing properties
     if (!data[i][0]) continue; 
 
     if (String(data[i][0]).toLowerCase() === cleanEmail) {
@@ -208,16 +223,60 @@ function updateProfile(data) {
   return createResponse('success', 'Profile updated');
 }
 
-function updateUpvotes(id, count) {
-  const sheet = getOrCreateSheet(PROJECTS_SHEET);
-  const data = sheet.getDataRange().getValues();
-  for(let i=1; i<data.length; i++) {
-    if(String(data[i][0]) === String(id)) {
-      sheet.getRange(i+1, 10).setValue(count);
-      return createResponse('success', 'Updated');
+// [NEW] Toggle Upvote Function
+function toggleUpvote(projectId, userEmail) {
+  if (!projectId || !userEmail) return createResponse('error', 'Missing data');
+  
+  const upvoteSheet = getOrCreateSheet(UPVOTES_SHEET);
+  const projectSheet = getOrCreateSheet(PROJECTS_SHEET);
+  
+  const upvotesData = upvoteSheet.getDataRange().getValues();
+  const cleanEmail = String(userEmail).toLowerCase().trim();
+  let foundRowIndex = -1;
+
+  // 1. Check if user already upvoted
+  for (let i = 1; i < upvotesData.length; i++) {
+    if (String(upvotesData[i][0]) === String(projectId) && 
+        String(upvotesData[i][1]).toLowerCase() === cleanEmail) {
+      foundRowIndex = i + 1; // 1-based index for Sheet
+      break;
     }
   }
-  return createResponse('error', 'Project not found');
+
+  // 2. Find Project Row to update count
+  const projectData = projectSheet.getDataRange().getValues();
+  let projectRowIndex = -1;
+  let currentCount = 0;
+
+  for (let i = 1; i < projectData.length; i++) {
+    if (String(projectData[i][0]) === String(projectId)) {
+      projectRowIndex = i + 1;
+      currentCount = parseInt(projectData[i][9]) || 0; // Column 10 is index 9
+      break;
+    }
+  }
+
+  if (projectRowIndex === -1) return createResponse('error', 'Project not found');
+
+  let newCount = currentCount;
+  let action = '';
+
+  if (foundRowIndex !== -1) {
+    // REMOVE UPVOTE (Toggle Off)
+    upvoteSheet.deleteRow(foundRowIndex);
+    newCount = Math.max(0, currentCount - 1);
+    action = 'removed';
+  } else {
+    // ADD UPVOTE (Toggle On)
+    upvoteSheet.appendRow([projectId, cleanEmail, new Date().toISOString()]);
+    newCount = currentCount + 1;
+    action = 'added';
+  }
+
+  // Update Project Sheet Count
+  projectSheet.getRange(projectRowIndex, 10).setValue(newCount);
+
+  return createResponse('success', { action: action, newCount: newCount });
 }
 
 function addComment(data) {
@@ -233,7 +292,7 @@ function getComments(projectId) {
   const sheet = getOrCreateSheet(COMMENTS_SHEET);
   const data = sheet.getDataRange().getValues();
   const comments = data.slice(1)
-    .filter(row => row[0] && String(row[1]) === String(projectId)) // FIX: Filter out blank rows
+    .filter(row => row[0] && String(row[1]) === String(projectId))
     .map(row => ({
       id: row[0], projectId: row[1], authorName: row[2], 
       authorEmail: row[3], comment: row[4], timestamp: row[5]
@@ -255,7 +314,8 @@ function getOrCreateSheet(name) {
       'Users': ['email', 'password', 'name', 'university', 'major', 'profilePicture', 'linkedin', 'github', 'bio', 'timestamp', 'resume'],
       'Projects': ['id', 'authorName', 'authorEmail', 'authorPicture', 'title', 'description', 'link', 'tech', 'projectImage', 'upvotes', 'timestamp'],
       'Profiles': ['name', 'email', 'university', 'major', 'linkedin', 'github', 'bio', 'profilePicture', 'timestamp', 'resume'],
-      'Comments': ['id', 'projectId', 'authorName', 'authorEmail', 'comment', 'timestamp']
+      'Comments': ['id', 'projectId', 'authorName', 'authorEmail', 'comment', 'timestamp'],
+      'Upvotes': ['projectId', 'userEmail', 'timestamp'] // [NEW] Headers for Upvotes
     };
     if (headers[name]) sheet.appendRow(headers[name]);
   }
@@ -263,13 +323,14 @@ function getOrCreateSheet(name) {
 }
 
 function hashPassword(raw) {
-  const digest = Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, raw);
+  // [SECURITY IMPROVEMENT] Added simple salt to prevent rainbow table attacks
+  const SALT = 'NIELIT_STUDENTHUB_SECURE_SALT_2026'; 
+  const digest = Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, raw + SALT);
   return Utilities.base64Encode(digest);
 }
 
 function getCommentCount(pid) {
   const sheet = getOrCreateSheet(COMMENTS_SHEET);
   const data = sheet.getDataRange().getValues();
-  // Filter blank rows AND match ID
   return data.slice(1).filter(r => r[0] && String(r[1]) === String(pid)).length;
 }
