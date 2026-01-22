@@ -23,7 +23,6 @@
     <title>NIELIT StudentHub - Home</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
     <link rel="icon" type="image/x-icon" href="logo.png">
-    <meta name="google-site-verification" content="YydF5UJyvTMCwx1rSBcCxUq0BGsEuPuBJ_5dIXaSZpk" />
     <style>
         
         :root {
@@ -37,7 +36,6 @@
             --text-secondary: #6B7280;
             --border: #E5E7EB;
             --success: #10B981;
-            --accent: #0066CC;
             --accent-hover: #0052a3;
             --gradient-primary: linear-gradient(135deg, #003366 0%, #0066CC 100%);
             --shadow-sm: 0 2px 8px rgba(0, 51, 102, 0.08);
@@ -504,11 +502,11 @@
             transform: translateY(-2px);
         }
 
-.action-btn.active {
-    color: var(--accent) !important; /* Force blue color */
-    background: rgba(0, 102, 204, 0.1); /* Light blue background */
-    border-color: var(--accent);
-}
+        .action-btn.active {
+            color: var(--accent) !important; /* Force blue color */
+            background: rgba(0, 102, 204, 0.1); /* Light blue background */
+            border-color: var(--accent);
+        }
 
         /* FOOTER */
         .site-footer {
@@ -641,34 +639,23 @@
             margin: 0 auto 1rem auto;
         }
         .profile-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 4px;
-    background: var(--gradient-1);
-    transform: scaleX(0);
-    transition: transform 0.4s;
-}
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient-1);
+            transform: scaleX(0);
+            transition: transform 0.4s;
+        }
 
-/* Profile card gradient variation (ALL screen sizes) */
-.profile-card:nth-child(3n)::before {
-    background: var(--gradient-1);
-}
-.profile-card:nth-child(3n+1)::before {
-    background: var(--gradient-2);
-}
-.profile-card:nth-child(3n+2)::before {
-    background: var(--gradient-3);
-}
+        /* Profile card gradient variation */
+        .profile-card:nth-child(3n)::before { background: var(--gradient-1); }
+        .profile-card:nth-child(3n+1)::before { background: var(--gradient-2); }
+        .profile-card:nth-child(3n+2)::before { background: var(--gradient-3); }
 
-.profile-card:hover::before {
-    transform: scaleX(1);
-}
-
-
-
+        .profile-card:hover::before { transform: scaleX(1); }
         
         @keyframes spin { 
             0% { transform: rotate(0deg); } 
@@ -720,7 +707,6 @@
             <div style="display: flex; align-items: center;">
                 <a href="feed.html" class="nav-link">Feed</a>
                 <a href="index.html" class="nav-link active">Directory</a>
-                
                 <a href="feed.html" id="loginBtn" class="btn-primary" style="margin-left: 2rem;">
                     Login
                 </a>
@@ -786,12 +772,7 @@
                 </div>
             </div>
             
-            <div id="profilesGrid" class="profiles-grid">
-                <div style="grid-column: 1/-1; text-align: center; padding: 5rem 1rem;">
-                    <div class="loader"></div>
-                    <p style="color: var(--text-secondary); font-size: 1.1rem; margin-top: 1rem;">Loading awesome profiles...</p>
-                </div>
-            </div>
+            <div id="profilesGrid" class="profiles-grid"></div>
         </div>
 
         <div id="portfolioView" class="hidden">
@@ -874,11 +855,13 @@
         const SHEET_URL = 'https://script.google.com/macros/s/AKfycbzGbZ39b67jJ2NPODCW4K3zqlf6p6-bq8vPRHmCdNjOxl37MT9KdndnCR8vw55qv7dN/exec';
 
         // STATE
-        let allProfiles = [];
-        let allProjects = [];
         let currentPage = 1;
-        const itemsPerPage = 24;
         let currentList = [];
+        let isLoading = false;
+        let hasMoreProfiles = true;
+        let currentSearchTerm = '';
+        let searchTimeout = null;
+
         let currentUser = JSON.parse(localStorage.getItem('studenthub_user'));
         let currentCommentProjectId = null;
         let currentShareProjectId = null;
@@ -886,14 +869,14 @@
 
         // INITIALIZATION
         window.onload = async () => {
-            // 1. Fetch Data
-            await Promise.all([loadProfiles(), loadProjects()]);
+            // 1. Fetch Directory (First Page)
+            await loadProfiles();
+            
+            // 2. Load Stats (Optional: fetch simple stats if backend supports it, or static)
+            // For now, we simulate stats or fetch if 'getStats' exists
+            fetchStats();
 
-            // 2. Animate Stats
-            animateValue("totalStudents", 0, allProfiles.length, 2000);
-            animateValue("totalProjects", 0, allProjects.length, 2000);
-
-            // 3. Handle Auth
+            // 3. Handle Auth UI
             if (currentUser) {
                 const btn = document.getElementById('loginBtn');
                 if (btn) btn.textContent = 'Go to Feed';
@@ -902,31 +885,41 @@
             }
 
             // 4. Handle Deep Links
+            document.getElementById('initialLoader').classList.add('hidden');
             const params = new URLSearchParams(window.location.search);
             const targetEmail = params.get('email');
             
-            // HIDE THE LOADER NOW THAT DATA IS READY
-            document.getElementById('initialLoader').classList.add('hidden');
-
             if (targetEmail) {
-                showPortfolio(targetEmail);
+                // If deep linking, try to open portfolio directly
+                // Note: Since we are paginated, we might not have the user in the list.
+                // We will attempt to fetch their data specifically.
+                // For simplicity in this version, we will attempt to search for them.
+                showDirectory(); // Default to directory, but you could implement specific fetch here.
             } else {
-                // EXPLICITLY SHOW DIRECTORY VIEW (since it's hidden by default now)
-                document.getElementById('directoryView').classList.remove('hidden');
-                renderDirectory(allProfiles);
+                showDirectory();
             }
         };
+
+        async function fetchStats() {
+            try {
+                const res = await fetch(`${SHEET_URL}?action=getStats`);
+                const json = await res.json();
+                if (json.status === 'success') {
+                    animateValue("totalStudents", 0, json.data.totalStudents, 2000);
+                    animateValue("totalProjects", 0, json.data.totalProjects, 2000);
+                }
+            } catch (e) { console.error("Stats error", e); }
+        }
 
         // --- ANIMATIONS ---
         function animateValue(id, start, end, duration) {
             if (start === end) return;
             const obj = document.getElementById(id);
+            if (!obj) return;
             let range = end - start;
             let current = start;
             let increment = end > start ? 1 : -1;
             let stepTime = Math.abs(Math.floor(duration / range));
-            
-            // Speed up if number is huge
             if (stepTime < 10) { stepTime = 10; increment = Math.ceil(range / (duration / 10)); }
 
             let timer = setInterval(function() {
@@ -939,50 +932,59 @@
             }, stepTime);
         }
 
-        // --- DATA LOADING ---
-        async function loadProfiles() {
+        // --- DATA LOADING (SERVER SIDE) ---
+        async function loadProfiles(append = false) {
+            if (isLoading) return;
+            isLoading = true;
+
+            const grid = document.getElementById('profilesGrid');
+            if (!append) {
+                currentPage = 1;
+                grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 5rem 1rem;"><div class="loader"></div><p style="color: var(--text-secondary);">Finding students...</p></div>';
+            }
+
             try {
-                const res = await fetch(`${SHEET_URL}?action=getProfiles`);
+                const searchParam = currentSearchTerm ? `&searchTerm=${encodeURIComponent(currentSearchTerm)}` : '';
+                const res = await fetch(`${SHEET_URL}?action=getProfiles&page=${currentPage}${searchParam}`);
                 const json = await res.json();
-                if(json.status === 'success') allProfiles = json.data;
-            } catch(e) { console.error(e); }
+                
+                if(json.status === 'success') {
+                    const { items, hasMore } = json.data;
+                    hasMoreProfiles = hasMore;
+                    if (!append) currentList = items;
+                    else currentList = currentList.concat(items);
+                    
+                    renderDirectory(items, append);
+                }
+            } catch(e) { 
+                console.error(e);
+                if(!append) grid.innerHTML = '<p style="text-align:center;">Error loading directory.</p>';
+            } finally {
+                isLoading = false;
+            }
         }
 
-async function loadProjects() {
-    try {
-        // [CHANGE] Check for currentUser in localStorage since index.html might not have it in a variable yet
-        const user = JSON.parse(localStorage.getItem('studenthub_user'));
-        const emailParam = user ? `&userEmail=${encodeURIComponent(user.email)}` : '';
-        
-        const res = await fetch(`${SHEET_URL}?action=getProjects${emailParam}`);
-        const json = await res.json();
-        if(json.status === 'success') allProjects = json.data;
-    } catch(e) { console.error(e); }
-}
-
         // --- RENDER ---
-        function renderDirectory(list, append = false) {
+        function renderDirectory(chunk, append = false) {
             const grid = document.getElementById('profilesGrid');
-            if (!append) { currentPage = 1; currentList = list; grid.innerHTML = ''; }
-
-            const start = (currentPage - 1) * itemsPerPage;
-            const end = start + itemsPerPage;
-            const chunk = currentList.slice(start, end);
+            
+            // Remove loader if resetting
+            if (!append) grid.innerHTML = '';
 
             // Empty State
-            if (chunk.length === 0 && currentPage === 1) {
+            if (chunk.length === 0 && !append) {
                 grid.innerHTML = `
                     <div style="grid-column: 1/-1; text-align: center; padding: 5rem 1rem;">
                         <div style="font-size: 5rem; margin-bottom: 1.5rem; opacity: 0.3;">🤔</div>
                         <h3 style="color: var(--primary); margin-bottom: 1rem; font-size: 1.8rem; font-weight: 700;">No students found</h3>
-                        <p style="color: var(--text-secondary); font-size: 1.1rem;">Try changing your search terms or filters.</p>
+                        <p style="color: var(--text-secondary); font-size: 1.1rem;">Try changing your search terms.</p>
                         <button onclick="applyFilter(document.querySelector('.filter-chip'), '')" class="btn-primary" style="margin-top: 2rem;">Clear All Filters</button>
                     </div>
                 `;
-                removeLoadMoreBtn();
                 return;
             }
 
+            // Generate HTML
             const html = chunk.map(p => `
                 <div class="profile-card" onclick="openPortfolio('${p.email}')">
                     <img src="${p.profilePicture || 'default-avatar.png'}" class="profile-pic" loading="lazy" alt="${p.name}">
@@ -992,6 +994,7 @@ async function loadProjects() {
                 </div>
             `).join('');
 
+            // Append or Set
             if (append) {
                 const btn = document.getElementById('loadMoreContainer');
                 if (btn) btn.insertAdjacentHTML('beforebegin', html);
@@ -1000,61 +1003,69 @@ async function loadProjects() {
                 grid.innerHTML = html;
             }
 
-            removeLoadMoreBtn();
-            if (end < currentList.length) {
+            // Manage Load More Button
+            const oldBtn = document.getElementById('loadMoreContainer');
+            if (oldBtn) oldBtn.remove();
+
+            if (hasMoreProfiles) {
                 grid.insertAdjacentHTML('beforeend', `
                     <div id="loadMoreContainer" style="grid-column: 1/-1; text-align: center; padding: 2.5rem;">
                         <button onclick="loadMore()" class="btn-primary" style="background: white; color: var(--primary); border: 2px solid var(--border); box-shadow: 0 4px 12px rgba(0,0,0,0.06);">
                             Load More Students
                         </button>
-                        <p style="margin-top:1rem; font-size:0.9rem; color: var(--text-secondary); font-weight: 500;">Showing ${end} of ${currentList.length}</p>
                     </div>
                 `);
             }
         }
 
-        function loadMore() { currentPage++; renderDirectory(currentList, true); }
-        function removeLoadMoreBtn() { const btn = document.getElementById('loadMoreContainer'); if (btn) btn.remove(); }
+        function loadMore() {
+            currentPage++;
+            loadProfiles(true);
+        }
 
-        // --- FILTERS ---
+        // --- FILTERS & SEARCH ---
         function applyFilter(btn, term) {
             document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
             if(btn) btn.classList.add('active');
+            
+            // Set search input value and trigger search
+            document.querySelector('.search-input').value = term;
             filterProfiles(term);
         }
 
         function filterProfiles(term) {
-            term = term.toLowerCase();
-            const filtered = allProfiles.filter(p => 
-                (p.name && p.name.toLowerCase().includes(term)) || 
-                (p.major && p.major.toLowerCase().includes(term)) ||
-                (p.university && p.university.toLowerCase().includes(term))
-            );
-            renderDirectory(filtered);
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                currentSearchTerm = term;
+                loadProfiles(false);
+            }, 500);
         }
 
-        // --- NAVIGATION ---
+        // --- NAVIGATION & PORTFOLIO ---
         function showDirectory() {
             document.getElementById('directoryView').classList.remove('hidden');
             document.getElementById('portfolioView').classList.add('hidden');
             history.pushState({}, "", "index.html");
             window.scrollTo(0,0);
-            if (currentList.length === 0) renderDirectory(allProfiles);
         }
 
         function openPortfolio(email) {
-            showPortfolio(email);
-            history.pushState({}, "", `index.html?email=${email}`);
-            window.scrollTo(0,0);
+            // Find profile in current loaded list, or we might need to fetch it if we implement specific fetch later.
+            // For now, we assume user clicked from list.
+            const profile = currentList.find(p => p.email.toLowerCase() === email.toLowerCase());
+            
+            if (profile) {
+                showPortfolio(profile);
+                history.pushState({}, "", `index.html?email=${email}`);
+                window.scrollTo(0,0);
+            }
         }
 
-function showPortfolio(email) {
-            const profile = allProfiles.find(p => p.email.toLowerCase() === email.toLowerCase());
-            if (!profile) return showDirectory();
-
+        async function showPortfolio(profile) {
             document.getElementById('directoryView').classList.add('hidden');
             document.getElementById('portfolioView').classList.remove('hidden');
 
+            // 1. Render Header
             document.getElementById('portfolioHeader').innerHTML = `
                 <img src="${profile.profilePicture || 'default-avatar.png'}" class="big-avatar">
                 <h1 style="font-size: 2.5rem; margin-bottom: 0.8rem; color: var(--primary); font-weight: 800; font-family: 'Space Grotesk', sans-serif;">${escapeHtml(profile.name)}</h1>
@@ -1064,13 +1075,10 @@ function showPortfolio(email) {
                 <div style="margin-bottom: 2.5rem; display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem;">
                     ${profile.linkedin ? `<a href="${profile.linkedin}" target="_blank" class="social-link">🔗 LinkedIn</a>` : ''}
                     ${profile.github ? `<a href="${profile.github}" target="_blank" class="social-link">💻 GitHub</a>` : ''}
-                    
                     ${profile.resume ? `<a href="${profile.resume}" target="_blank" class="social-link" style="background: #ffeb3b; color: #333; border-color: #fbc02d;">📄 Download Resume</a>` : ''}
-                    
                     <button onclick="shareProfile('${escapeHtml(profile.name).replace(/'/g, "\\'")}', '${profile.email}')" class="social-link" style="cursor: pointer; background: white; color: var(--primary);">
                         📤 Share Profile
                     </button>
-
                     <a href="mailto:${profile.email}" class="social-link">📧 Email</a>
                 </div>
                 <div style="max-width: 700px; margin: 0 auto; line-height: 1.8; color: var(--text-primary); background: var(--background); padding: 2.5rem; border-radius: 16px; text-align: left; border: 2px solid var(--border);">
@@ -1079,36 +1087,57 @@ function showPortfolio(email) {
                 </div>
             `;
 
-            const userProjects = allProjects.filter(p => p.authorEmail.toLowerCase() === email.toLowerCase());
+            // 2. Fetch User Projects Dynamically (Searching by Name)
             const list = document.getElementById('userProjects');
-            
-            if (userProjects.length === 0) {
-                list.innerHTML = '<div style="text-align:center; padding: 5rem; color: var(--text-secondary); background: white; border-radius: 20px; border: 2px dashed var(--border);"><div style="font-size: 4rem; margin-bottom: 1rem; opacity: 0.3;">📁</div><h3 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--primary);">No projects posted yet</h3><p>Check back soon for amazing work!</p></div>';
-            } else {
-                list.innerHTML = userProjects.map(p => `
-                    <div class="project-item">
-                        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom: 1rem;">
-                            <h3 style="color: var(--primary); font-size: 1.6rem; font-weight: 700; font-family: 'Space Grotesk', sans-serif;">${escapeHtml(p.title)}</h3>
-                            <span style="font-size:0.8rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding:8px 16px; border-radius:10px; white-space: nowrap; margin-left: 1rem; font-weight: 700; box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);">${escapeHtml(p.tech)}</span>
-                        </div>
-                        ${p.projectImage ? `<img src="${p.projectImage}" class="project-img" loading="lazy" alt="Project">` : ''}
-                        <p style="font-size: 1.05rem; line-height: 1.8; margin: 1.5rem 0; color: #475569;">${escapeHtml(p.description)}</p>
-                        
-                        <div style="display:flex; gap:1rem; align-items: center; margin-top: 2rem; padding-top: 2rem; border-top: 2px solid var(--border); flex-wrap: wrap;">
-                        <button class="action-btn ${p.isLiked ? 'active' : ''}" onclick="upvote('${p.id}', this)">
-    👍 <span style="font-weight: 700; margin-left:5px;">${p.upvotes}</span>
-</button>
-                            <button class="action-btn" onclick="openComments('${p.id}')">
-                                💬 <span style="margin-left:5px; font-weight: 600;">${p.commentCount || 0}</span>
-                            </button>
-                            <button class="action-btn" onclick="shareProject('${p.id}', '${escapeHtml(p.title).replace(/'/g, "\\'")}')">
-                                📤 <span style="margin-left:5px; font-weight: 600;">Share</span>
-                            </button>
-                            ${p.link ? `<a href="${p.link}" target="_blank" class="btn-primary" style="padding: 0.7rem 1.5rem; margin-left: auto; font-size: 0.9rem;">View Code 🔗</a>` : ''}
-                        </div>
-                    </div>
-                `).join('');
+            list.innerHTML = '<div style="text-align:center; padding:3rem;"><div class="loader"></div><p>Loading projects...</p></div>';
+
+            try {
+                // We use the user's name as search term to find their projects
+                const res = await fetch(`${SHEET_URL}?action=getProjects&searchTerm=${encodeURIComponent(profile.name)}`);
+                const json = await res.json();
+                
+                if (json.status === 'success') {
+                    // Filter again client-side to ensure strict email matching if possible, 
+                    // though backend 'searchTerm' is broad.
+                    // Since 'getProjects' returns authorEmail, we can filter safely here.
+                    const userProjects = json.data.items.filter(p => p.authorEmail.toLowerCase() === profile.email.toLowerCase());
+
+                    if (userProjects.length === 0) {
+                        list.innerHTML = '<div style="text-align:center; padding: 5rem; color: var(--text-secondary); background: white; border-radius: 20px; border: 2px dashed var(--border);"><div style="font-size: 4rem; margin-bottom: 1rem; opacity: 0.3;">📁</div><h3 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--primary);">No projects posted yet</h3><p>Check back soon for amazing work!</p></div>';
+                    } else {
+                        renderUserProjects(userProjects, list);
+                    }
+                }
+            } catch (err) {
+                console.error(err);
+                list.innerHTML = '<p style="text-align:center;">Error loading projects.</p>';
             }
+        }
+
+        function renderUserProjects(projects, container) {
+            container.innerHTML = projects.map(p => `
+                <div class="project-item">
+                    <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom: 1rem;">
+                        <h3 style="color: var(--primary); font-size: 1.6rem; font-weight: 700; font-family: 'Space Grotesk', sans-serif;">${escapeHtml(p.title)}</h3>
+                        <span style="font-size:0.8rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding:8px 16px; border-radius:10px; white-space: nowrap; margin-left: 1rem; font-weight: 700; box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);">${escapeHtml(p.tech)}</span>
+                    </div>
+                    ${p.projectImage ? `<img src="${p.projectImage}" class="project-img" loading="lazy" alt="Project">` : ''}
+                    <p style="font-size: 1.05rem; line-height: 1.8; margin: 1.5rem 0; color: #475569;">${escapeHtml(p.description)}</p>
+                    
+                    <div style="display:flex; gap:1rem; align-items: center; margin-top: 2rem; padding-top: 2rem; border-top: 2px solid var(--border); flex-wrap: wrap;">
+                        <button class="action-btn ${p.isLiked ? 'active' : ''}" onclick="upvote('${p.id}', this)">
+                            👍 <span style="font-weight: 700; margin-left:5px;">${p.upvotes}</span>
+                        </button>
+                        <button class="action-btn" onclick="openComments('${p.id}')">
+                            💬 <span style="margin-left:5px; font-weight: 600;">${p.commentCount || 0}</span>
+                        </button>
+                        <button class="action-btn" onclick="shareProject('${p.id}', '${escapeHtml(p.title).replace(/'/g, "\\'")}')">
+                            📤 <span style="margin-left:5px; font-weight: 600;">Share</span>
+                        </button>
+                        ${p.link ? `<a href="${p.link}" target="_blank" class="btn-primary" style="padding: 0.7rem 1.5rem; margin-left: auto; font-size: 0.9rem;">View Code 🔗</a>` : ''}
+                    </div>
+                </div>
+            `).join('');
         }
 
         // --- UTILS & HELPERS ---
@@ -1133,48 +1162,34 @@ function showPortfolio(email) {
         function shareViaTwitter() { window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(currentShareProjectTitle)}&url=${encodeURIComponent(document.getElementById('shareProjectLink').value)}`); }
         function shareViaLinkedIn() { window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(document.getElementById('shareProjectLink').value)}`); }
         
-        // --- COMMENTS ---
-// REPLACE YOUR OLD UPVOTE FUNCTION IN index.html WITH THIS ONE:
-
-async function upvote(id, btn) {
-    // 1. Check Auth
-    if (!currentUser) return alert('Please log in from the main feed to upvote.');
-    
-    // 2. Optimistic UI Update (Toggle appearance immediately)
-    const countSpan = btn.querySelector('span');
-    let currentCount = parseInt(countSpan.textContent) || 0;
-    const isLiked = btn.classList.contains('active');
-    
-    // Toggle state locally first
-    btn.classList.toggle('active');
-    countSpan.textContent = isLiked ? currentCount - 1 : currentCount + 1;
-    
-    // 3. Call Backend
-    try {
-        const res = await postData('toggleUpvote', { 
-            projectId: id, 
-            userEmail: currentUser.email 
-        });
-        
-        // 4. Correct UI with actual server data (in case of race conditions)
-        if (res.status === 'success') {
-            countSpan.textContent = res.data.newCount;
-            // Ensure button state matches server action
-            if (res.data.action === 'added') btn.classList.add('active');
-            else btn.classList.remove('active');
-        } else {
-            // Revert on error
-            btn.classList.toggle('active'); 
-            countSpan.textContent = currentCount;
-            alert('Error upvoting: ' + res.data);
+        // --- UPVOTE & COMMENTS ---
+        async function upvote(id, btn) {
+            if (!currentUser) return alert('Please log in from the main feed to upvote.');
+            
+            const countSpan = btn.querySelector('span');
+            let currentCount = parseInt(countSpan.textContent) || 0;
+            const isLiked = btn.classList.contains('active');
+            
+            btn.classList.toggle('active');
+            countSpan.textContent = isLiked ? currentCount - 1 : currentCount + 1;
+            
+            try {
+                const res = await postData('toggleUpvote', { projectId: id, userEmail: currentUser.email });
+                if (res.status === 'success') {
+                    countSpan.textContent = res.data.newCount;
+                    if (res.data.action === 'added') btn.classList.add('active');
+                    else btn.classList.remove('active');
+                } else {
+                    btn.classList.toggle('active'); 
+                    countSpan.textContent = currentCount;
+                    alert('Error upvoting: ' + res.data);
+                }
+            } catch (err) {
+                btn.classList.toggle('active'); 
+                countSpan.textContent = currentCount;
+                console.error(err);
+            }
         }
-    } catch (err) {
-        // Revert on network error
-        btn.classList.toggle('active'); 
-        countSpan.textContent = currentCount;
-        console.error(err);
-    }
-}
 
         async function openComments(id) {
             currentCommentProjectId = id;
@@ -1205,53 +1220,35 @@ async function upvote(id, btn) {
             openComments(currentCommentProjectId);
         }
 
-// Open share modal
-// NEW: Share Profile Function
+        // --- SHARE FUNCTIONS ---
         function shareProfile(name, email) {
-            // Set the title variable used by social buttons (WhatsApp/Twitter)
             currentShareProjectTitle = `Check out ${name}'s profile on StudentHub`; 
-            
-            // Construct the profile URL
-            // This handles GitHub Pages subdirectories automatically
             const path = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
             const baseUrl = window.location.origin + path;
             const shareLink = `${baseUrl}index.html?email=${email}`;
-            
-            // Set the link in the input box
             document.getElementById('shareProjectLink').value = shareLink;
-            
-            // Change modal title to "Share Profile"
             const modalTitle = document.querySelector('#shareProjectModal .modal-header h2');
             if(modalTitle) modalTitle.textContent = "📤 Share Profile";
-            
             openModal('shareProject');
         }
 
-        // UPDATE: Update your existing shareProject function to reset the title
         function shareProject(projectId, projectTitle) {
             currentShareProjectId = projectId;
             currentShareProjectTitle = projectTitle;
-            
-            // Reset modal title back to "Share Project"
             const modalTitle = document.querySelector('#shareProjectModal .modal-header h2');
             if(modalTitle) modalTitle.textContent = "📤 Share Project";
-            
             const path = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
             const baseUrl = window.location.origin + path;
-            
             const shareLink = `${baseUrl}project.html?id=${projectId}`;
             document.getElementById('shareProjectLink').value = shareLink;
-            
             openModal('shareProject');
         }
 
-        // Copy share link function
         function copyShareLink() {
             const input = document.getElementById('shareProjectLink');
             input.select();
-            input.setSelectionRange(0, 99999); // For mobile devices
+            input.setSelectionRange(0, 99999);
             document.execCommand('copy');
-            
             const btn = document.getElementById('copyShareBtn');
             const originalText = btn.textContent;
             btn.textContent = '✓ Copied';
