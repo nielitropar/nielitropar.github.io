@@ -1663,18 +1663,15 @@ async function handleEditProfile(e) {
             return data.secure_url;
         }
 
-// NEW: Upload function for PDFs (Forces 'raw' storage WITH extension)
+// NEW: Upload function for Resumes (Uses 'image/upload' for best compatibility)
 async function uploadFile(file) {
     const formData = new FormData();
     formData.append('file', file);
     formData.append('upload_preset', CLOUDINARY_PRESET);
     
-    // CRITICAL FIX: Tell Cloudinary to use the real filename (e.g., resume.pdf)
-    // This ensures the generated URL ends in .pdf so browsers can open it
-    formData.append('use_filename', 'true');
-    formData.append('unique_filename', 'false'); // Prevents random characters if possible
-
-    const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_NAME}/raw/upload`, { 
+    // CHANGE: We use 'image/upload' because Cloudinary treats PDFs as "images" for viewing.
+    // This generates a link that opens in the browser instead of forcing a download.
+    const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_NAME}/image/upload`, { 
         method: 'POST', 
         body: formData 
     });
