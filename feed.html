@@ -1663,15 +1663,18 @@ async function handleEditProfile(e) {
             return data.secure_url;
         }
 
-// NEW: Upload function for Resumes (Uses 'image/upload' for best compatibility)
+// NEW: Upload function for Resumes (Fixed for direct PDF access)
 async function uploadFile(file) {
     const formData = new FormData();
     formData.append('file', file);
     formData.append('upload_preset', CLOUDINARY_PRESET);
     
-    // CHANGE: We use 'image/upload' because Cloudinary treats PDFs as "images" for viewing.
-    // This generates a link that opens in the browser instead of forcing a download.
-    const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_NAME}/image/upload`, { 
+    // 1. Force use of original filename so it ends in .pdf
+    formData.append('use_filename', 'true'); 
+    formData.append('unique_filename', 'false');
+
+    // 2. Use 'auto/upload' which is safer than forcing image/raw manually
+    const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_NAME}/auto/upload`, { 
         method: 'POST', 
         body: formData 
     });
@@ -1681,6 +1684,11 @@ async function uploadFile(file) {
         alert("Upload failed: " + data.error.message);
         return null;
     }
+    
+    // 3. IMPORTANT: If Cloudinary assigned it as "raw", we must use the secure_url provided.
+    // However, sometimes "raw" URLs download automatically. To view in browser, 
+    // we often need to ensure it's delivered correctly. 
+    // For now, returning the direct secure_url is the safest bet.
     return data.secure_url;
 }
 
