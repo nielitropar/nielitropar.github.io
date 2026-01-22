@@ -134,6 +134,7 @@ function signup(data) {
   const profilesSheet = getOrCreateSheet(PROFILES_SHEET);
   const cleanEmail = String(data.email).toLowerCase().trim();
 
+  // Check duplicate
   const users = usersSheet.getDataRange().getValues();
   for(let i=1; i<users.length; i++) {
     if(String(users[i][0]).toLowerCase() === cleanEmail) {
@@ -145,9 +146,10 @@ function signup(data) {
   
   usersSheet.appendRow([
     cleanEmail, hashedPassword, data.name, data.university, 
-    data.major, data.profilePicture, '', '', '', '', new Date().toISOString()
+    data.major, data.profilePicture, '', '', '', new Date().toISOString(), ''
   ]);
 
+  // Add to Profiles (Public Sheet)
   profilesSheet.appendRow([
     data.name, cleanEmail, data.university, data.major, 
     '', '', '', data.profilePicture, new Date().toISOString(), ''
