@@ -213,14 +213,15 @@
                     <h3 class="comments-header">
                         💬 Comments <span id="commentCount">(0)</span>
                     </h3>
+                    
                     <div id="commentsList">
-                        <p style="color: var(--text-secondary); text-align: center; padding: 2rem;">
-                            No comments yet. 
-                            <a href="index.html" style="color: var(--accent); text-decoration: none; font-weight: 600;">
-                                Sign in to comment
-                            </a>
-                        </p>
+                        <div class="loading" style="padding: 2rem;">
+                            <div class="loading-spinner" style="font-size: 1.5rem;">⏳</div>
+                            <p>Loading comments...</p>
+                        </div>
                     </div>
+
+                    <div id="commentFormContainer" style="margin-top: 2.5rem;"></div>
                 </div>
             </div>
         </div>
@@ -289,11 +290,16 @@
 
         let currentProject = null;
         let projectId = null;
+        // Check for logged-in user
+        let currentUser = JSON.parse(localStorage.getItem('studenthub_user'));
 
         // Initialize
         window.onload = () => {
             const urlParams = new URLSearchParams(window.location.search);
             projectId = urlParams.get('id');
+
+            // Render comment input based on login state
+            updateCommentUI();
 
             if (!projectId) {
                 showError();
@@ -303,10 +309,88 @@
             loadProject(projectId);
         };
 
-        // --- NEW: Load specific project by ID ---
+        // --- UI LOGIC: Toggle between Input Form and Sign In Button ---
+        function updateCommentUI() {
+            const container = document.getElementById('commentFormContainer');
+            
+            if (currentUser) {
+                // User IS logged in: Show Input Form
+                container.innerHTML = `
+                    <div style="display: flex; gap: 1rem; align-items: flex-start;">
+                        <img src="${currentUser.profilePicture || 'default-avatar.png'}" class="avatar" style="width: 45px; height: 45px; border-width: 2px;">
+                        <div style="flex: 1;">
+                            <textarea id="commentInput" placeholder="Add to the discussion..." rows="3" 
+                                style="width: 100%; padding: 1rem; border: 2px solid var(--border); border-radius: 12px; font-family: inherit; resize: vertical; margin-bottom: 0.8rem; font-size: 0.95rem; outline: none; transition: border-color 0.3s;"></textarea>
+                            <button onclick="submitComment()" class="btn btn-primary">Post Comment</button>
+                        </div>
+                    </div>
+                `;
+                
+                // Add focus effect via JS for better UX
+                setTimeout(() => {
+                    const area = document.getElementById('commentInput');
+                    if(area) {
+                        area.onfocus = () => area.style.borderColor = 'var(--accent)';
+                        area.onblur = () => area.style.borderColor = 'var(--border)';
+                    }
+                }, 100);
+
+            } else {
+                // User IS NOT logged in: Show Sign In CTA
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 2.5rem; background: #F8FAFC; border-radius: 16px; border: 2px dashed var(--border);">
+                        <div style="font-size: 2rem; margin-bottom: 0.5rem;">👋</div>
+                        <p style="font-weight: 700; color: var(--primary); margin-bottom: 0.5rem; font-size: 1.1rem;">Join the conversation</p>
+                        <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">Sign in to share your thoughts on this project.</p>
+                        <a href="feed.html" class="btn btn-primary" style="display: inline-flex;">Sign In to Comment</a>
+                    </div>
+                `;
+            }
+        }
+
+        // --- CORE LOGIC: Post Comment ---
+        async function submitComment() {
+            const input = document.getElementById('commentInput');
+            const txt = input.value.trim();
+            if (!txt) return;
+
+            const btn = input.nextElementSibling; // The button
+            const originalText = btn.textContent;
+            btn.textContent = 'Posting...';
+            btn.disabled = true;
+
+            const data = {
+                id: Date.now().toString(),
+                projectId: projectId,
+                authorName: currentUser.name,
+                authorEmail: currentUser.email,
+                comment: txt
+            };
+
+            try {
+                await postData('addComment', { data });
+                input.value = ''; // Clear input
+                loadComments(projectId); // Reload list to show new comment
+            } catch (err) {
+                console.error(err);
+                alert('Failed to post comment. Please try again.');
+            } finally {
+                btn.textContent = originalText;
+                btn.disabled = false;
+            }
+        }
+
+        // Helper to post data to backend
+        async function postData(action, payload) {
+            return fetch(SHEET_URL, {
+                method: 'POST',
+                body: JSON.stringify({ action, ...payload })
+            }).then(r => r.json());
+        }
+
+        // --- LOAD PROJECT DATA ---
         async function loadProject(id) {
             try {
-                // Call new 'getProject' action
                 const response = await fetch(`${SHEET_URL}?action=getProject&id=${id}`);
                 const json = await response.json();
 
@@ -325,7 +409,6 @@
             }
         }
 
-        // Render project details
         function renderProject(project) {
             document.getElementById('loadingState').classList.add('hidden');
             document.getElementById('projectContent').classList.remove('hidden');
@@ -358,7 +441,7 @@
             } else {
                 document.getElementById('techContainer').classList.add('hidden');
             }
-            // Inside renderProject(project) ...
+            
             if (document.getElementById('projectCategory')) {
                 document.getElementById('projectCategory').textContent = project.category || 'Other';
             }
@@ -372,31 +455,38 @@
             document.title = `${project.title} - NIELIT StudentHub`;
         }
 
+        // --- COMMENTS LOGIC ---
         async function loadComments(projectId) {
             try {
                 const response = await fetch(`${SHEET_URL}?action=getComments&projectId=${projectId}`);
                 const json = await response.json();
 
-                if (json.status === 'success' && json.data.length > 0) {
-                    renderComments(json.data);
-                }
+                renderComments(json.data || []);
             } catch (error) {
                 console.error('Error loading comments:', error);
+                document.getElementById('commentsList').innerHTML = '<p style="color:var(--text-secondary); text-align:center;">Failed to load comments.</p>';
             }
         }
 
         function renderComments(comments) {
             document.getElementById('commentCount').textContent = `(${comments.length})`;
+            const list = document.getElementById('commentsList');
 
-            const html = comments.map(c => `
-                <div class="comment-item">
-                    <div class="comment-author">${escapeHtml(c.authorName)}</div>
-                    <div class="comment-text">${escapeHtml(c.comment)}</div>
-                    <div class="comment-date">${formatDate(c.timestamp)}</div>
-                </div>
-            `).join('');
-
-            document.getElementById('commentsList').innerHTML = html;
+            if (!comments || comments.length === 0) {
+                list.innerHTML = `
+                    <p style="color: var(--text-secondary); text-align: center; padding: 2rem 0;">
+                        No comments yet. Be the first to share your thoughts!
+                    </p>`;
+            } else {
+                const html = comments.map(c => `
+                    <div class="comment-item">
+                        <div class="comment-author">${escapeHtml(c.authorName)}</div>
+                        <div class="comment-text">${escapeHtml(c.comment)}</div>
+                        <div class="comment-date">${formatDate(c.timestamp)}</div>
+                    </div>
+                `).join('');
+                list.innerHTML = html;
+            }
         }
 
         function openShareModal() {
