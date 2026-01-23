@@ -60,7 +60,7 @@
             color: var(--text-primary);
             line-height: 1.6;
             overflow-x: hidden;
-            padding-bottom: 70px;
+            /* FIX: Removed 'padding-bottom: 70px' to remove white space on login page */
         }
 
         /* Navigation (Desktop) */
@@ -841,7 +841,6 @@
 
 <body>
 
-    <!-- LOGIN PAGE -->
     <div id="loginPage" class="auth-page">
         <div class="auth-box">
             <img src="logo.png" alt="StudentHub" style="width: 150px; height: auto;">
@@ -864,7 +863,6 @@
         </div>
     </div>
 
-    <!-- SIGNUP PAGE -->
     <div id="signupPage" class="auth-page hidden">
         <div class="auth-box">
             <h2 style="margin-bottom: 0.5rem; font-size: 1.8rem;">Create Account</h2>
@@ -901,9 +899,7 @@
         </div>
     </div>
 
-    <!-- MAIN APP -->
     <div id="mainApp" class="hidden">
-        <!-- Desktop Nav -->
         <nav class="desktop-nav">
             <div class="nav-container">
                 <a href="index.html" class="logo">
@@ -920,7 +916,6 @@
 
         <div class="container">
             <div class="main-layout">
-                <!-- Sidebar -->
                 <aside class="sidebar-card">
                     <div class="card profile-sidebar">
                         <div class="profile-header">
@@ -935,14 +930,12 @@
                     </div>
                 </aside>
 
-                <!-- Feed -->
                 <main>
                     <div class="search-container">
                         <input type="text" id="searchInput" class="search-input" placeholder="🔍 Search projects..."
                             onkeyup="handleSearch(this.value)">
                     </div>
 
-                    <!-- Projects Container -->
                     <div id="projectsList">
                         <div class="loading">
                             <div class="loading-spinner">⏳</div>
@@ -951,7 +944,6 @@
                     </div>
                 </main>
 
-                <!-- Trending -->
                 <aside class="right-sidebar">
                     <div class="card">
                         <h3 style="margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
@@ -963,7 +955,6 @@
             </div>
         </div>
 
-        <!-- NIELIT Footer -->
         <footer class="site-footer">
     <div class="footer-logo">
         <p style="font-size: 1.2rem; font-weight: 700; color: var(--primary); margin-bottom: 0.5rem;">
@@ -983,7 +974,6 @@
     </a>
         </footer>
 
-        <!-- Mobile Bottom Nav -->
         <nav class="mobile-bottom-nav">
             <a href="#" onclick="showSection('feed'); return false;" class="mobile-nav-item active">
                 <span class="mobile-nav-icon">🏠</span>
@@ -1004,9 +994,6 @@
         </nav>
     </div>
 
-    <!-- MODALS -->
-
-    <!-- User Menu Modal (Mobile) -->
     <div id="userMenuModal" class="modal">
         <div class="modal-content" style="text-align: center;">
             <div class="modal-header">
@@ -1026,7 +1013,6 @@
         </div>
     </div>
 
-    <!-- Post Project Modal -->
     <div id="projectModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -1063,7 +1049,6 @@
         </div>
     </div>
 
-    <!-- Edit Profile Modal -->
     <div id="editProfileModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -1119,7 +1104,6 @@
         </div>
     </div>
 
-    <!-- Comments Modal -->
     <div id="commentsModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -1127,8 +1111,7 @@
                 <button class="modal-close" onclick="closeModal('comments')">&times;</button>
             </div>
             <div id="commentsList" style="margin-bottom: 1.5rem; max-height: 400px; overflow-y: auto;">
-                <!-- Comments injected here -->
-            </div>
+                </div>
             <div style="display: flex; gap: 0.75rem;">
                 <input type="text" id="commentInput" class="form-input" placeholder="Write a comment..."
                     style="flex: 1;">
@@ -1137,8 +1120,7 @@
         </div>
     </div>
 
-    <!-- Share Project Modal -->
-<div id="shareProjectModal" class="modal">
+    <div id="shareProjectModal" class="modal">
     <div class="modal-content">
         <div class="modal-header">
             <h2>📤 Share Project</h2>
