@@ -328,31 +328,35 @@
         let currentShareProjectTitle = null;
 
         // INITIALIZATION
-        window.onload = async () => {
-            // 1. Fetch Directory (Background load)
-            loadProfiles(); 
-            fetchStats();
+window.onload = async () => {
+    // 1. Fetch Directory (Background load)
+    loadProfiles(); 
+    fetchStats();
 
-            // 2. Handle Auth UI
-            if (currentUser) {
-                const btn = document.getElementById('loginBtn');
-                if (btn) btn.textContent = 'Go to Feed';
-            } else {
-                document.getElementById('guest-cta').style.display = 'block';
-            }
+    // 2. Handle Auth UI
+    if (currentUser) {
+        const btn = document.getElementById('loginBtn');
+        if (btn) btn.textContent = 'Go to Feed';
+    } else {
+        document.getElementById('guest-cta').style.display = 'block';
+    }
 
-            // 3. Handle Deep Links
-            document.getElementById('initialLoader').classList.add('hidden');
-            const params = new URLSearchParams(window.location.search);
-            const targetEmail = params.get('email');
-            
-            if (targetEmail) {
-                // Fetch specific profile instead of just loading directory
-                await loadProfileByEmail(targetEmail);
-            } else {
-                showDirectory();
-            }
-        };
+    // 3. Handle Deep Links
+    const params = new URLSearchParams(window.location.search);
+    const targetEmail = params.get('email');
+    
+    if (targetEmail) {
+        // Fetch specific profile - KEEP LOADER VISIBLE
+        await loadProfileByEmail(targetEmail);
+        // Hide loader AFTER profile is loaded
+        document.getElementById('initialLoader').classList.add('hidden');
+    } else {
+        // No email, show directory immediately
+        showDirectory();
+        // Hide loader immediately
+        document.getElementById('initialLoader').classList.add('hidden');
+    }
+};
 
         async function fetchStats() {
             try {
