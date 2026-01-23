@@ -185,6 +185,12 @@
                         <span class="meta-label">Comments:</span>
                         <span class="meta-value" id="projectComments">0</span>
                     </div>
+                    <div class="meta-item">
+                     <span class="meta-icon">📂</span>
+                      <span class="meta-label">Category:</span>
+                      <span class="tech-badge" id="projectCategory" style="background: var(--accent);">Other</span>
+                  </div>
+                    
                     <div class="meta-item" id="techContainer">
                         <span class="meta-icon">🛠️</span>
                         <span class="tech-badge" id="projectTech"></span>
@@ -351,6 +357,10 @@
                 document.getElementById('projectTech').textContent = project.tech;
             } else {
                 document.getElementById('techContainer').classList.add('hidden');
+            }
+            // Inside renderProject(project) ...
+            if (document.getElementById('projectCategory')) {
+                document.getElementById('projectCategory').textContent = project.category || 'Other';
             }
 
             if (project.link) {
