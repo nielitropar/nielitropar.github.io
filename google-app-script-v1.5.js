@@ -1,4 +1,4 @@
-// STUDENTHUB - PRODUCTION BACKEND (Trending Added to v1.5)
+// STUDENTHUB - PRODUCTION BACKEND (Optimized v1.6)
 
 const PROJECTS_SHEET = 'Projects';
 const PROFILES_SHEET = 'Profiles';
@@ -6,6 +6,7 @@ const USERS_SHEET = 'Users';
 const COMMENTS_SHEET = 'Comments';
 const UPVOTES_SHEET = 'Upvotes';
 const PROFILE_LIKES_SHEET = 'ProfileLikes'; 
+const TRENDING_CACHE_SHEET = 'TrendingCache'; // [NEW] Cache Sheet
 
 function doGet(e) {
   return handleRequest(e, 'GET');
@@ -48,7 +49,7 @@ function handleRequest(e, method) {
     switch (action) {
       case 'getProjects':
         return getProjectsPaginated(params.userEmail, params.page, params.searchTerm);
-      case 'getTrending': // [NEW] Added Trending Action
+      case 'getTrending': 
         return getTrendingProjects(); 
       case 'getProfiles':
         return getProfilesPaginated(params.page, params.searchTerm, params.userEmail);
@@ -84,57 +85,153 @@ function handleRequest(e, method) {
   }
 }
 
-// [NEW] TRENDING LOGIC (Purely Additive)
+// [OPTIMIZED] Reads from pre-calculated cache
 function getTrendingProjects() {
-  const pSheet = getOrCreateSheet(PROJECTS_SHEET);
-  const cSheet = getOrCreateSheet(COMMENTS_SHEET);
+  const cacheSheet = getOrCreateSheet(TRENDING_CACHE_SHEET);
+  const data = cacheSheet.getDataRange().getValues();
   
-  const pData = pSheet.getDataRange().getValues();
-  const cData = cSheet.getDataRange().getValues();
+  if (data.length <= 1) {
+    return createResponse('success', []); 
+  }
   
-  if (pData.length <= 1) return createResponse('success', []);
-
-  // 1. Map Comment Counts
-  let commentCounts = {};
-  cData.slice(1).forEach(row => {
-    const pid = String(row[1]);
-    commentCounts[pid] = (commentCounts[pid] || 0) + 1;
+  const headers = data[0];
+  const projects = data.slice(1).map(row => {
+    let p = {};
+    headers.forEach((h, i) => p[h] = row[i]);
+    return p;
   });
-
-  const headers = pData[0];
-  const now = new Date();
-
-  // 2. Calculate Scores
-  let projects = pData.slice(1)
-    .filter(row => row[0] && String(row[0]).trim() !== '')
-    .map(row => {
-      let p = {};
-      headers.forEach((h, i) => p[h] = row[i]);
-      
-      const upvotes = parseInt(p.upvotes) || 0;
-      const comments = commentCounts[p.id] || 0;
-      const postDate = new Date(p.timestamp);
-      
-      // Time Difference in Days
-      const daysOld = Math.max(0, (now - postDate) / (1000 * 60 * 60 * 24));
-      
-      // SCORING FORMULA: (Upvotes*2 + Comments*3) / (DaysOld + 1)^0.5
-      const rawScore = (upvotes * 2) + (comments * 3);
-      const trendingScore = rawScore / Math.pow(daysOld + 1, 0.5);
-
-      p.trendingScore = trendingScore;
-      p.commentCount = comments;
-      return p;
-    });
-
-  // 3. Sort by Score & Take Top 5
-  projects.sort((a, b) => b.trendingScore - a.trendingScore);
-  const top5 = projects.slice(0, 5);
-
-  return createResponse('success', top5);
+  
+  return createResponse('success', projects);
 }
 
-// EXISTING FUNCTIONS
+// [OPTIMIZED] "Reverse-Range" Strategy + Caching
+function getProjectsPaginated(currentUserEmail, page, searchTerm) {
+  // 1. Check RAM Cache (Speed up generic page loads)
+  const cacheKey = searchTerm ? `search_${searchTerm}_${page}` : `feed_${page}`;
+  const cache = CacheService.getScriptCache();
+  
+  // Only serve from cache if no user is logged in (to avoid showing wrong "Like" buttons)
+  // or implement more complex cache logic. For now, we cache generic public views.
+  if (!currentUserEmail) {
+    const cachedResult = cache.get(cacheKey);
+    if (cachedResult) {
+      return ContentService.createTextOutput(cachedResult).setMimeType(ContentService.MimeType.JSON);
+    }
+  }
+
+  const sheet = getOrCreateSheet(PROJECTS_SHEET);
+  const lastRow = sheet.getLastRow();
+  const PAGE_SIZE = 20;
+  let projects = [];
+  let totalProjects = 0;
+  let hasMore = false;
+
+  // 2. Fetch Logic
+  if (!searchTerm || searchTerm.trim() === '') {
+    // SCENARIO A: Standard Feed (Reverse Range Optimization)
+    // No sorting needed because 'appendRow' ensures chronological order.
+    // We just read from the bottom up.
+    
+    totalProjects = Math.max(0, lastRow - 1);
+    const pageNum = parseInt(page) || 1;
+    
+    // Calculate range: Row 2 is oldest. LastRow is newest.
+    // Page 1: (lastRow - 19) to lastRow
+    const endRow = lastRow - ((pageNum - 1) * PAGE_SIZE);
+    const startRow = Math.max(2, endRow - PAGE_SIZE + 1);
+    
+    if (endRow >= 2) {
+      const numRows = (endRow - startRow) + 1;
+      // FETCH ONLY ~20 ROWS (Not 500,000)
+      const data = sheet.getRange(startRow, 1, numRows, sheet.getLastColumn()).getValues();
+      const headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+      
+      projects = data.map(row => {
+        let p = {};
+        headers.forEach((h, i) => p[h] = row[i]);
+        return p;
+      });
+      projects.reverse(); // Newest first
+      hasMore = startRow > 2;
+    }
+  } else {
+    // SCENARIO B: Search (Must scan, but this is rarer)
+    const data = sheet.getDataRange().getValues();
+    const headers = data[0];
+    const term = searchTerm.toLowerCase();
+    
+    let allMatches = data.slice(1).filter(row => {
+      // Adjust indices based on column order: 
+      // Title=4, Description=5, Tech=7, Author=1, Category=11
+      const title = String(row[4]||'').toLowerCase(); 
+      const author = String(row[1]||'').toLowerCase();
+      const tech = String(row[7]||'').toLowerCase();
+      const desc = String(row[5]||'').toLowerCase();
+      const cat = String(row[11]||'').toLowerCase();
+      
+      return title.includes(term) || author.includes(term) || 
+             tech.includes(term) || desc.includes(term) || cat.includes(term);
+    }).map(row => {
+        let p = {};
+        headers.forEach((h, i) => p[h] = row[i]);
+        return p;
+    });
+    
+    allMatches.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+    totalProjects = allMatches.length;
+    
+    const pageNum = parseInt(page) || 1;
+    const startIndex = (pageNum - 1) * PAGE_SIZE;
+    projects = allMatches.slice(startIndex, startIndex + PAGE_SIZE);
+    hasMore = (startIndex + PAGE_SIZE) < totalProjects;
+  }
+
+  // 3. Optimized Data Attachment (Comments & Upvotes)
+  // We read the comments sheet ONCE, not 20 times.
+  let commentCounts = {};
+  const cSheet = getOrCreateSheet(COMMENTS_SHEET);
+  const cData = cSheet.getDataRange().getValues();
+  cData.slice(1).forEach(r => {
+     let pid = String(r[1]);
+     commentCounts[pid] = (commentCounts[pid] || 0) + 1;
+  });
+
+  let userUpvotes = new Set();
+  if (currentUserEmail) {
+    const upvoteSheet = getOrCreateSheet(UPVOTES_SHEET);
+    const upvoteData = upvoteSheet.getDataRange().getValues();
+    upvoteData.slice(1).forEach(row => {
+      if (String(row[1]).toLowerCase() === String(currentUserEmail).toLowerCase()) {
+        userUpvotes.add(String(row[0]));
+      }
+    });
+  }
+
+  projects.forEach(p => {
+    p.upvotes = parseInt(p.upvotes) || 0;
+    p.isLiked = userUpvotes.has(String(p.id));
+    p.commentCount = commentCounts[p.id] || 0; 
+    p.category = p.category || 'Other'; 
+  });
+  
+  const responseData = {
+    items: projects,
+    total: totalProjects,
+    hasMore: hasMore,
+    page: parseInt(page) || 1
+  };
+  
+  const jsonString = JSON.stringify({ status: 'success', data: responseData });
+
+  // Cache result for 10 minutes if public (no user specific data)
+  if (!currentUserEmail) {
+    cache.put(cacheKey, jsonString, 600); 
+  }
+
+  return ContentService.createTextOutput(jsonString).setMimeType(ContentService.MimeType.JSON);
+}
+
+// EXISTING FUNCTIONS (Unchanged)
 
 function getProject(id) {
   if (!id) return createResponse('error', 'No ID provided');
@@ -182,65 +279,6 @@ function getProfile(email, currentUserEmail) {
     }
   }
   return createResponse('success', p);
-}
-
-function getProjectsPaginated(currentUserEmail, page, searchTerm) {
-  const sheet = getOrCreateSheet(PROJECTS_SHEET);
-  const data = sheet.getDataRange().getValues();
-  if (data.length <= 1) return createResponse('success', { items: [], total: 0, hasMore: false });
-  
-  let userUpvotes = new Set();
-  if (currentUserEmail) {
-    const upvoteSheet = getOrCreateSheet(UPVOTES_SHEET);
-    const upvoteData = upvoteSheet.getDataRange().getValues();
-    upvoteData.slice(1).forEach(row => {
-      if (String(row[1]).toLowerCase() === String(currentUserEmail).toLowerCase()) {
-        userUpvotes.add(String(row[0]));
-      }
-    });
-  }
-
-  const headers = data[0];
-  let projects = data.slice(1)
-    .filter(row => row[0] && String(row[0]).trim() !== '')
-    .map(row => {
-      let p = {};
-      headers.forEach((h, i) => p[h] = row[i]);
-      p.upvotes = parseInt(p.upvotes) || 0;
-      p.isLiked = userUpvotes.has(String(p.id));
-      p.category = row[11] || 'Other'; 
-      return p;
-    });
-  
-  if (searchTerm && searchTerm.trim() !== '') {
-    const term = searchTerm.toLowerCase();
-    projects = projects.filter(p => 
-      (p.title && p.title.toLowerCase().includes(term)) ||
-      (p.authorName && p.authorName.toLowerCase().includes(term)) ||
-      (p.tech && p.tech.toLowerCase().includes(term)) ||
-      (p.description && p.description.toLowerCase().includes(term)) ||
-      (p.category && p.category.toLowerCase().includes(term))
-    );
-  }
-  
-  projects.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-  
-  const itemsPerPage = 20;
-  const pageNum = parseInt(page) || 1;
-  const startIndex = (pageNum - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const paginatedProjects = projects.slice(startIndex, endIndex);
-  
-  paginatedProjects.forEach(p => {
-    p.commentCount = getCommentCount(p.id);
-  });
-  
-  return createResponse('success', {
-    items: paginatedProjects,
-    total: projects.length,
-    hasMore: endIndex < projects.length,
-    page: pageNum
-  });
 }
 
 function getProfilesPaginated(page, searchTerm, currentUserEmail) {
@@ -538,7 +576,8 @@ function getOrCreateSheet(name) {
       'Profiles': ['name', 'email', 'university', 'major', 'linkedin', 'github', 'bio', 'profilePicture', 'timestamp', 'resume', 'likes'], 
       'Comments': ['id', 'projectId', 'authorName', 'authorEmail', 'comment', 'timestamp'],
       'Upvotes': ['projectId', 'userEmail', 'timestamp'],
-      'ProfileLikes': ['targetEmail', 'userEmail', 'timestamp'] 
+      'ProfileLikes': ['targetEmail', 'userEmail', 'timestamp'],
+      'TrendingCache': ['id', 'authorName', 'authorEmail', 'authorPicture', 'title', 'description', 'link', 'tech', 'projectImage', 'upvotes', 'timestamp', 'category', 'trendingScore', 'commentCount']
     };
     if (headers[name]) sheet.appendRow(headers[name]);
   }
@@ -555,4 +594,67 @@ function getCommentCount(pid) {
   const sheet = getOrCreateSheet(COMMENTS_SHEET);
   const data = sheet.getDataRange().getValues();
   return data.slice(1).filter(r => r[0] && String(r[1]) === String(pid)).length;
+}
+
+// [NEW] CRON JOB FUNCTION
+// Instructions: Go to Triggers -> Add Trigger -> updateTrendingCache -> Time-driven -> Every 1 Hour
+function updateTrendingCache() {
+  const pSheet = getOrCreateSheet(PROJECTS_SHEET);
+  const cSheet = getOrCreateSheet(COMMENTS_SHEET);
+  
+  const pData = pSheet.getDataRange().getValues();
+  const cData = cSheet.getDataRange().getValues();
+  
+  if (pData.length <= 1) return;
+
+  // 1. Map Comment Counts
+  let commentCounts = {};
+  cData.slice(1).forEach(row => {
+    const pid = String(row[1]);
+    commentCounts[pid] = (commentCounts[pid] || 0) + 1;
+  });
+
+  const headers = pData[0];
+  const now = new Date();
+
+  // 2. Calculate Scores
+  let projects = pData.slice(1)
+    .filter(row => row[0] && String(row[0]).trim() !== '')
+    .map(row => {
+      let p = {};
+      headers.forEach((h, i) => p[h] = row[i]);
+      
+      const upvotes = parseInt(p.upvotes) || 0;
+      const comments = commentCounts[p.id] || 0;
+      const postDate = new Date(p.timestamp);
+      
+      const daysOld = Math.max(0, (now - postDate) / (1000 * 60 * 60 * 24));
+      const rawScore = (upvotes * 2) + (comments * 3);
+      const trendingScore = rawScore / Math.pow(daysOld + 1, 0.5);
+
+      p.trendingScore = trendingScore;
+      p.commentCount = comments;
+      return p;
+    });
+
+  // 3. Sort by Score & Take Top 5
+  projects.sort((a, b) => b.trendingScore - a.trendingScore);
+  const top5 = projects.slice(0, 5);
+
+  // 4. Write to Cache Sheet
+  const cacheSheet = getOrCreateSheet(TRENDING_CACHE_SHEET);
+  cacheSheet.clear();
+  
+  // Write Headers
+  const keys = Object.keys(top5[0]);
+  cacheSheet.appendRow(keys);
+  
+  // Write Rows
+  top5.forEach(item => {
+    let row = keys.map(k => {
+      if (item[k] instanceof Date) return item[k].toISOString();
+      return item[k];
+    });
+    cacheSheet.appendRow(row);
+  });
 }
