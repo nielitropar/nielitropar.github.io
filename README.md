@@ -63,7 +63,7 @@
 
 ### 💡 Core Philosophy
 
-> "Robust software engineering principles applied to low-code infrastructure can democratize digital visibility for resource-constrained institutions."
+> "Robust frugal software engineering principles applied to low-code infrastructure can democratize digital visibility for resource-constrained institutions."
 
 ---
 
