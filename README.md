@@ -182,7 +182,7 @@ Visit: **[https://nielitropar.github.io](https://nielitropar.github.io)**
 
 ### Backend
 - **Google Apps Script** - Serverless backend API
-- **Google Sheets** - Database with 5 sheets (Users, Projects, Profiles, Comments, Upvotes)
+- **Google Sheets** - Database with 6 sheets (ProfileLikes, Upvotes, Comments, Projects, Users,  Profiles)
 - **Cloudinary** - Image + PDF hosting and CDN
 
 ### Tools & Services
