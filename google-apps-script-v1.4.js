@@ -546,7 +546,7 @@ function getOrCreateSheet(name) {
 }
 
 function hashPassword(raw) {
-  const SALT = 'NIELIT_STUDENTHUB_SECURE_SALT_2026'; 
+  const SALT = 'NIELIT_STUDENTHUB_RandomString9371!@#$!@#'; 
   const digest = Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, raw + SALT);
   return Utilities.base64Encode(digest);
 }
