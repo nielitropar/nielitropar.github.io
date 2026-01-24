@@ -9,7 +9,7 @@
 
 [![MIT License](https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge)](LICENSE)
 [![Version](https://img.shields.io/badge/Version-1.5-success?style=for-the-badge)](https://github.com/nielitropar/nielitropar.github.io)
-[![Live Demo](https://img.shields.io/badge/Demo-Live-brightgreen?style=for-the-badge&logo=github)](https://nielitropar.github.io)
+[![Live Demo](https://img.shields.io/badge/Demo-Live-brightgreen?style=for-the-badge&logo=github)](https://ropar.github.io)
 [![Android App](https://img.shields.io/badge/Download-Android%20App-3DDC84?style=for-the-badge&logo=android&logoColor=white)](https://github.com/nielitropar/nielitropar.github.io/releases/tag/v1.0)
 
 [![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=flat&logo=html5&logoColor=white)](https://developer.mozilla.org/en-US/docs/Web/HTML)
@@ -17,10 +17,10 @@
 [![Google Apps Script](https://img.shields.io/badge/Google%20Apps%20Script-4285F4?style=flat&logo=google&logoColor=white)](https://developers.google.com/apps-script)
 [![Cloudinary](https://img.shields.io/badge/Cloudinary-3448C5?style=flat&logo=cloudinary&logoColor=white)](https://cloudinary.com)
 [![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-222?style=flat&logo=github&logoColor=white)](https://pages.github.com)
-[![JOSS Automated Tests](https://github.com/nielitropar/nielitropar.github.io/actions/workflows/tests.yml/badge.svg)](https://github.com/nielitropar/nielitropar.github.io/actions/workflows/tests.yml)
-[![Deploy to GitHub Pages](https://github.com/nielitropar/nielitropar.github.io/actions/workflows/deploy.yml/badge.svg)](https://github.com/nielitropar/nielitropar.github.io/actions/workflows/deploy.yml)
+[![JOSS Automated Tests](https://github.com/nielit/nielit.github.io/actions/workflows/tests.yml/badge.svg)](https://github.com/nielit/nielit.github.io/actions/workflows/tests.yml)
+[![Deploy to GitHub Pages](https://github.com/nielit/nielit.github.io/actions/workflows/deploy.yml/badge.svg)](https://github.com/nielit/nielit.github.io/actions/workflows/deploy.yml)
 
-[🚀 Live Demo](https://nielitropar.github.io) • [Database](https://docs.google.com/spreadsheets/d/1FbYvYiawnVn8QpjwlHPRlJMtICFSerQR9ljbrg2dDAs/edit?usp=sharing) • [📱 Android App](https://github.com/nielitropar/nielitropar.github.io/releases/tag/v1.0) • [📖 Documentation](#documentation) • [🐛 Report Bug](https://github.com/nielitropar/nielitropar.github.io/issues) • [✨ Request Feature](https://github.com/nielitropar/nielitropar.github.io/issues)
+[🚀 Live Demo](https://nielit.github.io) • [Database](https://docs.google.com/spreadsheets/d/1FbYvYiawnVn8QpjwlHPRlJMtICFSerQR9ljbrg2dDAs/edit?usp=sharing) • [📱 Android App](https://github.com/nielit/nielit.github.io/releases/tag/v1.0) • [📖 Documentation](#documentation) • [🐛 Report Bug](https://github.com/nielit/nielit.github.io/issues) • [✨ Request Feature](https://github.com/nielit/nielit.github.io/issues)
 
 </div>
 
@@ -275,7 +275,7 @@ cache.put(cacheKey, JSON.stringify(data), 600);
 
 ```bash
 # 1️⃣ Clone Repository
-git clone https://github.com/nielitropar/nielitropar.github.io.git
+git clone https://github.com/nielit/nielit.github.io.git
 cd nielitropar.github.io
 
 # 2️⃣ Create config.js
@@ -673,7 +673,8 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 **Project Supervisor**
 
 📧 sarwan@nielit.gov.in  
-🏛️ NIELIT Ropar
+🏛️ National Institute of Electronics & Information Technology (NIELIT), Ropar
+💻 [@sarwansingh](https://github.com/sarwansingh)
 
 *Faculty mentor guiding project vision and research methodology*
 
@@ -684,6 +685,7 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 **Lead Developer**
 
 📧 princelv84@gmail.com  
+🏛️ National Institute of Electronics & Information Technology (NIELIT), Ropar
 💻 [@lovnishverma](https://github.com/lovnishverma)
 
 *System architecture, v1.5 optimizations, and technical documentation*
