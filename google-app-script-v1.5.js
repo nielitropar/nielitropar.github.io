@@ -1,4 +1,4 @@
-// STUDENTHUB - PRODUCTION BACKEND (v1.5 - Profile Likes)
+// STUDENTHUB - PRODUCTION BACKEND (v1.5 - Complete)
 
 const PROJECTS_SHEET = 'Projects';
 const PROFILES_SHEET = 'Profiles';
@@ -66,7 +66,7 @@ function handleRequest(e, method) {
         return updateProfile(params.data);
       case 'toggleUpvote':
         return toggleUpvote(params.projectId, params.userEmail);
-      case 'toggleProfileLike': // [NEW]
+      case 'toggleProfileLike':
         return toggleProfileLike(params.targetEmail, params.userEmail);
       case 'addComment':
         return addComment(params.data);
@@ -113,7 +113,6 @@ function getProfile(email, currentUserEmail) {
   let p = {};
   headers.forEach((h, i) => p[h] = row[i]);
   
-  // [NEW] Get likes data
   p.likes = parseInt(row[10]) || 0; 
   p.isLiked = false;
 
@@ -403,7 +402,6 @@ function toggleUpvote(projectId, userEmail) {
   return createResponse('success', { action: action, newCount: newCount });
 }
 
-// [NEW] Toggle Profile Like
 function toggleProfileLike(targetEmail, userEmail) {
   if (!targetEmail || !userEmail) return createResponse('error', 'Missing data');
   if (targetEmail.toLowerCase() === userEmail.toLowerCase()) return createResponse('error', 'Cannot like own profile');
@@ -489,10 +487,10 @@ function getOrCreateSheet(name) {
     const headers = {
       'Users': ['email', 'password', 'name', 'university', 'major', 'profilePicture', 'linkedin', 'github', 'bio', 'timestamp', 'resume'],
       'Projects': ['id', 'authorName', 'authorEmail', 'authorPicture', 'title', 'description', 'link', 'tech', 'projectImage', 'upvotes', 'timestamp', 'category'],
-      'Profiles': ['name', 'email', 'university', 'major', 'linkedin', 'github', 'bio', 'profilePicture', 'timestamp', 'resume', 'likes'], // Added 'likes'
+      'Profiles': ['name', 'email', 'university', 'major', 'linkedin', 'github', 'bio', 'profilePicture', 'timestamp', 'resume', 'likes'], 
       'Comments': ['id', 'projectId', 'authorName', 'authorEmail', 'comment', 'timestamp'],
       'Upvotes': ['projectId', 'userEmail', 'timestamp'],
-      'ProfileLikes': ['targetEmail', 'userEmail', 'timestamp'] // [NEW]
+      'ProfileLikes': ['targetEmail', 'userEmail', 'timestamp'] 
     };
     if (headers[name]) sheet.appendRow(headers[name]);
   }
