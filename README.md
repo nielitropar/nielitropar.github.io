@@ -1,4 +1,4 @@
-# NIELIT StudentHub - Connect, Create, Inspire 🚀
+# NIELIT StudentHub - Connect, Create, Inspire.
 
 <div align="center">
 
