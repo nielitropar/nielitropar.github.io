@@ -465,7 +465,8 @@
         async function loadProfileByEmail(email) {
             try {
                 const userParam = currentUser ? `&userEmail=${encodeURIComponent(currentUser.email)}` : '';
-                const res = await fetch(`${SHEET_URL}?action=getProfile&email=${encodeURIComponent(email)}${userParam}`);
+                // Add &t=timestamp to force fresh data
+                const res = await fetch(`${SHEET_URL}?action=getProfile&email=${encodeURIComponent(email)}${userParam}&t=${Date.now()}`);
                 const json = await res.json();
 
                 if (json.status === 'success') {
