@@ -674,6 +674,7 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 
 📧 sarwan@nielit.gov.in  
 🏛️ National Institute of Electronics & Information Technology (NIELIT), Ropar
+
 💻 [@sarwansingh](https://github.com/sarwansingh)
 
 *Faculty mentor guiding project vision and research methodology*
@@ -686,6 +687,7 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 
 📧 princelv84@gmail.com  
 🏛️ National Institute of Electronics & Information Technology (NIELIT), Ropar
+
 💻 [@lovnishverma](https://github.com/lovnishverma)
 
 *System architecture, v1.5 optimizations, and technical documentation*
