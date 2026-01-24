@@ -635,11 +635,12 @@ If this project helped you, consider giving it a ⭐️!
 
 It helps others discover this zero-cost solution for their institutions.
 
+*Empowering institutions with zero-cost digital infrastructure*
+
 ---
 
 **Made with ❤️ at NIELIT Ropar • 2026**
 
-*Empowering institutions with zero-cost digital infrastructure*
 *"Empowering the next generation of tech innovators"*
 
 [![Star on GitHub](https://img.shields.io/github/stars/nielitropar/nielitropar.github.io?style=social)](https://github.com/nielitropar/nielitropar.github.io)
