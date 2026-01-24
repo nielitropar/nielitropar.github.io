@@ -1,10 +1,11 @@
-# NIELIT StudentHub
+# NIELIT StudentHub 2026
+
 
 <div align="center">
 
 ![NIELIT StudentHub Banner](https://github.com/user-attachments/assets/8c14f5c0-decd-41cd-8524-2cd89abc589c)
 
-**A Zero-OpEx Serverless Portfolio Platform for Engineering Students**
+**A Zero-OpEx, Serverless Institutional Knowledge Management System**
 
 [![MIT License](https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge)](LICENSE)
 [![Version](https://img.shields.io/badge/Version-1.5-success?style=for-the-badge)](https://github.com/nielitropar/nielitropar.github.io)
