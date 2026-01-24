@@ -1,0 +1,29 @@
+name: JOSS Automated Tests
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  api-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Install Dependencies
+        run: pip install requests
+
+      - name: Run API Smoke Test
+        env:
+          # We used the EXACT same secret name from your deploy.yml
+          APP_SHEET_URL: ${{ secrets.APP_SHEET_URL }}
+        run: python tests/test_api.py
