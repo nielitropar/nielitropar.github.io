@@ -310,8 +310,9 @@
         </a>
     </nav>
 
-    <script>
+<script>
         // CONFIGURATION
+        // REPLACE WITH YOUR NEW DEPLOYMENT URL AFTER UPDATING APPS SCRIPT
         const SHEET_URL = 'https://script.google.com/macros/s/AKfycbzGbZ39b67jJ2NPODCW4K3zqlf6p6-bq8vPRHmCdNjOxl37MT9KdndnCR8vw55qv7dN/exec';
 
         // STATE
@@ -328,31 +329,26 @@
         let currentShareProjectTitle = null;
 
         // INITIALIZATION
-window.onload = async () => {
-    // 1. Fetch Directory (Background load)
-    loadProfiles(); 
-    fetchStats();
+        window.onload = async () => {
+            loadProfiles(); 
+            fetchStats();
 
-    // 2. Handle Auth UI
-    if (currentUser) {
-        const btn = document.getElementById('loginBtn');
-        if (btn) btn.textContent = 'Go to Feed';
-    } else {
-        document.getElementById('guest-cta').style.display = 'block';
-    }
+            if (currentUser) {
+                const btn = document.getElementById('loginBtn');
+                if (btn) btn.textContent = 'Go to Feed';
+            } else {
+                document.getElementById('guest-cta').style.display = 'block';
+            }
 
-    // 3. Handle Deep Links
-    const params = new URLSearchParams(window.location.search);
-    const targetEmail = params.get('email');
-    
-    if (targetEmail) {
-        // Fetch specific profile - Loader handling is now inside loadProfileByEmail -> showPortfolio
-        await loadProfileByEmail(targetEmail);
-    } else {
-        // No email, show directory immediately
-        showDirectory();
-    }
-};
+            const params = new URLSearchParams(window.location.search);
+            const targetEmail = params.get('email');
+            
+            if (targetEmail) {
+                await loadProfileByEmail(targetEmail);
+            } else {
+                showDirectory();
+            }
+        };
 
         async function fetchStats() {
             try {
@@ -385,16 +381,15 @@ window.onload = async () => {
             }, stepTime);
         }
 
-        // --- NEW FUNCTION: Load Single Profile by Email ---
+        // --- UPDATED: Pass userEmail to check like status ---
         async function loadProfileByEmail(email) {
             try {
-                // Call the new backend action 'getProfile'
-                const res = await fetch(`${SHEET_URL}?action=getProfile&email=${encodeURIComponent(email)}`);
+                const userParam = currentUser ? `&userEmail=${encodeURIComponent(currentUser.email)}` : '';
+                const res = await fetch(`${SHEET_URL}?action=getProfile&email=${encodeURIComponent(email)}${userParam}`);
                 const json = await res.json();
 
                 if (json.status === 'success') {
                     showPortfolio(json.data);
-                    // Ensure the URL reflects the email so the user can share it
                     history.pushState({}, "", `index.html?email=${email}`);
                 } else {
                     console.error("Profile not found:", json.data);
@@ -407,7 +402,6 @@ window.onload = async () => {
             }
         }
 
-        // --- DATA LOADING (DIRECTORY) ---
         async function loadProfiles(append = false) {
             if (isLoading) return;
             isLoading = true;
@@ -420,7 +414,9 @@ window.onload = async () => {
 
             try {
                 const searchParam = currentSearchTerm ? `&searchTerm=${encodeURIComponent(currentSearchTerm)}` : '';
-                const res = await fetch(`${SHEET_URL}?action=getProfiles&page=${currentPage}${searchParam}`);
+                // Pass userEmail to get likes on cards (optional but good)
+                const userParam = currentUser ? `&userEmail=${encodeURIComponent(currentUser.email)}` : '';
+                const res = await fetch(`${SHEET_URL}?action=getProfiles&page=${currentPage}${searchParam}${userParam}`);
                 const json = await res.json();
                 
                 if(json.status === 'success') {
@@ -461,6 +457,7 @@ window.onload = async () => {
                     <h3 class="card-name">${escapeHtml(p.name)}</h3>
                     <p class="card-major">${escapeHtml(p.major || 'Student')}</p>
                     <p class="card-uni">${escapeHtml(p.university || '')}</p>
+                    ${p.likes > 0 ? `<div style="margin-top:0.5rem; font-size:0.85rem; color:var(--text-secondary);">❤️ ${p.likes}</div>` : ''}
                 </div>
             `).join('');
 
@@ -509,36 +506,20 @@ window.onload = async () => {
         function showDirectory() {
             document.getElementById('directoryView').classList.remove('hidden');
             document.getElementById('portfolioView').classList.add('hidden');
-            
-            // FIX: Ensure loader is hidden when directory appears
             document.getElementById('initialLoader').classList.add('hidden');
-            
             history.pushState({}, "", "index.html");
             window.scrollTo(0,0);
         }
 
         function openPortfolio(email) {
-            // Find profile in current loaded list OR fetch if missing (though the main list should have it)
-            // If user clicks a card from directory, we have the object.
-            // But to be consistent with Deep Linking, we can use the same logic or just pass the object.
-            // For speed, let's look in currentList first.
-            const profile = currentList.find(p => p.email.toLowerCase() === email.toLowerCase());
-            
-            if (profile) {
-                showPortfolio(profile);
-                history.pushState({}, "", `index.html?email=${email}`);
-                window.scrollTo(0,0);
-            } else {
-                // Fallback: If for some reason not in list (e.g. filter issue), fetch it.
-                loadProfileByEmail(email);
-            }
+            // Force fetch to ensure fresh like count
+            loadProfileByEmail(email);
         }
 
+        // --- UPDATED: Show Like Button ---
         async function showPortfolio(profile) {
             document.getElementById('directoryView').classList.add('hidden');
             document.getElementById('portfolioView').classList.remove('hidden');
-            
-            // FIX: Hide the main loader only AFTER the portfolio view is visible
             document.getElementById('initialLoader').classList.add('hidden');
 
             document.getElementById('portfolioHeader').innerHTML = `
@@ -548,13 +529,18 @@ window.onload = async () => {
                     ${escapeHtml(profile.major)} ${profile.university ? '@ ' + escapeHtml(profile.university) : ''}
                 </p>
                 <div style="margin-bottom: 2.5rem; display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem;">
+                    
+                    <button class="social-link ${profile.isLiked ? 'active' : ''}" 
+                            onclick="likeProfile('${profile.email}', this)"
+                            style="cursor: pointer; display: flex; align-items: center; gap: 5px; ${profile.isLiked ? 'background: #fee2e2; border-color: #ef4444; color: #ef4444;' : ''}">
+                        ❤️ <span style="font-weight: 700;">${profile.likes || 0}</span>
+                    </button>
                     ${profile.linkedin ? `<a href="${profile.linkedin}" target="_blank" class="social-link">🔗 LinkedIn</a>` : ''}
                     ${profile.github ? `<a href="${profile.github}" target="_blank" class="social-link">💻 GitHub</a>` : ''}
-                    ${profile.resume ? `<a href="${profile.resume}" target="_blank" class="social-link" style="background: #ffeb3b; color: #333; border-color: #fbc02d;">📄 Download Resume</a>` : ''}
+                    ${profile.resume ? `<a href="${profile.resume}" target="_blank" class="social-link" style="background: #ffeb3b; color: #333; border-color: #fbc02d;">📄 Resume</a>` : ''}
                     <button onclick="shareProfile('${escapeHtml(profile.name).replace(/'/g, "\\'")}', '${profile.email}')" class="social-link" style="cursor: pointer; background: white; color: var(--primary);">
-                        📤 Share Profile
+                        📤 Share
                     </button>
-                    <a href="mailto:${profile.email}" class="social-link">📧 Email</a>
                 </div>
                 <div style="max-width: 700px; margin: 0 auto; line-height: 1.8; color: var(--text-primary); background: var(--background); padding: 2.5rem; border-radius: 16px; text-align: left; border: 2px solid var(--border);">
                     <h4 style="margin-bottom:1rem; color:var(--accent); font-size:0.85rem; text-transform:uppercase; letter-spacing:2px; font-weight: 700;">About Me</h4>
@@ -584,6 +570,66 @@ window.onload = async () => {
             }
         }
 
+        // --- NEW: Like Profile Logic ---
+        async function likeProfile(targetEmail, btn) {
+            if (!currentUser) return alert('Please login to like profiles.');
+            if (currentUser.email.toLowerCase() === targetEmail.toLowerCase()) return alert("You cannot like your own profile.");
+
+            const countSpan = btn.querySelector('span');
+            let currentCount = parseInt(countSpan.textContent) || 0;
+            const isLiked = btn.classList.contains('active');
+            
+            // Optimistic UI Update
+            btn.classList.toggle('active');
+            
+            if (isLiked) {
+                // Unlike
+                countSpan.textContent = Math.max(0, currentCount - 1);
+                btn.style.background = '';
+                btn.style.borderColor = '';
+                btn.style.color = '';
+            } else {
+                // Like
+                countSpan.textContent = currentCount + 1;
+                btn.style.background = '#fee2e2';
+                btn.style.borderColor = '#ef4444';
+                btn.style.color = '#ef4444';
+            }
+            
+            try {
+                const res = await postData('toggleProfileLike', { 
+                    targetEmail: targetEmail, 
+                    userEmail: currentUser.email 
+                });
+                
+                if (res.status === 'success') {
+                    countSpan.textContent = res.data.newCount;
+                    // Correct styles based on server response
+                    if (res.data.action === 'added') {
+                        btn.classList.add('active');
+                        btn.style.background = '#fee2e2';
+                        btn.style.borderColor = '#ef4444';
+                        btn.style.color = '#ef4444';
+                    } else {
+                        btn.classList.remove('active');
+                        btn.style.background = '';
+                        btn.style.borderColor = '';
+                        btn.style.color = '';
+                    }
+                } else {
+                    // Revert on error
+                    btn.classList.toggle('active'); 
+                    countSpan.textContent = currentCount;
+                    alert('Error: ' + res.data);
+                }
+            } catch (err) {
+                btn.classList.toggle('active'); 
+                countSpan.textContent = currentCount;
+                console.error(err);
+                alert("Network error.");
+            }
+        }
+
         function renderUserProjects(projects, container) {
             container.innerHTML = projects.map(p => `
                 <div class="project-item">
@@ -595,12 +641,6 @@ window.onload = async () => {
                     <p style="font-size: 1.05rem; line-height: 1.8; margin: 1.5rem 0; color: #475569;">${escapeHtml(p.description)}</p>
                     
                     <div style="display:flex; gap:1rem; align-items: center; margin-top: 2rem; padding-top: 2rem; border-top: 2px solid var(--border); flex-wrap: wrap;">
-                        <button class="action-btn ${p.isLiked ? 'active' : ''}" onclick="upvote('${p.id}', this)">
-                            👍 <span style="font-weight: 700; margin-left:5px;">${p.upvotes}</span>
-                        </button>
-                        <button class="action-btn" onclick="openComments('${p.id}')">
-                            💬 <span style="margin-left:5px; font-weight: 600;">${p.commentCount || 0}</span>
-                        </button>
                         <button class="action-btn" onclick="shareProject('${p.id}', '${escapeHtml(p.title).replace(/'/g, "\\'")}')">
                             📤 <span style="margin-left:5px; font-weight: 600;">Share</span>
                         </button>
@@ -621,72 +661,11 @@ window.onload = async () => {
         }
 
         function escapeHtml(text) { return text ? text.replace(/</g, "&lt;").replace(/>/g, "&gt;") : ''; }
-        function formatDate(timestamp) {
-            const date = new Date(timestamp);
-            return date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
-        }
         
         function shareViaWhatsApp() { window.open(`https://wa.me/?text=${encodeURIComponent(currentShareProjectTitle + ' ' + document.getElementById('shareProjectLink').value)}`); }
         function shareViaTwitter() { window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(currentShareProjectTitle)}&url=${encodeURIComponent(document.getElementById('shareProjectLink').value)}`); }
         function shareViaLinkedIn() { window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(document.getElementById('shareProjectLink').value)}`); }
         
-        async function upvote(id, btn) {
-            if (!currentUser) return alert('Please log in from the main feed to upvote.');
-            
-            const countSpan = btn.querySelector('span');
-            let currentCount = parseInt(countSpan.textContent) || 0;
-            const isLiked = btn.classList.contains('active');
-            
-            btn.classList.toggle('active');
-            countSpan.textContent = isLiked ? currentCount - 1 : currentCount + 1;
-            
-            try {
-                const res = await postData('toggleUpvote', { projectId: id, userEmail: currentUser.email });
-                if (res.status === 'success') {
-                    countSpan.textContent = res.data.newCount;
-                    if (res.data.action === 'added') btn.classList.add('active');
-                    else btn.classList.remove('active');
-                } else {
-                    btn.classList.toggle('active'); 
-                    countSpan.textContent = currentCount;
-                    alert('Error upvoting: ' + res.data);
-                }
-            } catch (err) {
-                btn.classList.toggle('active'); 
-                countSpan.textContent = currentCount;
-                console.error(err);
-            }
-        }
-
-        async function openComments(id) {
-            currentCommentProjectId = id;
-            openModal('comments');
-            document.getElementById('commentsList').innerHTML = '<div style="text-align:center; padding:2rem;"><div class="loader" style="width:30px; height:30px; border-width:3px;"></div></div>';
-            const res = await fetch(`${SHEET_URL}?action=getComments&projectId=${id}`);
-            const json = await res.json();
-            if (json.data.length === 0) {
-                document.getElementById('commentsList').innerHTML = '<p style="color:var(--text-secondary); text-align:center; padding: 2rem; font-size: 1rem;">No comments yet. Be the first! 💬</p>';
-            } else {
-                document.getElementById('commentsList').innerHTML = json.data.map(c => `
-                    <div class="comment-item" style="background: var(--background); padding: 1.2rem; border-radius: 12px; margin-bottom: 0.8rem; border: 2px solid var(--border);">
-                        <div style="font-weight:700; font-size:0.95rem; color:var(--primary); margin-bottom: 0.5rem;">${escapeHtml(c.authorName)}</div>
-                        <div style="margin: 0.5rem 0; color:var(--text-primary); font-size:1rem; line-height: 1.6;">${escapeHtml(c.comment)}</div>
-                        <div style="font-size:0.75rem; color:var(--text-secondary); font-weight: 500;">${formatDate(c.timestamp)}</div>
-                    </div>
-                `).join('');
-            }
-        }
-
-        async function submitComment() {
-            if (!currentUser) return alert('Please log in to comment.');
-            const txt = document.getElementById('commentInput').value.trim();
-            if (!txt) return;
-            const data = { id: Date.now().toString(), projectId: currentCommentProjectId, authorName: currentUser.name, authorEmail: currentUser.email, comment: txt };
-            await postData('addComment', { data });
-            document.getElementById('commentInput').value = '';
-            openComments(currentCommentProjectId);
-        }
-
         function shareProfile(name, email) {
             currentShareProjectTitle = `Check out ${name}'s profile on StudentHub`; 
             const path = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
