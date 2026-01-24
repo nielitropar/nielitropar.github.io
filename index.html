@@ -360,11 +360,12 @@
         </a>
     </nav>
 
+    <script src="config.js"></script>
+
     <script>
         // CONFIGURATION
-        // REPLACE WITH YOUR NEW DEPLOYMENT URL
-        const SHEET_URL = 'https://script.google.com/macros/s/AKfycbzGbZ39b67jJ2NPODCW4K3zqlf6p6-bq8vPRHmCdNjOxl37MT9KdndnCR8vw55qv7dN/exec';
-
+        const SHEET_URL = CONFIG.SHEET_URL;
+        
         // STATE
         let currentPage = 1;
         let currentList = [];
