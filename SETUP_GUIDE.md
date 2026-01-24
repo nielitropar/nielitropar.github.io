@@ -259,20 +259,16 @@ The Apps Script will create all 6 sheets automatically.
 2. A new tab opens with the Apps Script editor
 3. You'll see a default `myFunction()` - **delete everything**
 
-> #### 3.3 Set Up Security Salt (Critical)
-> 
-> To secure user passwords, you must set a private salt value that is not stored in the code.
-> 1. In the Apps Script Editor, click **Project Settings** (Gear icon ⚙️) in the left sidebar.
-> 2. Scroll down to the **Script Properties** section.
-> 3. Click **Add script property**.
-> 4. Enter the following:
-> * **Property:** `SALT`
-> * **Value:** (Enter a random long string here, e.g., `RandomString123!@#`)
-> 
-> 
-> 5. Click **Save script properties**.
-> 
-> 
+#### 3.3 Set Up Security Salt (Critical) 
+To secure user passwords, you must set a private salt value that is not stored in the code.
+
+1. In the Apps Script Editor, click **Project Settings** (Gear icon ⚙️) in the left sidebar.
+2. Scroll down to the **Script Properties** section.
+3. Click **Add script property**.
+4. Enter the following:
+ * **Property:** `SALT`
+ * **Value:** (Enter a random long string here, e.g., `RandomString123!@#`)
+5. Click **Save script properties**.
 
 #### 2. Verify Code Sync
 
