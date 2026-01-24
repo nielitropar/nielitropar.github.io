@@ -312,7 +312,7 @@
 
 <script>
         // CONFIGURATION
-        // REPLACE WITH YOUR NEW DEPLOYMENT URL AFTER UPDATING APPS SCRIPT
+        // REPLACE WITH YOUR NEW DEPLOYMENT URL
         const SHEET_URL = 'https://script.google.com/macros/s/AKfycbzGbZ39b67jJ2NPODCW4K3zqlf6p6-bq8vPRHmCdNjOxl37MT9KdndnCR8vw55qv7dN/exec';
 
         // STATE
@@ -381,7 +381,6 @@
             }, stepTime);
         }
 
-        // --- UPDATED: Pass userEmail to check like status ---
         async function loadProfileByEmail(email) {
             try {
                 const userParam = currentUser ? `&userEmail=${encodeURIComponent(currentUser.email)}` : '';
@@ -392,8 +391,7 @@
                     showPortfolio(json.data);
                     history.pushState({}, "", `index.html?email=${email}`);
                 } else {
-                    console.error("Profile not found:", json.data);
-                    alert("Profile not found or link is invalid.");
+                    alert("Profile not found.");
                     showDirectory();
                 }
             } catch (e) {
@@ -414,7 +412,6 @@
 
             try {
                 const searchParam = currentSearchTerm ? `&searchTerm=${encodeURIComponent(currentSearchTerm)}` : '';
-                // Pass userEmail to get likes on cards (optional but good)
                 const userParam = currentUser ? `&userEmail=${encodeURIComponent(currentUser.email)}` : '';
                 const res = await fetch(`${SHEET_URL}?action=getProfiles&page=${currentPage}${searchParam}${userParam}`);
                 const json = await res.json();
@@ -442,9 +439,8 @@
             if (chunk.length === 0 && !append) {
                 grid.innerHTML = `
                     <div style="grid-column: 1/-1; text-align: center; padding: 5rem 1rem;">
-                        <div style="font-size: 5rem; margin-bottom: 1.5rem; opacity: 0.3;">🤔</div>
-                        <h3 style="color: var(--primary); margin-bottom: 1rem; font-size: 1.8rem; font-weight: 700;">No students found</h3>
-                        <p style="color: var(--text-secondary); font-size: 1.1rem;">Try changing your search terms.</p>
+                        <h3 style="color: var(--primary); margin-bottom: 1rem;">No students found</h3>
+                        <p style="color: var(--text-secondary);">Try changing your search terms.</p>
                         <button onclick="applyFilter(document.querySelector('.filter-chip'), '')" class="btn-primary" style="margin-top: 2rem;">Clear All Filters</button>
                     </div>
                 `;
@@ -475,7 +471,7 @@
             if (hasMoreProfiles) {
                 grid.insertAdjacentHTML('beforeend', `
                     <div id="loadMoreContainer" style="grid-column: 1/-1; text-align: center; padding: 2.5rem;">
-                        <button onclick="loadMore()" class="btn-primary" style="background: white; color: var(--primary); border: 2px solid var(--border); box-shadow: 0 4px 12px rgba(0,0,0,0.06);">
+                        <button onclick="loadMore()" class="btn-primary" style="background: white; color: var(--primary); border: 2px solid var(--border);">
                             Load More Students
                         </button>
                     </div>
@@ -512,11 +508,10 @@
         }
 
         function openPortfolio(email) {
-            // Force fetch to ensure fresh like count
             loadProfileByEmail(email);
         }
 
-        // --- UPDATED: Show Like Button ---
+        // --- UPDATED: Restored Buttons & Added Like ---
         async function showPortfolio(profile) {
             document.getElementById('directoryView').classList.add('hidden');
             document.getElementById('portfolioView').classList.remove('hidden');
@@ -535,12 +530,16 @@
                             style="cursor: pointer; display: flex; align-items: center; gap: 5px; ${profile.isLiked ? 'background: #fee2e2; border-color: #ef4444; color: #ef4444;' : ''}">
                         ❤️ <span style="font-weight: 700;">${profile.likes || 0}</span>
                     </button>
+
                     ${profile.linkedin ? `<a href="${profile.linkedin}" target="_blank" class="social-link">🔗 LinkedIn</a>` : ''}
                     ${profile.github ? `<a href="${profile.github}" target="_blank" class="social-link">💻 GitHub</a>` : ''}
-                    ${profile.resume ? `<a href="${profile.resume}" target="_blank" class="social-link" style="background: #ffeb3b; color: #333; border-color: #fbc02d;">📄 Resume</a>` : ''}
+                    ${profile.resume ? `<a href="${profile.resume}" target="_blank" class="social-link" style="background: #ffeb3b; color: #333; border-color: #fbc02d;">📄 Download Resume</a>` : ''}
+                    
                     <button onclick="shareProfile('${escapeHtml(profile.name).replace(/'/g, "\\'")}', '${profile.email}')" class="social-link" style="cursor: pointer; background: white; color: var(--primary);">
-                        📤 Share
+                        📤 Share Profile
                     </button>
+                    
+                    <a href="mailto:${profile.email}" class="social-link">📧 Email</a>
                 </div>
                 <div style="max-width: 700px; margin: 0 auto; line-height: 1.8; color: var(--text-primary); background: var(--background); padding: 2.5rem; border-radius: 16px; text-align: left; border: 2px solid var(--border);">
                     <h4 style="margin-bottom:1rem; color:var(--accent); font-size:0.85rem; text-transform:uppercase; letter-spacing:2px; font-weight: 700;">About Me</h4>
@@ -557,7 +556,6 @@
                 
                 if (json.status === 'success') {
                     const userProjects = json.data.items.filter(p => p.authorEmail.toLowerCase() === profile.email.toLowerCase());
-
                     if (userProjects.length === 0) {
                         list.innerHTML = '<div style="text-align:center; padding: 5rem; color: var(--text-secondary); background: white; border-radius: 20px; border: 2px dashed var(--border);"><div style="font-size: 4rem; margin-bottom: 1rem; opacity: 0.3;">📁</div><h3 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--primary);">No projects posted yet</h3><p>Check back soon for amazing work!</p></div>';
                     } else {
@@ -570,7 +568,6 @@
             }
         }
 
-        // --- NEW: Like Profile Logic ---
         async function likeProfile(targetEmail, btn) {
             if (!currentUser) return alert('Please login to like profiles.');
             if (currentUser.email.toLowerCase() === targetEmail.toLowerCase()) return alert("You cannot like your own profile.");
@@ -579,17 +576,14 @@
             let currentCount = parseInt(countSpan.textContent) || 0;
             const isLiked = btn.classList.contains('active');
             
-            // Optimistic UI Update
             btn.classList.toggle('active');
             
             if (isLiked) {
-                // Unlike
                 countSpan.textContent = Math.max(0, currentCount - 1);
                 btn.style.background = '';
                 btn.style.borderColor = '';
                 btn.style.color = '';
             } else {
-                // Like
                 countSpan.textContent = currentCount + 1;
                 btn.style.background = '#fee2e2';
                 btn.style.borderColor = '#ef4444';
@@ -604,7 +598,6 @@
                 
                 if (res.status === 'success') {
                     countSpan.textContent = res.data.newCount;
-                    // Correct styles based on server response
                     if (res.data.action === 'added') {
                         btn.classList.add('active');
                         btn.style.background = '#fee2e2';
@@ -617,7 +610,6 @@
                         btn.style.color = '';
                     }
                 } else {
-                    // Revert on error
                     btn.classList.toggle('active'); 
                     countSpan.textContent = currentCount;
                     alert('Error: ' + res.data);
