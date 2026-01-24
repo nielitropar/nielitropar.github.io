@@ -81,7 +81,7 @@ const CONFIG = {
    - Access Mode: Public
 4. Save → Use Cloud Name in config.js
 
-**Importantt note for resume upload feature:** Cloudinary will let you upload image but it blocks pfds and zip uploads by default Enabling “Allow delivery of PDF and ZIP files” in Security settings of Cloudinary resolves the issue.
+**Important note for resume upload feature:** Cloudinary will let you upload image but it blocks pfds and zip uploads by default Enabling “Allow delivery of PDF and ZIP files” in Security settings of Cloudinary resolves the issue.
 
 ---
 
