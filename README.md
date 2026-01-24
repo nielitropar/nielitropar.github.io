@@ -25,7 +25,7 @@
 
 - [About](#-about)
 - [Features](#-features)
-- [What's New in v1.4](#-whats-new-in-v14)
+- [What's New in v1.5](#-whats-new-in-v15)
 - [Demo](#-demo)
 - [Technology Stack](#-technology-stack)
 - [Quick Start](#-quick-start)
