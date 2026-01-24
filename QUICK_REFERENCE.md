@@ -1,4 +1,4 @@
-# NIELIT StudentHub - Quick Reference Card
+# NIELIT StudentHub - Quick Reference Card (v1.5)
 
 ## 🚀 Quick Start Commands
 
@@ -26,45 +26,47 @@ Works even without configuration!
 
 ---
 
-## ⚙️ Configuration (3 Lines to Change)
+## ⚙️ Configuration (3 Files, Same Config)
 
-### For index.html (lines ~1225-1227):
+### Create config.js in root folder:
 ```javascript
-const SHEET_URL = 'https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec';
-const CLOUDINARY_PRESET = 'studenthub_preset';
-const CLOUDINARY_NAME = 'your_cloud_name';
+const CONFIG = {
+    SHEET_URL: 'https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec',
+    CLOUDINARY_NAME: 'your_cloud_name',
+    CLOUDINARY_PRESET: 'studenthub_preset'
+};
 ```
 
-### For profiles.html (line ~111):
-```javascript
-const SHEET_URL = 'https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec';
-```
-
-**Critical:** Both files must have the same SHEET_URL!
+**Critical:** All HTML files (index.html, feed.html, project.html) load this config.js automatically!
 
 ---
 
-## 🔧 Google Apps Script Setup
+## 🔧 Google Apps Script Setup (v1.5)
 
 ### Quick Deploy:
 1. Go to [Google Sheets](https://sheets.google.com) → New Spreadsheet
 2. Extensions → Apps Script
-3. Paste entire `google-apps-script.js` code
-4. Save (💾) → Name it "StudentHub API"
+3. **Paste entire `google-app-script-v1.5.js` code** (NOT v1.4)
+4. Save (💾) → Name it "StudentHub API v1.5"
 5. Deploy → New deployment → Web app
    - **Execute as:** Me
    - **Who has access:** Anyone ⚠️ Must be "Anyone"!
 6. Authorize (click through warnings)
-7. Copy deployment URL → Paste in both HTML files
+7. Copy deployment URL → Use in config.js
 
-### Initialize Sample Data:
-```javascript
-// In Apps Script editor, select function dropdown:
-initializeSampleData()
-// Click Run (▶️)
-```
+### What's New in v1.5:
+- ✅ **Smart Trending Algorithm** - Time-decay scoring for fair ranking
+- ✅ **Profile Likes** - 6th sheet added (ProfileLikes)
+- ✅ **Individual Upvote Tracking** - Separate Upvotes sheet
+- ✅ **Enhanced Security** - Automatic password migration with salt
 
-Creates demo account and sample data automatically.
+### Database Structure (6 Sheets):
+1. **Users** - Auth (11 columns including resume)
+2. **Projects** - Content (12 columns including category)
+3. **Profiles** - Public data (11 columns including likes)
+4. **Comments** - Discussions (6 columns)
+5. **Upvotes** - Individual project likes (3 columns)
+6. **ProfileLikes** - NEW! Individual profile likes (3 columns)
 
 ---
 
@@ -77,27 +79,38 @@ Creates demo account and sample data automatically.
    - Preset name: `studenthub_preset` (exact name!)
    - Signing Mode: **Unsigned** ⚠️ Critical!
    - Access Mode: Public
-4. Save → Use Cloud Name in config
+4. Save → Use Cloud Name in config.js
 
 ---
 
 ## 🌐 Deploy to GitHub Pages
 
+### Option 1: Manual Config (Recommended for Testing)
 ```bash
-# If you cloned:
-git add .
-git commit -m "Configure NIELIT StudentHub"
-git push
+# 1. Clone repo
+git clone https://github.com/nielitropar/nielitropar.github.io.git
+cd nielitropar.github.io
 
-# If you downloaded:
-git init
-git add .
-git commit -m "Initial commit"
-git remote add origin https://github.com/USERNAME/REPO.git
-git push -u origin main
+# 2. Create config.js (see Configuration section above)
+nano config.js  # or use any text editor
+
+# 3. Commit and push
+git add config.js
+git commit -m "Add configuration"
+git push
 ```
 
-Then: Repository Settings → Pages → Source: main branch
+### Option 2: GitHub Actions (Production - Secure)
+Use the existing `.github/workflows/deploy.yml` with secrets:
+1. Go to Repository Settings → Secrets and variables → Actions
+2. Add these secrets:
+   - `APP_SHEET_URL` - Your Apps Script URL
+   - `APP_CLOUD_NAME` - Your Cloudinary name
+   - `APP_CLOUD_PRESET` - `studenthub_preset`
+3. Push any change → GitHub Actions auto-deploys with injected config
+
+### Enable Pages:
+Repository Settings → Pages → Source: GitHub Actions (or main branch if manual)
 
 Your site: `https://USERNAME.github.io/REPO/`
 
@@ -107,7 +120,7 @@ Your site: `https://USERNAME.github.io/REPO/`
 
 ### Projects Not Loading?
 **Check:**
-1. SHEET_URL is correct (ends with `/exec`)
+1. config.js exists and has correct SHEET_URL
 2. Apps Script deployed with "Who has access: Anyone"
 3. Browser console (F12) for errors
 4. Test API: `YOUR_SHEET_URL?action=getProjects` in browser
@@ -115,8 +128,14 @@ Your site: `https://USERNAME.github.io/REPO/`
 **Quick Test:**
 ```bash
 curl "YOUR_SHEET_URL?action=getProjects"
-# Should return JSON
+# Should return JSON with {"status":"success","data":{...}}
 ```
+
+### Trending Not Showing?
+**Check:**
+1. Using google-app-script-v1.5.js (NOT v1.4)
+2. API test: `YOUR_SHEET_URL?action=getTrending`
+3. Should return top 5 projects with trendingScore
 
 ### Images Not Uploading?
 **Check:**
@@ -133,76 +152,97 @@ curl "YOUR_SHEET_URL?action=getProjects"
 3. Try demo@nielit.gov.in / demo123 first
 4. Clear localStorage: `localStorage.clear()` in console
 
-### Demo Mode Warning Shows?
-**Means:** Configuration not saved correctly
-**Fix:** 
-1. Re-edit SHEET_URL in **both** index.html and profiles.html
-2. Save files
-3. Hard refresh: Ctrl+F5 (Windows) / Cmd+Shift+R (Mac)
+### Profile Likes Not Working?
+**Check:**
+1. ProfileLikes sheet exists (6th sheet)
+2. Using v1.5 backend (has toggleProfileLike action)
+3. Can't like your own profile (intentional)
+
+### Config Not Loading?
+**If you see undefined errors:**
+1. Verify config.js is in the same folder as index.html
+2. Check browser console for "Failed to load resource: config.js"
+3. Try hard refresh: Ctrl+F5 (Windows) / Cmd+Shift+R (Mac)
 
 ---
 
-## 📊 Feature Checklist
+## 📊 Feature Checklist (v1.5)
 
 ### Core Features (All Implemented ✅):
-- [x] User authentication (signup/login with SHA-256)
+- [x] User authentication (signup/login with SHA-256 + salt)
+- [x] **Automatic password migration** (v1.0 → v1.5 security)
 - [x] Session management (localStorage)
-- [x] Profile management (edit name, bio, links, picture)
+- [x] Profile management (edit name, bio, links, picture, resume)
+- [x] **Profile likes** (heart/like other users' profiles)
 - [x] Project posting with Cloudinary images
-- [x] Upvote system (one-click, optimistic updates)
+- [x] **Project categories** (Web Dev, Mobile, AI/ML, IoT, Blockchain, etc.)
+- [x] Individual upvote tracking (one vote per user per project)
 - [x] Comments on projects (full CRUD)
-- [x] Search (projects by title/author/tech, profiles by name/major)
+- [x] **Smart Trending algorithm** (engagement + time decay)
+- [x] Search (projects by title/author/tech/category, profiles by name/major)
+- [x] **Server-side pagination** (20 projects, 24 profiles per page)
 - [x] Mobile responsive with bottom navigation
 - [x] User profile pages (individual portfolios)
-- [x] Trending projects (top 5 by upvotes)
-- [x] Demo mode fallback
+- [x] **Public sharing** (project.html for guests)
 - [x] Directory view (all students)
+- [x] **Animated statistics** (total students/projects on hero)
 
 ### Technical Features:
-- [x] Cloudinary image hosting
-- [x] Google Sheets as database (4 sheets)
-- [x] Password hashing (SHA-256)
+- [x] Cloudinary image + PDF hosting (resume upload (Enable PDF & ZIP Delivery in Cloudinary Settings))
+- [x] Google Sheets as database (6 sheets)
+- [x] **Salted password hashing** (SHA-256 + NIELIT_STUDENTHUB_SECURE_SALT_2026)
 - [x] XSS protection (HTML escaping)
 - [x] LocalStorage caching
 - [x] Error handling with user feedback
 - [x] Mobile-first responsive design
 - [x] Touch-friendly interactions
+- [x] **Deep linking** (direct URLs to projects/profiles)
 
 ---
 
-## 🎯 Testing Checklist
+## 🎯 Testing Checklist (v1.5 Features)
 
 ### Must Test Before Deploying:
 - [ ] Login with demo@nielit.gov.in / demo123
 - [ ] Create new account (test signup)
 - [ ] Upload profile picture (test Cloudinary)
+- [ ] **Upload PDF resume** (new feature)
 - [ ] Post project with image
-- [ ] Post project without image
+- [ ] Post project with category selection
 - [ ] Upvote a project (button should disable)
+- [ ] **Like another user's profile** (heart icon)
+- [ ] Try to like own profile (should show error)
 - [ ] Add comment to project
 - [ ] View another user's profile
-- [ ] Search for projects (by title, tech, author)
+- [ ] **Check trending section** (horizontal scroll on mobile, sidebar on desktop)
+- [ ] Search for projects (by title, tech, author, category)
+- [ ] **Filter by category** (chips on feed.html)
 - [ ] Search for users (by name, major)
-- [ ] Click trending project
+- [ ] Click trending project → goes to project detail
 - [ ] Edit own profile
 - [ ] View "My Projects" page
 - [ ] Test on mobile device (or DevTools)
-- [ ] Test mobile bottom navigation (4 tabs)
+- [ ] Test mobile bottom navigation (3 tabs: Feed, Profiles, Post)
 - [ ] Test back button navigation
+- [ ] **Test public sharing** (copy project.html link, open in incognito)
+- [ ] **Test password migration** (create user with v1.0, login with v1.5)
 
 ---
 
-## 🔐 Security Notes
+## 🔐 Security Notes (v1.5)
 
 ### Built-in Security:
-- **SHA-256 password hashing** - Never stores plain text
+- **SHA-256 + Salt password hashing** - `NIELIT_STUDENTHUB_SECURE_SALT_2026`
+- **Automatic Migration** - Old passwords upgraded on login
 - **XSS protection** - All user input escaped (`escapeHtml()`)
 - **Input validation** - Server-side validation in Apps Script
 - **CORS configured** - Apps Script handles cross-origin requests
 - **No SQL injection** - Using Google Sheets (no SQL)
+- **Individual tracking** - Upvotes and ProfileLikes prevent duplicates
 
 ### Best Practices:
-- Never commit SHEET_URL with sensitive data
+- Never commit config.js with sensitive data to public repos
+- Use GitHub Actions secrets for production
 - Monitor Apps Script execution logs regularly
 - Review new user signups periodically
 - Keep Google Sheet private (only script has access)
@@ -218,8 +258,9 @@ curl "YOUR_SHEET_URL?action=getProjects"
 - **Mobile**: < 968px (single column + bottom nav)
 - **Small Mobile**: < 480px (optimized spacing)
 
-### Mobile-Specific Features:
-- **Bottom Navigation Bar** - 4 tabs: Feed, Profiles, Post, Me
+### Mobile-Specific Features (v1.5):
+- **Bottom Navigation Bar** - 3 tabs: Feed, Profiles, Post
+- **Horizontal Trending** - Swipeable cards on mobile
 - **Touch-friendly buttons** - Larger tap targets
 - **Optimized layouts** - No sidebars on mobile
 - **Fixed bottom nav** - Always accessible
@@ -227,42 +268,27 @@ curl "YOUR_SHEET_URL?action=getProjects"
 - **User menu modal** - Mobile-specific profile menu
 - **Fast image loading** - Cloudinary optimization
 - **No zoom on input** - Font-size: 16px prevents iOS zoom
-
-### Navigation Mapping:
-| Desktop | Mobile Bottom Nav |
-|---------|-------------------|
-| Feed link | 🏠 Feed tab |
-| Profiles link | 👥 Profiles tab |
-| Post Project button | ➕ Post tab |
-| Sidebar profile menu | 👤 Me tab |
+- **Category chips** - Horizontal scroll on mobile
 
 ---
 
 ## 🎨 Customization Quick Guide
 
-### Change Colors (Both HTML files, lines ~8-19):
+### Change Colors (All HTML files):
 ```css
 :root {
     --primary: #003366;     /* Main NIELIT blue */
     --accent: #0066CC;      /* Lighter blue */
-    --secondary: #FF6B35;   /* Not actively used */
+    --secondary: #FF6B35;   /* Orange accent */
     --background: #F5F7FA;  /* Page background */
     --card-bg: #FFFFFF;     /* Card backgrounds */
 }
 ```
 
-### Change Fonts (line ~6):
-```html
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
-```
-
 ### Replace Logo:
-Update these lines:
-- `index.html` line ~106: Auth page logo
-- `index.html` line ~161: Nav logo (img src)
-- `profiles.html` line ~69: Nav logo
-
-Or replace `logo.png` file with same dimensions.
+Update these files:
+- Replace `logo.png` file with same dimensions (200x200px recommended)
+- Or update img src in index.html, feed.html, project.html
 
 ---
 
@@ -278,70 +304,63 @@ Or replace `logo.png` file with same dimensions.
 ### Get Help:
 - **GitHub Issues**: [Report bugs or request features](https://github.com/nielitropar/nielitropar.github.io/issues)
 - **Documentation**: README.md has detailed troubleshooting
-- **Code Comments**: Check inline comments for implementation details
 
 ### When Reporting Issues:
 Include:
-1. Browser and version
-2. Steps to reproduce
-3. Error messages from console
-4. Screenshots if applicable
-5. Config values (redact sensitive URLs)
+1. **Version**: v1.5 (check google-apps-script.js first line)
+2. Browser and version
+3. Steps to reproduce
+4. Error messages from console
+5. Screenshots if applicable
+6. Config values (redact sensitive URLs)
 
 ---
 
-## 🎓 Key Files Explained
+## 🎓 Key Files Explained (v1.5)
 
 ```
 nielitropar.github.io/
-├── index.html               # Main app (Feed page)
-│                            # Contains: Auth, Feed, Modals, Mobile Nav
-│                            # Config at lines ~1225-1227
+├── config.js                    # ⚠️ CREATE THIS! (gitignored for security)
+│                                # Contains SHEET_URL, CLOUDINARY credentials
 │
-├── profiles.html            # Directory & Portfolio pages
-│                            # Contains: Student list, Individual profiles
-│                            # Config at line ~111
+├── index.html                   # Student directory & portfolio view
+│                                # Shows: All profiles, individual portfolios, trending
+│                                # Loads: config.js automatically
 │
-├── google-apps-script.js    # Backend API (paste in Apps Script)
-│                            # Contains: All CRUD operations, Auth
-│                            # Functions: doGet, doPost, login, signup, etc.
+├── feed.html                    # Main feed with projects (pagination)
+│                                # Shows: Project feed, trending sidebar, post modal
+│                                # Loads: config.js automatically
 │
-├── logo.png                 # NIELIT logo (replace if needed)
+├── project.html                 # Public project detail page
+│                                # Shows: Single project (no login required)
+│                                # Loads: config.js automatically
 │
-├── README.md                # Full documentation (setup, usage, troubleshooting)
+├── google-app-script-v1.5.js    # 🆕 BACKEND v1.5 (USE THIS!)
+│                                # Contains: Trending, ProfileLikes, Migration
+│                                # Functions: getTrending, toggleProfileLike, etc.
 │
-├── QUICK_REFERENCE.md       # This file (quick setup guide)
+├── google-apps-script.js        # Legacy v1.4 (for reference only)
 │
-└── LICENSE                  # MIT License
+├── logo.png                     # NIELIT logo (replace if needed)
+│
+├── .github/workflows/deploy.yml # GitHub Actions workflow
+│                                # Injects config from secrets
+│
+├── .gitignore                   # Prevents config.js from being committed
+│
+├── README.md                    # Full documentation
+├── QUICK_REFERENCE.md           # This file
+├── SETUP_GUIDE.md               # Step-by-step setup
+└── LICENSE                      # MIT License
 ```
 
-### Database Sheets (Created automatically):
-- **Users** - Authentication data (email, hashed password, profile info)
-- **Projects** - All posted projects (title, description, image, upvotes)
-- **Profiles** - Public user data (no passwords)
-- **Comments** - Project comments (linked by projectId)
-
----
-
-## 🚀 Performance Tips
-
-### Image Optimization:
-- Use Cloudinary's auto-optimization (already configured)
-- Keep uploads under 5MB for fast uploads
-- Cloudinary serves optimized WebP on supported browsers
-- Images cached by Cloudinary CDN globally
-
-### Speed Up Loading:
-- Projects load via single API call (not real-time updates)
-- LocalStorage caches user session (no re-login needed)
-- Minimize API calls (batch operations where possible)
-- Use browser caching (GitHub Pages handles this)
-
-### Best Practices:
-- Don't reload page unnecessarily (use optimistic updates)
-- Lazy load images (Cloudinary handles this)
-- Minimize Apps Script execution time (already optimized)
-- Test on slow 3G network to verify mobile performance
+### Database Sheets (Auto-created by v1.5):
+- **Users** (11 cols) - email, password, name, university, major, profilePicture, linkedin, github, bio, timestamp, resume
+- **Projects** (12 cols) - id, authorName, authorEmail, authorPicture, title, description, link, tech, projectImage, upvotes, timestamp, **category**
+- **Profiles** (11 cols) - name, email, university, major, linkedin, github, bio, profilePicture, timestamp, resume, **likes**
+- **Comments** (6 cols) - id, projectId, authorName, authorEmail, comment, timestamp
+- **Upvotes** (3 cols) - projectId, userEmail, timestamp
+- **ProfileLikes** (3 cols) - targetEmail, userEmail, timestamp
 
 ---
 
@@ -349,7 +368,7 @@ nielitropar.github.io/
 
 ### Add Google Analytics:
 ```html
-<!-- Add before </head> in both HTML files -->
+<!-- Add before </head> in all HTML files -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -361,47 +380,58 @@ nielitropar.github.io/
 
 ### Track Events:
 ```javascript
-// In index.html after login
+// In feed.html after login
 gtag('event', 'login', {'method': 'Google Apps Script'});
 
 // After posting project
 gtag('event', 'post_project', {'event_category': 'engagement'});
+
+// After liking profile
+gtag('event', 'like_profile', {'event_category': 'social'});
 ```
 
 ---
 
-## 🎯 Production Checklist
+## 🎯 Production Checklist (v1.5)
 
 Before going live:
 
 ### Configuration:
-- [ ] SHEET_URL configured in **both** HTML files
+- [ ] config.js created with correct credentials
+- [ ] OR GitHub Actions secrets configured
 - [ ] Cloudinary credentials correct
+- [ ] Apps Script uses v1.5 code (check first line)
 - [ ] Logo replaced with institution logo (if needed)
-- [ ] Colors customized to match branding (optional)
 
 ### Testing:
-- [ ] All features tested on desktop
-- [ ] All features tested on mobile
-- [ ] Tested in Chrome, Firefox, Safari
+- [ ] All v1.5 features tested (trending, profile likes, categories)
+- [ ] Tested on desktop (Chrome, Firefox, Safari)
+- [ ] Tested on mobile (iOS Safari, Android Chrome)
 - [ ] Tested with real user accounts (not just demo)
 - [ ] Images upload and display correctly
+- [ ] Resume PDFs upload and download
 - [ ] Search works for projects and profiles
 - [ ] Comments system works
 - [ ] Mobile bottom navigation works
-- [ ] Profile pages load correctly
+- [ ] Trending section visible on all screen sizes
+- [ ] Profile likes work (can't like own profile)
+- [ ] Category filtering works
 
 ### Backend:
 - [ ] Apps Script deployed with "Anyone" access
-- [ ] Sample data initialized (or first user created)
-- [ ] Google Sheet has all 4 tabs (Users, Projects, Profiles, Comments)
-- [ ] Test API endpoints directly in browser
+- [ ] Google Sheet has all 6 tabs
+- [ ] Test API endpoints directly in browser:
+  - `?action=getProjects`
+  - `?action=getTrending`
+  - `?action=getStats`
+- [ ] ProfileLikes sheet exists and has headers
 
 ### Security:
 - [ ] Verified password hashing works (check Users sheet)
+- [ ] Test password migration (old user → new login)
 - [ ] Test XSS protection (try entering `<script>alert(1)</script>`)
 - [ ] Ensure Google Sheet is private (not publicly shared)
-- [ ] Monitor Apps Script quotas (won't exceed free tier initially)
+- [ ] Monitor Apps Script quotas
 
 ### Deployment:
 - [ ] Pushed to GitHub
@@ -409,54 +439,52 @@ Before going live:
 - [ ] Site loads at GitHub Pages URL
 - [ ] All assets load (images, styles, scripts)
 - [ ] No console errors on production site
-
-### Post-Launch:
-- [ ] Create backup of Google Sheet
-- [ ] Document admin procedures
-- [ ] Set up error monitoring (optional)
-- [ ] Prepare user onboarding guide
-- [ ] Monitor usage and engagement
+- [ ] config.js NOT in repository (check .gitignore)
 
 ---
 
-## 💡 Pro Tips
+## 💡 Pro Tips (v1.5)
 
 1. **Test in Incognito/Private Mode** - Avoids localStorage conflicts
 2. **Check Network Tab (F12)** - Debug API call issues
-3. **Version Control** - Commit often, test before deploying
-4. **Mobile First** - Always test mobile layout during development
+3. **Version Control** - Always use v1.5 backend for new deployments
+4. **Mobile First** - Test mobile layout during development
 5. **User Feedback** - Add feedback mechanism (GitHub Issues)
-6. **Monitor Apps Script Quotas** - Check daily execution limits
+6. **Monitor Trending** - Check if scoring algorithm needs tuning
 7. **Backup Regularly** - Export Google Sheet periodically
 8. **Use Console Logs** - Add `console.log()` for debugging
 9. **Clear Cache** - Hard refresh (Ctrl+F5) after config changes
 10. **Read Error Messages** - Console provides specific error details
+11. **Test Migration** - Create user with v1.0, login with v1.5 to verify upgrade
+12. **Profile Likes Limit** - Can't like own profile (intentional)
 
 ---
 
-## 🌟 What's New in Current Version
+## 🌟 What's New in v1.5
 
-### Major Features Implemented:
-- ✅ **Complete Authentication System** - SHA-256 hashing, session management
-- ✅ **Comments System** - Full CRUD for project comments
-- ✅ **Mobile Bottom Navigation** - 4-tab fixed navigation bar
-- ✅ **User Profile Pages** - Individual portfolios with all projects
-- ✅ **Trending Section** - Top 5 projects by upvotes
-- ✅ **Enhanced Search** - Real-time filtering for projects and profiles
-- ✅ **Demo Mode** - Works without configuration for testing
-- ✅ **Error Handling** - User-friendly error messages
-- ✅ **XSS Protection** - HTML escaping on all user input
-- ✅ **Mobile Optimization** - Touch-friendly, responsive design
+### Major Features:
+- ✅ **Smart Trending Algorithm** - Fair time-decay scoring
+- ✅ **Profile Likes** - Social acknowledgment between peers
+- ✅ **Enhanced Security** - Automatic password migration
+- ✅ **Category Support** - Better project organization
+- ✅ **Resume Upload** - PDF support via Cloudinary
+- ✅ **Public Sharing** - project.html works without login
+- ✅ **Animated Stats** - Counting animation on hero
 
 ### Technical Improvements:
-- Optimistic UI updates (instant feedback)
-- Better state management with localStorage
-- Enhanced error messages and logging
-- Improved code organization and comments
-- Mobile-first responsive breakpoints
-- Safe area support for notched devices
-- Input validation (frontend and backend)
-- Proper CORS handling
+- New API action: `getTrending`
+- New API action: `toggleProfileLike`
+- New sheet: ProfileLikes (6th sheet)
+- Optimized pagination (server-side only)
+- Better mobile UX (horizontal trending)
+- Self-healing crypto migration
+
+### Bug Fixes:
+- Deep link loader now hides correctly
+- Category display in project cards
+- Search timeout debouncing
+- Mobile bottom nav alignment
+- Trending scroll on mobile
 
 ---
 
@@ -464,102 +492,53 @@ Before going live:
 
 After deployment, you can track:
 
-### User Engagement:
-- Total users registered (Users sheet row count)
+### User Engagement (v1.5):
+- Total users registered
 - Projects posted per week
 - Average upvotes per project
+- **Profile likes per user**
 - Comments per project
-- Search queries (if analytics added)
-- Profile views (if tracking added)
+- **Trending project views**
+- **Category popularity**
 
 ### Popular Content:
-- Most upvoted projects (sort Projects sheet)
-- Most active users (count projects per user)
-- Trending categories (if added)
+- Most upvoted projects
+- Most active users
+- **Most liked profiles**
+- **Trending categories**
 - Most commented projects
-
-### Technical Metrics:
-- Page load time (use Lighthouse)
-- Mobile usability score (use PageSpeed Insights)
-- Apps Script execution time (check Logs)
-- API call success rate
-- Image optimization savings (Cloudinary dashboard)
-
-### Growth Indicators:
-- Daily active users
-- New signups per week
-- Project posting frequency
-- User retention (returning users)
-- Mobile vs desktop usage
 
 ---
 
-## 📋 API Reference
+## 📋 API Reference (v1.5)
 
 ### Available Actions:
 
 | Action | Method | Parameters | Returns |
 |--------|--------|------------|---------|
-| `getProjects` | GET | none | Array of all projects |
-| `getProfiles` | GET | none | Array of all profiles |
-| `getComments` | GET | `projectId` | Array of comments |
-| `login` | GET | `email`, `password` | User object (no password) |
+| `getProjects` | GET | `userEmail`, `page`, `searchTerm` | Paginated projects |
+| `getProject` | GET | `id` | Single project |
+| `getTrending` | GET | none | Top 5 by score |
+| `getProfiles` | GET | `page`, `searchTerm`, `userEmail` | Paginated profiles |
+| `getProfile` | GET | `email`, `userEmail` | Single profile |
+| `getComments` | GET | `projectId` | Comments array |
+| `getStats` | GET | none | Total students/projects |
+| `login` | GET | `email`, `password` | User object |
 | `signup` | POST | `data` object | Success message |
 | `addProject` | POST | `data` object | Success message |
 | `updateProfile` | POST | `data` object | Success message |
-| `updateUpvotes` | POST | `projectId`, `upvotes` | Success message |
+| `toggleUpvote` | POST | `projectId`, `userEmail` | `{action, newCount}` |
+| `toggleProfileLike` | POST | `targetEmail`, `userEmail` | `{action, newCount}` |
 | `addComment` | POST | `data` object | Success message |
 
-### Example API Call:
-```javascript
-// GET request (login)
-fetch(`${SHEET_URL}?action=login&email=test@example.com&password=pass123`)
-  .then(r => r.json())
-  .then(data => console.log(data));
-
-// POST request (add project)
-fetch(SHEET_URL, {
-  method: 'POST',
-  body: JSON.stringify({
-    action: 'addProject',
-    data: { /* project data */ }
-  })
-}).then(r => r.json());
-```
-
 ---
 
-## 🔄 Update Guide
-
-### To update your deployed site:
-
-1. **Make changes** to HTML files locally
-2. **Test locally** (double-click or `python -m http.server`)
-3. **Commit changes**:
-   ```bash
-   git add .
-   git commit -m "Update: description of changes"
-   git push
-   ```
-4. **Wait 1-2 minutes** for GitHub Pages to rebuild
-5. **Hard refresh** your live site (Ctrl+F5)
-
-### To update Apps Script backend:
-
-1. Open Google Apps Script editor
-2. Make changes to code
-3. **Save** (💾)
-4. **Deploy** → Manage deployments → Edit version → Deploy
-5. Test changes immediately (no waiting)
-
----
-
-**Quick Help:** For detailed instructions, see [README.md](README.md)
+**Quick Help:** For detailed instructions, see [README.md](README.md) or [SETUP_GUIDE.md](SETUP_GUIDE.md)
 
 **Need Support?** Check browser console first, then [GitHub Issues](https://github.com/nielitropar/nielitropar.github.io/issues)
 
-**Made with ❤️ at NIELIT Ropar**
+**Made with ❤️ at NIELIT Ropar | Version 1.5 | January 2026**
 
 ---
 
-[⬆ Back to Top](#nielit-studenthub---quick-reference-card)
+[⬆ Back to Top](#nielit-studenthub---quick-reference-card-v15)
