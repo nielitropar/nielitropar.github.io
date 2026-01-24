@@ -1,6 +1,6 @@
-# NIELIT StudentHub - Complete Setup Guide
+# NIELIT StudentHub - Complete Setup Guide (v1.5)
 
-This guide will walk you through setting up NIELIT StudentHub from scratch, with detailed explanations and troubleshooting for each step.
+This guide will walk you through setting up NIELIT StudentHub v1.5 from scratch, with detailed explanations and troubleshooting for each step.
 
 ## 📋 Table of Contents
 
@@ -25,7 +25,7 @@ This guide will walk you through setting up NIELIT StudentHub from scratch, with
    - Sign up: [accounts.google.com](https://accounts.google.com)
 
 2. **Cloudinary Account**
-   - Needed for: Image hosting and CDN
+   - Needed for: Image and PDF hosting
    - Free tier: 25GB storage, 25GB bandwidth/month
    - Sign up: [cloudinary.com/users/register/free](https://cloudinary.com/users/register/free)
 
@@ -65,39 +65,50 @@ This guide will walk you through setting up NIELIT StudentHub from scratch, with
 
 ## Understanding the Architecture
 
-### How StudentHub Works
+### How StudentHub v1.5 Works
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │                   1. USER INTERACTION                       │
-│              (HTML/CSS/JavaScript in Browser)               │
+│         (HTML/CSS/JavaScript in Browser + config.js)        │
 └──────────────────────┬──────────────────┬───────────────────┘
                        │                  │
         ┌──────────────▼──────┐  ┌────────▼──────────┐
-        │   2. IMAGE UPLOAD   │  │  3. DATA REQUESTS │
-        │   (to Cloudinary)   │  │  (to Apps Script) │
+        │   2. IMAGE/PDF      │  │  3. DATA REQUESTS │
+        │   UPLOAD            │  │  (to Apps Script) │
+        │   (to Cloudinary)   │  │                   │
         └──────────────┬──────┘  └────────┬──────────┘
                        │                  │
                        │                  │
         ┌──────────────▼──────┐  ┌────────▼──────────┐
         │   Cloudinary CDN    │  │  Google Apps      │
-        │   (Image Storage)   │  │     Script        │
+        │   (Media Storage)   │  │  Script v1.5      │
         └─────────────────────┘  └────────┬──────────┘
                                            │
                                   ┌────────▼──────────┐
                                   │  Google Sheets    │
-                                  │   (Database)      │
+                                  │  (6 Sheets DB)    │
+                                  │  • Users          │
+                                  │  • Projects       │
+                                  │  • Profiles       │
+                                  │  • Comments       │
+                                  │  • Upvotes        │
+                                  │  • ProfileLikes   │
                                   └───────────────────┘
 ```
 
-### Data Flow Example: Posting a Project
+### Data Flow Example: Liking a Profile (NEW in v1.5)
 
-1. **User Action**: User fills project form, uploads image
-2. **Image Upload**: JavaScript uploads image to Cloudinary → receives URL
-3. **Data Submission**: JavaScript sends project data + image URL to Apps Script
-4. **Backend Processing**: Apps Script validates data, appends to Google Sheets
-5. **Response**: Success message sent back to browser
-6. **UI Update**: Project appears in feed immediately
+1. **User Action**: User clicks heart icon on another user's profile
+2. **Frontend Check**: JavaScript verifies user is logged in and not liking own profile
+3. **API Call**: `toggleProfileLike(targetEmail, userEmail)` sent to Apps Script
+4. **Backend Processing**: 
+   - Script checks ProfileLikes sheet for existing like
+   - If exists: Remove row (unlike), decrement count
+   - If not exists: Add row (like), increment count
+5. **Database Update**: Profiles sheet like count updated
+6. **Response**: New count + action ('added'/'removed') sent back
+7. **UI Update**: Heart icon toggles, count updates immediately
 
 ### Why This Architecture?
 
@@ -107,12 +118,14 @@ This guide will walk you through setting up NIELIT StudentHub from scratch, with
 - ✅ **Easy Maintenance** - Update via Google Sheets UI
 - ✅ **Scalable** - Cloudinary CDN + Google infrastructure
 - ✅ **Simple Deployment** - Static files on GitHub Pages
+- ✅ **Secure Config** - config.js gitignored, secrets in GitHub Actions
 
 **Limitations:**
-- ⚠️ Google Sheets quotas (20,000 rows max in free tier)
+- ⚠️ Google Sheets quotas (10M cells, good for ~500K projects)
 - ⚠️ Apps Script execution time (6 min max)
 - ⚠️ Cloudinary bandwidth limits (25GB/month free)
-- ⚠️ Not suitable for real-time features
+- ⚠️ Not suitable for real-time chat features
+- ⚠️ Read/write latency ~800ms-1.2s (acceptable for archiving)
 
 ---
 
@@ -131,7 +144,7 @@ cd nielitropar.github.io
 
 # Verify files
 ls -la
-# Should see: index.html, profiles.html, google-apps-script.js, etc.
+# Should see: index.html, feed.html, project.html, google-app-script-v1.5.js, etc.
 ```
 
 **Option B: Download ZIP**
@@ -145,19 +158,25 @@ ls -la
 **What You Should Have:**
 ```
 nielitropar.github.io/
-├── index.html               # Main app file
-├── profiles.html            # Profiles page
-├── google-apps-script.js    # Backend code
-├── logo.png                 # NIELIT logo
-├── README.md               # Documentation
-├── QUICK_REFERENCE.md      # Quick guide
-├── SETUP_GUIDE.md          # This file
-└── LICENSE                 # MIT License
+├── index.html                   # Main app file
+├── feed.html                    # Feed page
+├── project.html                 # Public project view
+├── google-app-script-v1.5.js    # 🆕 BACKEND v1.5 (USE THIS!)
+├── google-apps-script.js        # Legacy v1.4 (reference only)
+├── logo.png                     # NIELIT logo
+├── .github/                     # GitHub Actions config
+│   └── workflows/
+│       └── deploy.yml
+├── .gitignore                   # Prevents config.js from being committed
+├── README.md                    # Documentation
+├── QUICK_REFERENCE.md           # Quick guide
+├── SETUP_GUIDE.md               # This file
+└── LICENSE                      # MIT License
 ```
 
 ---
 
-### Step 2: Set Up Cloudinary (Image Hosting)
+### Step 2: Set Up Cloudinary (Image & PDF Hosting)
 
 #### 2.1 Create Cloudinary Account
 
@@ -175,13 +194,13 @@ nielitropar.github.io/
 1. Login to Cloudinary dashboard
 2. Look at the top of the page
 3. You'll see: **Cloud name: your_cloud_name**
-4. **Write this down** - you'll need it later
+4. **Write this down** - you'll need it for config.js
 
 Example cloud name: `dy8up08qd` or `student-hub-cloud`
 
 #### 2.3 Create Upload Preset
 
-**Why?** Upload presets control how images are processed and stored.
+**Why?** Upload presets control how images/PDFs are processed and stored.
 
 1. **Navigate to Upload Settings**
    - Click gear icon (⚙️) in top-right
@@ -220,19 +239,19 @@ Example cloud name: `dy8up08qd` or `student-hub-cloud`
 
 ---
 
-### Step 3: Set Up Google Sheets Backend
+### Step 3: Set Up Google Sheets Backend (v1.5)
 
 #### 3.1 Create Google Sheet
 
 1. Go to: https://sheets.google.com
 2. Click "+ Blank" to create new spreadsheet
-3. **Name it**: "NIELIT StudentHub Database"
+3. **Name it**: "NIELIT StudentHub Database v1.5"
    - Click on "Untitled spreadsheet" at top
    - Type the name
    - Press Enter
 
 **At this point, your sheet is empty - that's normal!**
-The Apps Script will create sheets automatically.
+The Apps Script will create all 6 sheets automatically.
 
 #### 3.2 Open Apps Script Editor
 
@@ -240,22 +259,26 @@ The Apps Script will create sheets automatically.
 2. A new tab opens with the Apps Script editor
 3. You'll see a default `myFunction()` - **delete everything**
 
-#### 3.3 Paste Backend Code
+#### 3.3 Paste Backend Code (v1.5)
 
-1. Open `google-apps-script.js` from your downloaded files
+1. Open `google-app-script-v1.5.js` from your downloaded files
 2. **Copy ALL the code** (Ctrl+A, Ctrl+C)
+   - **IMPORTANT**: Use v1.5, NOT v1.4!
+   - First line should say: `// STUDENTHUB - PRODUCTION BACKEND (Trending Added to v1.5)`
 3. **Paste** into Apps Script editor (Ctrl+V)
 4. **Verify** you see:
-   - Comments at top: `// STUDENTHUB - PRODUCTION BACKEND (v2.0)`
-   - Functions: `doGet`, `doPost`, `login`, `signup`, etc.
-   - Bottom helper functions
+   - Comments at top mentioning v1.5
+   - New function: `getTrendingProjects()`
+   - New function: `toggleProfileLike()`
+   - New sheet constant: `PROFILE_LIKES_SHEET`
+   - 6 sheets in getOrCreateSheet headers (Users, Projects, Profiles, Comments, Upvotes, ProfileLikes)
 
 #### 3.4 Save the Script
 
 1. Click **Save** icon (💾) or Ctrl+S
-2. **Name your project**: "StudentHub API"
+2. **Name your project**: "StudentHub API v1.5"
    - Click "Untitled project" at top
-   - Type "StudentHub API"
+   - Type "StudentHub API v1.5"
    - Press Enter
 
 #### 3.5 Deploy as Web App
@@ -273,7 +296,7 @@ This is the most important step!
 3. **Configure Deployment**
    Fill in these settings:
    
-   - **Description**: "StudentHub API v2.0"
+   - **Description**: "StudentHub API v1.5 - Trending + ProfileLikes"
    - **Execute as**: **Me** (your email)
    - **Who has access**: **Anyone** ⚠️ CRITICAL!
 
@@ -300,7 +323,7 @@ This is the most important step!
      ```
      https://script.google.com/macros/s/AKfycbxXXXXXXXXXXXXXXXXX/exec
      ```
-   - **Save this URL** - you'll need it next!
+   - **Save this URL** - you'll need it for config.js!
    - Click **Done**
 
 **Troubleshooting Deployment:**
@@ -308,27 +331,29 @@ This is the most important step!
 - If authorization fails: Clear cookies and try again
 - If deployment fails: Check for syntax errors in code (red underlines)
 
-#### 3.6 Initialize Sample Data (Optional)
+#### 3.6 Verify Sheet Creation
 
-This creates demo user and sample data for testing.
+1. **Go back to your Google Sheet**
+2. **Refresh the page** (F5)
+3. You should now see **6 tabs** at the bottom:
+   - Users
+   - Projects
+   - Profiles
+   - Comments
+   - Upvotes
+   - **ProfileLikes** (NEW in v1.5!)
 
-1. **In Apps Script editor**, find function dropdown at top
-2. **Select**: `initializeSampleData`
-3. **Click**: Run (▶️ play button)
-4. **Wait** for execution to complete (10-30 seconds)
-5. **Check logs**: View → Logs
-   - Should see: "Sample data initialized"
-   - Should see demo credentials listed
+4. Each sheet should have headers in the first row:
+   - **Users**: email, password, name, university, major, profilePicture, linkedin, github, bio, timestamp, resume
+   - **Projects**: id, authorName, authorEmail, authorPicture, title, description, link, tech, projectImage, upvotes, timestamp, **category**
+   - **Profiles**: name, email, university, major, linkedin, github, bio, profilePicture, timestamp, resume, **likes**
+   - **Comments**: id, projectId, authorName, authorEmail, comment, timestamp
+   - **Upvotes**: projectId, userEmail, timestamp
+   - **ProfileLikes**: targetEmail, userEmail, timestamp
 
-6. **Verify in Sheet**:
-   - Go back to your Google Sheet
-   - You should now see 4 tabs: Users, Projects, Profiles, Comments
-   - Each should have headers and sample data
-
-**What if it fails?**
-- Check Execution log (View → Executions)
-- Look for error messages
-- Common issue: Sheet already initialized (safe to ignore)
+If sheets are not created:
+- Check Apps Script logs: View → Executions
+- Manually trigger: Run → `getOrCreateSheet` with parameter "Users"
 
 ---
 
@@ -336,63 +361,58 @@ This creates demo user and sample data for testing.
 
 Now we connect everything together!
 
-#### 4.1 Configure index.html
+#### 4.1 Create config.js
 
-1. **Open** `index.html` in your text editor
-2. **Press** Ctrl+F (Find) and search for: `SHEET_URL`
-3. **You'll find** around line 1225:
+**IMPORTANT:** This file is gitignored for security. You must create it manually.
 
-```javascript
-const SHEET_URL = 'https://script.google.com/macros/s/AKfycbzGbZ...../exec';
-const CLOUDINARY_PRESET = 'studenthub_preset'; 
-const CLOUDINARY_NAME = 'dy8up08qd';
-```
-
-4. **Replace** with YOUR values:
+1. **In your project root**, create a new file named `config.js`
+2. **Paste this template:**
 
 ```javascript
-const SHEET_URL = 'YOUR_APPS_SCRIPT_WEB_APP_URL_HERE';
-const CLOUDINARY_PRESET = 'studenthub_preset';  // Keep this exact name
-const CLOUDINARY_NAME = 'YOUR_CLOUDINARY_CLOUD_NAME';
+const CONFIG = {
+    SHEET_URL: 'YOUR_APPS_SCRIPT_WEB_APP_URL_HERE',
+    CLOUDINARY_NAME: 'YOUR_CLOUDINARY_CLOUD_NAME',
+    CLOUDINARY_PRESET: 'studenthub_preset'
+};
 ```
 
-**Example (with your actual values):**
-```javascript
-const SHEET_URL = 'https://script.google.com/macros/s/AKfycbyN8x.../exec';
-const CLOUDINARY_PRESET = 'studenthub_preset';
-const CLOUDINARY_NAME = 'student-hub-cloud';
-```
-
-5. **Save** the file (Ctrl+S)
-
-#### 4.2 Configure profiles.html
-
-1. **Open** `profiles.html` in your text editor
-2. **Press** Ctrl+F and search for: `SHEET_URL`
-3. **You'll find** around line 111:
+3. **Replace with YOUR values:**
 
 ```javascript
-const SHEET_URL = 'https://script.google.com/macros/s/AKfycbzGbZ...../exec';
+const CONFIG = {
+    SHEET_URL: 'https://script.google.com/macros/s/AKfycbyN8x.../exec',
+    CLOUDINARY_NAME: 'student-hub-cloud',
+    CLOUDINARY_PRESET: 'studenthub_preset'  // Keep this exact name
+};
 ```
 
-4. **Replace** with YOUR Apps Script URL (same as in index.html):
+4. **Save** the file (Ctrl+S)
 
+**Example (with fake values):**
 ```javascript
-const SHEET_URL = 'YOUR_APPS_SCRIPT_WEB_APP_URL_HERE';
+const CONFIG = {
+    SHEET_URL: 'https://script.google.com/macros/s/AKfycbxGbZ1abc2def3ghi4jkl5mno6pqr/exec',
+    CLOUDINARY_NAME: 'dy8up08qd',
+    CLOUDINARY_PRESET: 'studenthub_preset'
+};
 ```
 
-5. **Save** the file
-
-**⚠️ CRITICAL:** Both files must have the exact same `SHEET_URL`!
-
-#### 4.3 Verify Configuration
+#### 4.2 Verify config.js
 
 **Checklist:**
-- [ ] `SHEET_URL` in index.html matches your Apps Script URL
-- [ ] `SHEET_URL` in profiles.html matches index.html
-- [ ] `CLOUDINARY_NAME` in index.html matches your Cloud Name
-- [ ] `CLOUDINARY_PRESET` is exactly `studenthub_preset` (no typos)
-- [ ] Both files saved
+- [ ] File named exactly `config.js` (lowercase, no spaces)
+- [ ] Located in root folder (same level as index.html)
+- [ ] SHEET_URL ends with `/exec`
+- [ ] CLOUDINARY_NAME matches your dashboard
+- [ ] CLOUDINARY_PRESET is exactly `studenthub_preset`
+- [ ] File saved
+
+**How the files load config.js:**
+- index.html: `<script src="config.js"></script>` (line ~1175)
+- feed.html: `<script src="config.js"></script>` (line ~1225)
+- project.html: `<script src="config.js"></script>` (line ~573)
+
+All files automatically read `CONFIG.SHEET_URL`, `CONFIG.CLOUDINARY_NAME`, and `CONFIG.CLOUDINARY_PRESET`.
 
 ---
 
@@ -404,15 +424,20 @@ const SHEET_URL = 'YOUR_APPS_SCRIPT_WEB_APP_URL_HERE';
 
 1. **Double-click** `index.html`
 2. It opens in your default browser
-3. You should see the login page
+3. You should see:
+   - Hero section with "Welcome to StudentHub"
+   - Animated statistics (loading → counting)
+   - Trending section (horizontal scroll on mobile)
+   - Profile grid
 
-**Test Login:**
-- Email: `demo@nielit.gov.in`
-- Password: `demo123`
-- Click "Log In"
-
-**If it works:** ✅ Configuration successful!
-**If it fails:** See troubleshooting below
+**If you see errors:**
+- Open Console (F12 → Console tab)
+- Look for "Failed to load resource: config.js"
+  - **Fix**: Verify config.js exists in the same folder
+- Look for "CONFIG is not defined"
+  - **Fix**: config.js might have syntax errors
+- Look for network errors to SHEET_URL
+  - **Fix**: Verify Apps Script deployment
 
 ### Test 2: Local Server (Recommended)
 
@@ -436,159 +461,233 @@ npx serve
 - Install "Live Server" extension
 - Right-click index.html → "Open with Live Server"
 
-### Test 3: Feature Testing
+### Test 3: Feature Testing (v1.5)
 
-Once logged in, test each feature:
+Once the site loads, test each feature:
 
-#### Test Authentication
-- [ ] Login with demo account works
-- [ ] Signup creates new account
-  - Try email: `test@nielit.gov.in`
-  - Password: `test123`
-- [ ] Logout works
-- [ ] Re-login with new account works
+#### Test Statistics Animation
+- [ ] Hero section loads
+- [ ] "Total Students" counts up from 0
+- [ ] "Total Projects" counts up from 0
+- [ ] Numbers match actual data in Google Sheet
 
-#### Test Profile
-- [ ] View sidebar profile (shows your name, avatar)
-- [ ] Click "Edit Profile"
-  - Upload profile picture (test Cloudinary)
-  - Add bio, LinkedIn, GitHub links
-  - Save changes
-- [ ] Verify changes persist after reload
+#### Test Trending (NEW v1.5)
+- [ ] Trending section visible below hero
+- [ ] Shows "🔥 Trending Projects"
+- [ ] Displays up to 5 projects
+- [ ] Click on trending card → goes to project.html
+- [ ] Mobile: Horizontal scroll works
+- [ ] Desktop: Shows in sidebar on feed.html
 
-#### Test Projects
-- [ ] Click "Post Project"
-- [ ] Fill form:
-  - Upload project image
-  - Add title, description
-  - Add GitHub link
-  - Add tech stack (e.g., "React, Node.js")
-- [ ] Submit
-- [ ] Project appears in feed immediately
-- [ ] Image displays correctly
+#### Test Profile Likes (NEW v1.5)
+- [ ] Go to feed.html and login
+- [ ] Click on a user's profile
+- [ ] See heart icon with like count
+- [ ] Click heart → count increases
+- [ ] Click again → count decreases
+- [ ] Try to like own profile → shows error
+- [ ] Refresh page → like state persists
 
-#### Test Interactions
-- [ ] Upvote a project (button should disable)
-- [ ] Click comment button
-- [ ] Add a comment
-- [ ] Comment appears in modal
-- [ ] Comment count updates on card
+#### Test Categories (NEW v1.5)
+- [ ] Click "Post Project" on feed.html
+- [ ] See category dropdown (Web Dev, Mobile, AI/ML, IoT, Blockchain, Cybersecurity, Other)
+- [ ] Select category and post project
+- [ ] Project card shows category badge
+- [ ] Click category filter chip → shows only that category
+- [ ] Search works with category names
 
-#### Test Search
-- [ ] Search for project (by title)
-- [ ] Search for project (by tech)
-- [ ] Search for project (by author)
-- [ ] Click "Profiles" tab
-- [ ] Search for user (by name)
-- [ ] Search for user (by major)
+#### Test Resume Upload (NEW v1.5)
+- [ ] Edit profile
+- [ ] Upload PDF resume (< 5MB)
+- [ ] Save changes
+- [ ] View own profile → "Download Resume" button appears
+- [ ] Click button → PDF downloads
+- [ ] Others can see your resume link
 
-#### Test Navigation
-- [ ] Click on user's name → goes to their profile
-- [ ] Click "My Projects" → shows your projects
-- [ ] Click "Profiles" tab → shows directory
-- [ ] Click on profile card → shows portfolio
-- [ ] Click "Back to Directory"
+#### Test Public Sharing
+- [ ] Click "Share" on any project
+- [ ] Copy project.html link
+- [ ] Open link in incognito mode (no login)
+- [ ] Project detail page loads
+- [ ] Image displays
+- [ ] Comments load
+- [ ] Can't post comment without login
+- [ ] "Sign In to Comment" button shown
 
-#### Test Mobile
-- [ ] Open DevTools (F12)
-- [ ] Toggle device toolbar (Ctrl+Shift+M)
-- [ ] Test on iPhone X, iPad, Galaxy S20
-- [ ] Bottom navigation appears (< 968px width)
-- [ ] All features work on mobile
-- [ ] Tap targets are large enough
+#### Test Security Migration (NEW v1.5)
+This tests the automatic password upgrade:
+
+1. **Create a test user with old security:**
+   - Manually add a row to Users sheet:
+   - Email: `olduser@test.com`
+   - Password: Use legacy hash (SHA-256 without salt)
+   - To get legacy hash, use browser console:
+     ```javascript
+     async function hashLegacy(raw) {
+       const encoder = new TextEncoder();
+       const data = encoder.encode(raw);
+       const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+       const hashArray = Array.from(new Uint8Array(hashBuffer));
+       const hashBase64 = btoa(String.fromCharCode.apply(null, hashArray));
+       return hashBase64;
+     }
+     hashLegacy('testpass').then(console.log);
+     ```
+   - Fill in other columns (name, university, etc.)
+
+2. **Test login:**
+   - Go to feed.html
+   - Login with `olduser@test.com` / `testpass`
+   - Should succeed
+
+3. **Verify migration:**
+   - Check Users sheet
+   - Password should now be different (includes salt)
+   - Login again → still works (using new hash)
 
 ### Troubleshooting Tests
 
-**Login fails:**
-1. Open Console (F12 → Console)
-2. Look for errors
-3. Check SHEET_URL is correct
-4. Try API directly: `YOUR_SHEET_URL?action=getProjects` in browser
+**Trending doesn't show:**
+1. Check Apps Script version (should be v1.5)
+2. Test API: `YOUR_SHEET_URL?action=getTrending` in browser
+3. Should return JSON with 5 projects sorted by trendingScore
+4. Check console for JavaScript errors
 
-**Images don't upload:**
-1. Check Console for Cloudinary errors
-2. Verify CLOUDINARY_NAME is correct
-3. Verify preset is "Unsigned"
-4. Try smaller image (< 2MB)
+**Profile likes don't work:**
+1. Verify ProfileLikes sheet exists
+2. Test API: `YOUR_SHEET_URL?action=toggleProfileLike&targetEmail=test@test.com&userEmail=user@test.com`
+3. Check console for errors
+4. Verify you're not trying to like own profile
 
-**Projects don't load:**
-1. Check Console for errors
-2. Test API: `YOUR_SHEET_URL?action=getProjects`
-3. Should return JSON (empty array or projects)
-4. Check Apps Script logs (View → Executions)
+**Categories don't filter:**
+1. Check Projects sheet has "category" column (12th column, index 11)
+2. Re-post a project to populate category
+3. Test search with category name
+
+**Resume upload fails:**
+1. Check file is PDF (not image)
+2. Check file size < 5MB
+3. Check Cloudinary preset allows PDFs
+4. Check console for Cloudinary errors
 
 ---
 
 ## Deployment
 
-### Option 1: GitHub Pages (Recommended)
+### Option 1: GitHub Pages with Manual Config (Simple)
 
-#### Prerequisites
-- GitHub account
-- Git installed on your computer
+**For Testing/Personal Use**
 
-#### Steps
-
-**1. Initialize Git Repository (if not cloned):**
 ```bash
-cd nielitropar.github.io
-git init
-```
+# 1. Ensure config.js exists locally
+cat config.js  # Should show your credentials
 
-**2. Create GitHub Repository:**
-- Go to: https://github.com/new
-- Repository name: `nielit-studenthub` (or any name)
-- Description: "Student project showcase platform"
-- Public or Private (your choice)
-- **Don't** initialize with README (you have files)
-- Click "Create repository"
-
-**3. Connect Local to GitHub:**
-```bash
-# Add remote
-git remote add origin https://github.com/YOUR_USERNAME/YOUR_REPO.git
-
-# Add files
+# 2. Add to Git (but .gitignore prevents commit)
 git add .
 
-# Commit
-git commit -m "Initial commit - NIELIT StudentHub configured"
+# 3. Commit
+git commit -m "Initial setup with v1.5"
 
-# Push
-git branch -M main
-git push -u origin main
+# 4. Push
+git push origin main
 ```
 
-**4. Enable GitHub Pages:**
-- Go to repository on GitHub
-- Click **Settings** tab
-- Scroll to **Pages** section (left sidebar)
-- Under "Source":
-  - Branch: **main**
-  - Folder: **/ (root)**
-- Click **Save**
+**Wait!** This won't work because config.js is gitignored!
 
-**5. Wait for Deployment:**
-- GitHub builds your site (1-2 minutes)
-- Refresh the page
-- You'll see: "Your site is live at https://YOUR_USERNAME.github.io/YOUR_REPO/"
+**Solution:** Use GitHub Actions (see Option 2) OR temporarily:
+1. Remove `config.js` from .gitignore
+2. Commit and push
+3. **DANGER**: Your credentials are now public!
+4. Only use this for testing, never in production
 
-**6. Visit Your Site:**
-- Click the URL
-- Your StudentHub is now live!
+### Option 2: GitHub Pages with GitHub Actions (Production)
 
-**7. Set Up Custom Domain (Optional):**
-- Buy domain (e.g., from Namecheap)
-- Add CNAME record pointing to: `YOUR_USERNAME.github.io`
-- In GitHub Pages settings, add your custom domain
-- Enable HTTPS
+**For Production/Team Use - Secure!**
 
-### Option 2: Other Hosting
+This method keeps your credentials secret using GitHub Actions.
+
+#### 2.1 Set Up Secrets
+
+1. **Go to your GitHub repository**
+2. **Navigate to Settings** → **Secrets and variables** → **Actions**
+3. **Click "New repository secret"**
+4. **Add these 3 secrets:**
+
+   **Secret 1:**
+   - Name: `APP_SHEET_URL`
+   - Value: Your Apps Script URL (e.g., `https://script.google.com/macros/s/AKfycbx.../exec`)
+
+   **Secret 2:**
+   - Name: `APP_CLOUD_NAME`
+   - Value: Your Cloudinary cloud name (e.g., `dy8up08qd`)
+
+   **Secret 3:**
+   - Name: `APP_CLOUD_PRESET`
+   - Value: `studenthub_preset`
+
+5. **Verify secrets:**
+   - You should see 3 secrets listed
+   - Values are hidden (shown as `***`)
+
+#### 2.2 Understand the Workflow
+
+The existing `.github/workflows/deploy.yml` file:
+1. Triggers on every push to main branch
+2. Checks out your code
+3. **Creates config.js** using secrets (this is the magic!)
+4. Deploys to GitHub Pages
+
+**Key section of deploy.yml:**
+```yaml
+- name: Inject Configuration
+  run: |
+    echo "const CONFIG = {" > config.js
+    echo "    SHEET_URL: '${{ secrets.APP_SHEET_URL }}'," >> config.js
+    echo "    CLOUDINARY_NAME: '${{ secrets.APP_CLOUD_NAME }}'," >> config.js
+    echo "    CLOUDINARY_PRESET: '${{ secrets.APP_CLOUD_PRESET }}'" >> config.js
+    echo "};" >> config.js
+```
+
+#### 2.3 Enable GitHub Pages
+
+1. **Go to Repository Settings** → **Pages**
+2. **Change Source:**
+   - From: "Deploy from a branch"
+   - To: **"GitHub Actions"**
+3. **Save**
+
+#### 2.4 Deploy
+
+```bash
+# Make any change (or just push)
+git add .
+git commit -m "Deploy StudentHub v1.5"
+git push origin main
+```
+
+**What happens:**
+1. GitHub Actions runs
+2. Creates config.js with your secrets
+3. Deploys to Pages
+4. Your site is live!
+
+**Monitor deployment:**
+1. Go to "Actions" tab in your repository
+2. See workflow run in progress
+3. Green checkmark = success
+4. Red X = failed (click for logs)
+
+**Your site will be at:**
+```
+https://YOUR_USERNAME.github.io/REPO_NAME/
+```
+
+### Option 3: Other Hosting
 
 **Netlify:**
 1. Drag and drop project folder to: https://app.netlify.com/drop
-2. Your site is live instantly
-3. Free SSL, custom domains available
+2. **Problem**: Need to add config.js manually
+3. **Solution**: Use Netlify environment variables
 
 **Vercel:**
 ```bash
@@ -606,8 +705,57 @@ firebase deploy
 
 **Traditional Web Hosting:**
 - Upload all files via FTP
-- Ensure `index.html` is in root directory
-- Configure .htaccess if needed
+- Ensure config.js is included
+- Ensure index.html is in root directory
+
+---
+
+## Troubleshooting
+
+### General Issues
+
+**Page loads but data doesn't:**
+1. Open Console (F12)
+2. Look for red errors
+3. Common issues:
+   - `CONFIG is not defined` → config.js not loaded
+   - `Failed to load resource: config.js` → File doesn't exist
+   - Network error to SHEET_URL → Apps Script not deployed correctly
+
+**Statistics show 0:**
+1. Test API: `YOUR_SHEET_URL?action=getStats`
+2. Should return: `{"status":"success","data":{"totalStudents":X,"totalProjects":Y}}`
+3. If error: Check Apps Script deployment
+
+**Trending shows "Loading trends...":**
+1. Test API: `YOUR_SHEET_URL?action=getTrending`
+2. Should return 5 projects with trendingScore
+3. If error: Verify using v1.5 backend (has getTrending function)
+
+**Profile likes show error:**
+1. Verify ProfileLikes sheet exists
+2. Test API: `YOUR_SHEET_URL?action=toggleProfileLike&targetEmail=a@b.com&userEmail=c@d.com`
+3. Check you're not liking own profile (intentional restriction)
+
+### GitHub Actions Issues
+
+**Workflow fails:**
+1. Go to Actions tab
+2. Click on failed run
+3. Expand steps to see error
+4. Common issues:
+   - Secrets not set correctly
+   - deploy.yml syntax error
+   - Pages not enabled
+
+**Site deployed but config missing:**
+1. Check Actions logs → "Inject Configuration" step
+2. Verify secrets are set (Settings → Secrets → Actions)
+3. Re-run workflow
+
+**Config.js contains literal `${{ secrets.APP_SHEET_URL }}`:**
+1. Secrets not set in GitHub
+2. Add secrets (see Deployment → Option 2 → Step 2.1)
 
 ---
 
@@ -617,7 +765,7 @@ firebase deploy
 
 #### Change Colors
 
-Edit CSS variables (both HTML files):
+Edit CSS variables in all HTML files (index.html, feed.html, project.html):
 
 ```css
 :root {
@@ -626,8 +774,6 @@ Edit CSS variables (both HTML files):
     --background: #F5F7FA;  /* Light gray background */
     --card-bg: #FFFFFF;     /* White cards */
     --text-primary: #1A1A1A; /* Almost black text */
-    --text-secondary: #6B7280; /* Gray text */
-    --border: #E5E7EB;      /* Light border */
 }
 ```
 
@@ -636,90 +782,20 @@ Edit CSS variables (both HTML files):
 Replace `logo.png` with your logo, or update these lines:
 
 **index.html:**
-- Line ~106: `<img src="logo.png" ...>`
-- Line ~161: `<img src="logo.png" ...>`
-
-**profiles.html:**
 - Line ~69: `<img src="logo.png" ...>`
 
-#### Change Fonts
+**feed.html:**
+- Line ~161: `<img src="logo.png" ...>`
 
-1. Choose fonts: https://fonts.google.com
-2. Update import (line ~6):
-```html
-<link href="https://fonts.googleapis.com/css2?family=YourFont:wght@400;700&display=swap">
-```
-3. Update CSS:
-```css
-body {
-    font-family: 'YourFont', sans-serif;
-}
-```
+**project.html:**
+- Line ~40: `<img src="logo.png" ...>`
 
 ### Add Features
 
-#### Add Project Categories
-
-1. **Update Apps Script** - Add column to Projects sheet
-2. **Update Post Form** - Add category dropdown
-3. **Update Filter** - Filter by category
-4. **Update UI** - Display category badge
-
-#### Add Notifications
-
-1. **Create Notifications sheet**
-2. **Add API endpoint** in Apps Script
-3. **Create notification component** in HTML
-4. **Poll for updates** or use webhooks
-
-#### Add Admin Panel
-
-1. **Create admin flag** in Users sheet
-2. **Add admin check** in Apps Script
-3. **Create admin UI** in HTML
-4. **Add moderation features**
-
-### Security Enhancements
-
-#### Rate Limiting
-
-Add to Apps Script:
-
-```javascript
-function checkRateLimit(email) {
-  const cache = CacheService.getScriptCache();
-  const key = 'rate_' + email;
-  const count = parseInt(cache.get(key) || '0');
-  
-  if (count > 100) {
-    throw new Error('Rate limit exceeded');
-  }
-  
-  cache.put(key, String(count + 1), 3600); // 1 hour
-}
-```
-
-#### Input Validation
-
-Already implemented in Apps Script:
-- Email format validation
-- Password strength checking
-- HTML escaping (XSS protection)
-- SQL injection prevention (N/A for Sheets)
-
-### Monitoring
-
-#### Apps Script Logs
-
-1. Open Apps Script editor
-2. View → Executions
-3. See all API calls, errors, execution times
-
-#### Google Analytics
-
-Add to both HTML files (before `</head>`):
+#### Add Google Analytics
 
 ```html
+<!-- Add before </head> in all HTML files -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -729,39 +805,62 @@ Add to both HTML files (before `</head>`):
 </script>
 ```
 
-Track events:
+#### Track v1.5 Events
 
 ```javascript
-gtag('event', 'login', {
-  'event_category': 'engagement',
-  'event_label': 'user_login'
+// Profile like
+gtag('event', 'like_profile', {
+  'event_category': 'social',
+  'event_label': targetEmail
 });
 
-gtag('event', 'post_project', {
-  'event_category': 'content',
+// View trending
+gtag('event', 'view_trending', {
+  'event_category': 'engagement',
   'event_label': projectTitle
+});
+
+// Filter category
+gtag('event', 'filter_category', {
+  'event_category': 'discovery',
+  'event_label': categoryName
 });
 ```
 
----
+### Security Enhancements
 
-## Troubleshooting
+#### Monitor ProfileLikes
 
-See README.md for comprehensive troubleshooting guide.
+Check for abuse:
+1. Open ProfileLikes sheet
+2. Sort by timestamp (newest first)
+3. Look for spam patterns (same user liking many profiles quickly)
+4. Can manually delete rows if needed
 
-**Quick Checks:**
-1. ✅ SHEET_URL correct in both HTML files?
-2. ✅ Apps Script deployed with "Who has access: Anyone"?
-3. ✅ Cloudinary preset is "Unsigned"?
-4. ✅ Browser console shows no errors?
-5. ✅ API test in browser returns JSON?
+#### Audit Trending Scores
 
-**Getting Help:**
-- Check browser console (F12)
-- Check Apps Script logs
-- Read error messages carefully
-- Search README.md for specific error
-- Open GitHub Issue with details
+If trending seems unfair:
+1. Open Apps Script editor
+2. Run `getTrendingProjects()` manually
+3. Check execution logs (View → Executions)
+4. Review trendingScore calculation
+
+#### Adjust Trending Weights
+
+In `google-app-script-v1.5.js`, line ~64:
+```javascript
+const rawScore = (upvotes * 2) + (comments * 3);
+```
+
+Change weights:
+- Increase upvote weight: `upvotes * 3`
+- Increase comment weight: `comments * 5`
+- Adjust time decay: `Math.pow(daysOld + 1, 0.5)` → `Math.pow(daysOld + 1, 0.8)`
+
+After changes:
+1. Save script
+2. Deploy → Manage deployments → Edit → Deploy
+3. Test API to verify changes
 
 ---
 
@@ -769,16 +868,36 @@ See README.md for comprehensive troubleshooting guide.
 
 After successful setup:
 
-1. **Customize** - Update colors, logo, content
-2. **Test Thoroughly** - All features on all devices
-3. **Gather Feedback** - From first users
-4. **Monitor Usage** - Check Apps Script quotas
-5. **Plan Improvements** - Based on user needs
-6. **Backup Regularly** - Export Google Sheet
-7. **Update Documentation** - For your institution
-8. **Create User Guide** - For students
-9. **Set Up Support** - Email, GitHub Issues
-10. **Launch!** - Announce to students
+1. **Test Thoroughly**
+   - All v1.5 features
+   - All devices (desktop, tablet, mobile)
+   - Multiple browsers
+
+2. **Customize**
+   - Update colors to match institution
+   - Replace logo
+   - Add Google Analytics
+
+3. **Monitor**
+   - Check Apps Script execution logs weekly
+   - Review new user signups
+   - Monitor trending for fairness
+   - Check ProfileLikes for abuse
+
+4. **Backup Regularly**
+   - Export Google Sheet (File → Download → CSV for each sheet)
+   - Store in safe location
+   - Schedule monthly backups
+
+5. **Plan Improvements**
+   - Gather user feedback
+   - Prioritize feature requests
+   - Update documentation
+
+6. **Launch!**
+   - Announce to students
+   - Create user guide
+   - Set up support channel
 
 ---
 
