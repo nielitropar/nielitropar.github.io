@@ -123,7 +123,7 @@
 ## 🆕 What's New in v1.5
 
 ### Backend Improvements (google-apps-script.js)
-- ✅ **Profile Likes** - Added 11th column to Profile sheet (Added Profile Likes)
+- ✅ **Profile Likes** - Added 11th column to Profiles sheet (Added Profile Likes)
 - ✅ **Project Categories** - Added 12th column to Projects sheet
 - ✅ **Single Item Queries** - New `getProject(id)` and `getProfile(email)` actions
 - ✅ **Server-Side Pagination** - `getProjectsPaginated()` and `getProfilesPaginated()`
