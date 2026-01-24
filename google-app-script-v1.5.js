@@ -1,11 +1,11 @@
-// STUDENTHUB - PRODUCTION BACKEND (v1.5 - Complete)
+// STUDENTHUB - PRODUCTION BACKEND (Trending Added to v1.5)
 
 const PROJECTS_SHEET = 'Projects';
 const PROFILES_SHEET = 'Profiles';
 const USERS_SHEET = 'Users';
 const COMMENTS_SHEET = 'Comments';
 const UPVOTES_SHEET = 'Upvotes';
-const PROFILE_LIKES_SHEET = 'ProfileLikes'; // [NEW]
+const PROFILE_LIKES_SHEET = 'ProfileLikes'; 
 
 function doGet(e) {
   return handleRequest(e, 'GET');
@@ -48,6 +48,8 @@ function handleRequest(e, method) {
     switch (action) {
       case 'getProjects':
         return getProjectsPaginated(params.userEmail, params.page, params.searchTerm);
+      case 'getTrending': // [NEW] Added Trending Action
+        return getTrendingProjects(); 
       case 'getProfiles':
         return getProfilesPaginated(params.page, params.searchTerm, params.userEmail);
       case 'getProject': 
@@ -82,7 +84,57 @@ function handleRequest(e, method) {
   }
 }
 
-// ====== SINGLE ITEM LOOKUPS ======
+// [NEW] TRENDING LOGIC (Purely Additive)
+function getTrendingProjects() {
+  const pSheet = getOrCreateSheet(PROJECTS_SHEET);
+  const cSheet = getOrCreateSheet(COMMENTS_SHEET);
+  
+  const pData = pSheet.getDataRange().getValues();
+  const cData = cSheet.getDataRange().getValues();
+  
+  if (pData.length <= 1) return createResponse('success', []);
+
+  // 1. Map Comment Counts
+  let commentCounts = {};
+  cData.slice(1).forEach(row => {
+    const pid = String(row[1]);
+    commentCounts[pid] = (commentCounts[pid] || 0) + 1;
+  });
+
+  const headers = pData[0];
+  const now = new Date();
+
+  // 2. Calculate Scores
+  let projects = pData.slice(1)
+    .filter(row => row[0] && String(row[0]).trim() !== '')
+    .map(row => {
+      let p = {};
+      headers.forEach((h, i) => p[h] = row[i]);
+      
+      const upvotes = parseInt(p.upvotes) || 0;
+      const comments = commentCounts[p.id] || 0;
+      const postDate = new Date(p.timestamp);
+      
+      // Time Difference in Days
+      const daysOld = Math.max(0, (now - postDate) / (1000 * 60 * 60 * 24));
+      
+      // SCORING FORMULA: (Upvotes*2 + Comments*3) / (DaysOld + 1)^0.5
+      const rawScore = (upvotes * 2) + (comments * 3);
+      const trendingScore = rawScore / Math.pow(daysOld + 1, 0.5);
+
+      p.trendingScore = trendingScore;
+      p.commentCount = comments;
+      return p;
+    });
+
+  // 3. Sort by Score & Take Top 5
+  projects.sort((a, b) => b.trendingScore - a.trendingScore);
+  const top5 = projects.slice(0, 5);
+
+  return createResponse('success', top5);
+}
+
+// EXISTING FUNCTIONS
 
 function getProject(id) {
   if (!id) return createResponse('error', 'No ID provided');
@@ -131,8 +183,6 @@ function getProfile(email, currentUserEmail) {
   }
   return createResponse('success', p);
 }
-
-// ====== PAGINATED QUERIES ======
 
 function getProjectsPaginated(currentUserEmail, page, searchTerm) {
   const sheet = getOrCreateSheet(PROJECTS_SHEET);
@@ -278,8 +328,6 @@ function login(email, password) {
   return createResponse('error', 'User not found');
 }
 
-// ====== LOGIC FUNCTIONS ======
-
 function hashLegacy(raw) {
   const digest = Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, raw);
   return Utilities.base64Encode(digest);
@@ -316,7 +364,7 @@ function signup(data) {
     cleanEmail, hashedPassword, data.name, data.university, 
     data.major, data.profilePicture, '', '', '', new Date().toISOString(), ''
   ]);
-  // [IMPORTANT] Append 0 for initial likes to keep row aligned
+  
   profilesSheet.appendRow([
     data.name, cleanEmail, data.university, data.major, 
     '', '', '', data.profilePicture, new Date().toISOString(), '', 0 
