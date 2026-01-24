@@ -1227,11 +1227,13 @@
         </div>
     </div>
 
+    <script src="config.js"></script>
+
     <script>
         // CONFIGURATION
-        const SHEET_URL = 'https://script.google.com/macros/s/AKfycbzGbZ39b67jJ2NPODCW4K3zqlf6p6-bq8vPRHmCdNjOxl37MT9KdndnCR8vw55qv7dN/exec';
-        const CLOUDINARY_PRESET = 'studenthub_preset';
-        const CLOUDINARY_NAME = 'dy8up08qd';
+        const SHEET_URL = CONFIG.SHEET_URL;
+        const CLOUDINARY_NAME = CONFIG.CLOUDINARY_NAME;
+        const CLOUDINARY_PRESET = CONFIG.CLOUDINARY_PRESET;
 
         // STATE
         let currentUser = JSON.parse(localStorage.getItem('studenthub_user'));
