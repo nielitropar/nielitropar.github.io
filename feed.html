@@ -610,6 +610,46 @@
             transform: translateX(5px);
         }
 
+        /* MOBILE TRENDING STYLES (NEW) */
+        .mobile-trending-container {
+            margin-bottom: 1.5rem;
+        }
+        
+        .mobile-trending-list {
+            display: flex;
+            gap: 1rem;
+            overflow-x: auto;
+            padding-bottom: 0.5rem;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+        
+        .mobile-trending-list::-webkit-scrollbar {
+            display: none;
+        }
+
+        .mobile-trend-card {
+            min-width: 240px;
+            max-width: 240px;
+            background: white;
+            padding: 1rem;
+            border-radius: 16px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border);
+            flex-shrink: 0;
+            transition: transform 0.2s;
+            cursor: pointer;
+        }
+
+        .mobile-trend-card:hover {
+            transform: translateY(-2px);
+            border-color: var(--accent);
+        }
+
+        .hidden-desktop {
+            display: none;
+        }
+
         /* Utils */
         .hidden {
             display: none !important;
@@ -691,6 +731,11 @@
             .sidebar-card,
             .right-sidebar {
                 display: none;
+            }
+
+            /* Show mobile trending on small screens */
+            .hidden-desktop {
+                display: block;
             }
 
             .nav-links {
@@ -927,6 +972,15 @@
                 </aside>
 
                 <main>
+                    <div class="mobile-trending-container hidden-desktop">
+                        <h3 style="margin-bottom: 0.8rem; font-size: 1.2rem; display: flex; align-items: center; gap: 0.5rem; color: var(--primary);">
+                            🔥 <span>Trending Now</span>
+                        </h3>
+                        <div id="mobileTrendingList" class="mobile-trending-list">
+                            <div class="loading" style="padding: 1rem; width:100%;">⏳</div>
+                        </div>
+                    </div>
+
                     <div class="search-container">
                         <input type="text" id="searchInput" class="search-input" placeholder="🔍 Search projects..."
                             onkeyup="handleSearch(this.value)">
@@ -1173,7 +1227,7 @@
         </div>
     </div>
 
-<script>
+    <script>
         // CONFIGURATION
         const SHEET_URL = 'https://script.google.com/macros/s/AKfycbzGbZ39b67jJ2NPODCW4K3zqlf6p6-bq8vPRHmCdNjOxl37MT9KdndnCR8vw55qv7dN/exec';
         const CLOUDINARY_PRESET = 'studenthub_preset';
@@ -1350,10 +1404,13 @@
             try {
                 const res = await fetch(`${SHEET_URL}?action=getTrending`);
                 const json = await res.json();
-                const container = document.getElementById('trendingList');
+                
+                const desktopContainer = document.getElementById('trendingList');
+                const mobileContainer = document.getElementById('mobileTrendingList');
                 
                 if (json.status === 'success' && json.data.length > 0) {
-                    container.innerHTML = json.data.map((p, i) => `
+                    // Desktop HTML (Vertical List)
+                    const desktopHtml = json.data.map((p, i) => `
                         <div class="trending-item" onclick="window.location.href='index.html?email=${p.authorEmail}'">
                             <div style="display: flex; gap: 0.5rem; align-items: start;">
                                 <span style="font-size: 1.2rem; font-weight: 700; color: var(--accent);">${i + 1}</span>
@@ -1366,8 +1423,27 @@
                             </div>
                         </div>
                     `).join('');
+                    
+                    if (desktopContainer) desktopContainer.innerHTML = desktopHtml;
+
+                    // Mobile HTML (Horizontal Cards)
+                    const mobileHtml = json.data.map((p, i) => `
+                        <div class="mobile-trend-card" onclick="window.location.href='index.html?email=${p.authorEmail}'">
+                            <div style="display:flex; justify-content:space-between; margin-bottom:0.5rem;">
+                                <span style="font-size: 0.8rem; font-weight: 800; color: var(--accent); background: rgba(0,102,204,0.1); padding: 2px 8px; border-radius: 10px;">#${i + 1}</span>
+                                <span style="font-size: 0.75rem; color: var(--text-secondary);">👍 ${p.upvotes}</span>
+                            </div>
+                            <div style="font-weight: 600; color: var(--primary); font-size: 0.95rem; margin-bottom: 0.25rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${escapeHtml(p.title)}</div>
+                            <div style="font-size: 0.75rem; color: var(--text-secondary);">by ${escapeHtml(p.authorName)}</div>
+                        </div>
+                    `).join('');
+
+                    if (mobileContainer) mobileContainer.innerHTML = mobileHtml;
+
                 } else {
-                    container.innerHTML = '<p style="color: var(--text-secondary); font-size: 0.9rem;">No trending projects yet</p>';
+                    const emptyMsg = '<p style="color: var(--text-secondary); font-size: 0.9rem; padding:1rem;">No trending projects yet</p>';
+                    if (desktopContainer) desktopContainer.innerHTML = emptyMsg;
+                    if (mobileContainer) mobileContainer.innerHTML = emptyMsg;
                 }
             } catch (e) {
                 console.error("Trend error", e);
