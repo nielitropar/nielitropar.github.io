@@ -89,7 +89,7 @@ Automated pipeline: secret injection → `config.js` creation → GitHub Pages d
 
 ## 1. Time-Decay Engagement Heuristic
 
-Prevents old content dominance via gravity decay:
+Prevents old content dominance via gravity decay:  "inspired by Hacker News [@HackerNews:Algorithm] and Reddit"
 
 $$S_p = \frac{(2 \cdot U_p) + (3 \cdot C_p)}{\sqrt{\Delta t + 1}}$$
 
