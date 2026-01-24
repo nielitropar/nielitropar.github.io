@@ -1173,14 +1173,13 @@
         </div>
     </div>
 
-    <script>
+<script>
         // CONFIGURATION
         const SHEET_URL = 'https://script.google.com/macros/s/AKfycbzGbZ39b67jJ2NPODCW4K3zqlf6p6-bq8vPRHmCdNjOxl37MT9KdndnCR8vw55qv7dN/exec';
         const CLOUDINARY_PRESET = 'studenthub_preset';
         const CLOUDINARY_NAME = 'dy8up08qd';
 
         // STATE
-        let allProjects = []; // For trending sidebar only
         let currentUser = JSON.parse(localStorage.getItem('studenthub_user'));
         let currentCommentProjectId = null;
         let currentPage = 1;
@@ -1193,7 +1192,6 @@
         window.onload = () => {
             if (currentUser) {
                 showApp();
-
                 if (localStorage.getItem('openPostModal')) {
                     localStorage.removeItem('openPostModal');
                     openModal('project');
@@ -1219,6 +1217,7 @@
             document.getElementById('sideMajor').textContent = currentUser.major || 'Student';
             document.getElementById('sideAvatar').src = currentUser.profilePicture || 'default-avatar.png';
 
+            // Pre-fill Edit Profile Form
             document.getElementById('editName').value = currentUser.name;
             document.getElementById('editUni').value = currentUser.university || '';
             document.getElementById('editMajorInput').value = currentUser.major || '';
@@ -1236,6 +1235,7 @@
             }
 
             loadProjects();
+            fetchTrending(); // Fetch Smart Trending List
         }
 
         function showSection(section) {
@@ -1248,17 +1248,11 @@
             e.preventDefault();
             const email = document.getElementById('loginEmail').value;
             const password = document.getElementById('loginPass').value;
-
             const btn = e.target.querySelector('button[type="submit"]');
+            
             const originalText = btn.textContent;
             btn.textContent = 'Verifying...';
             btn.disabled = true;
-
-            if (email === 'demo@nielit.gov.in' && password === 'demo123') {
-                currentUser = { name: 'Demo User', email: 'demo@nielit.gov.in', major: 'CS', profilePicture: '' };
-                completeAuth(currentUser);
-                return;
-            }
 
             try {
                 const res = await fetch(`${SHEET_URL}?action=login&email=${email}&password=${password}`);
@@ -1339,11 +1333,8 @@
                     hasMoreProjects = hasMore;
                     
                     if (!append) {
-                        allProjects = items; // For trending
                         renderProjects(items, false);
-                        updateTrending(items);
                     } else {
-                        allProjects = allProjects.concat(items);
                         renderProjects(items, true);
                     }
                 }
@@ -1354,12 +1345,39 @@
             }
         }
 
+        // [NEW] SMART TRENDING FETCH
+        async function fetchTrending() {
+            try {
+                const res = await fetch(`${SHEET_URL}?action=getTrending`);
+                const json = await res.json();
+                const container = document.getElementById('trendingList');
+                
+                if (json.status === 'success' && json.data.length > 0) {
+                    container.innerHTML = json.data.map((p, i) => `
+                        <div class="trending-item" onclick="window.location.href='index.html?email=${p.authorEmail}'">
+                            <div style="display: flex; gap: 0.5rem; align-items: start;">
+                                <span style="font-size: 1.2rem; font-weight: 700; color: var(--accent);">${i + 1}</span>
+                                <div style="flex: 1;">
+                                    <div style="font-weight: 600; font-size: 0.9rem; color: var(--primary); line-height: 1.3;">${escapeHtml(p.title)}</div>
+                                    <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.25rem;">
+                                        👍 ${p.upvotes} • 💬 ${p.commentCount}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('');
+                } else {
+                    container.innerHTML = '<p style="color: var(--text-secondary); font-size: 0.9rem;">No trending projects yet</p>';
+                }
+            } catch (e) {
+                console.error("Trend error", e);
+            }
+        }
+
         function renderProjects(list, append = false) {
             const container = document.getElementById('projectsList');
             
-            if (!append) {
-                container.innerHTML = '';
-            }
+            if (!append) container.innerHTML = '';
 
             if (list.length === 0 && !append) {
                 container.innerHTML = '<div class="card" style="text-align: center; padding: 3rem;"><p style="color: var(--text-secondary); font-size: 1.1rem;">No projects found.</p></div>';
@@ -1401,11 +1419,8 @@
 
             if (append) {
                 const loadMoreBtn = document.getElementById('loadMoreContainer');
-                if (loadMoreBtn) {
-                    loadMoreBtn.insertAdjacentHTML('beforebegin', html);
-                } else {
-                    container.insertAdjacentHTML('beforeend', html);
-                }
+                if (loadMoreBtn) loadMoreBtn.insertAdjacentHTML('beforebegin', html);
+                else container.insertAdjacentHTML('beforeend', html);
             } else {
                 container.innerHTML = html;
             }
@@ -1442,27 +1457,10 @@
         }
 
         function filterCategory(btn, cat) {
-            // Update UI active state
             document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
-
-            // Filter Logic
-            const container = document.getElementById('projectsList');
-            
-            // Clear "Load More" button when filtering to avoid confusion
-            const loadMoreBtn = document.getElementById('loadMoreContainer');
-            if(loadMoreBtn) loadMoreBtn.style.display = (cat === 'All') ? 'block' : 'none';
-
-            if (cat === 'All') {
-                renderProjects(allProjects, false);
-            } else {
-                const filtered = allProjects.filter(p => p.category === cat);
-                if (filtered.length === 0) {
-                    container.innerHTML = '<div class="card" style="text-align:center; padding:3rem;"><p>No projects found in this category.</p></div>';
-                } else {
-                    renderProjects(filtered, false);
-                }
-            }
+            currentSearchTerm = (cat === 'All') ? '' : cat;
+            loadProjects(false);
         }
 
         async function handlePostProject(e) {
@@ -1484,7 +1482,7 @@
                 description: document.getElementById('postDesc').value,
                 link: document.getElementById('postLink').value,
                 tech: document.getElementById('postTech').value,
-                category: document.getElementById('postCategory').value, // [NEW] Added category
+                category: document.getElementById('postCategory').value,
                 projectImage: imgUrl
             };
 
@@ -1549,28 +1547,6 @@
 
         function openMyProfilePage() {
             window.location.href = `index.html?email=${currentUser.email}`;
-        }
-
-        function updateTrending(list) {
-            const sorted = [...list].sort((a, b) => b.upvotes - a.upvotes).slice(0, 5);
-            const trendingEl = document.getElementById('trendingList');
-            if (sorted.length === 0) {
-                trendingEl.innerHTML = '<p style="color: var(--text-secondary); font-size: 0.9rem;">No trending projects yet</p>';
-                return;
-            }
-            trendingEl.innerHTML = sorted.map((p, i) => `
-                <div class="trending-item" onclick="window.location.href='index.html?email=${p.authorEmail}'">
-                    <div style="display: flex; gap: 0.5rem; align-items: start;">
-                        <span style="font-size: 1.2rem; font-weight: 700; color: var(--accent);">${i + 1}</span>
-                        <div style="flex: 1;">
-                            <div style="font-weight: 600; font-size: 0.9rem; color: var(--primary); line-height: 1.3;">${escapeHtml(p.title)}</div>
-                            <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.25rem;">
-                                👍 ${p.upvotes} • ${escapeHtml(p.authorName)}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `).join('');
         }
 
         async function upvote(id, btn) {
@@ -1715,7 +1691,6 @@
         }
 
         // ===== SHARE FUNCTIONALITY =====
-
         let currentShareProjectId = null;
         let currentShareProjectTitle = null;
 
@@ -1784,7 +1759,6 @@
             const url = encodeURIComponent(shareLink);
             window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${url}`, '_blank', 'width=550,height=420');
         }
-        
     </script>
 </body>
 
