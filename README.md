@@ -707,7 +707,6 @@ See [LICENSE](LICENSE) file for full details.
 ### Creators
 - **Dr. Sarwan Singh** - Project Supervisor & Mentor
 - **Lovnish Verma** - Lead Developer & System Architecture
-- **Nikshep Paliwal** - UI/UX Design & Frontend Development
 
 ### Built With Love At
 **NIELIT Ropar** - National Institute of Electronics & Information Technology
@@ -734,11 +733,7 @@ See [LICENSE](LICENSE) file for full details.
 - Email: princelv84@gmail.com
 - Role: Lead Developer
 - GitHub: [@lovnishverma](https://github.com/lovnishverma)
-
-**Nikshep Paliwal**
-- Email: niksheppaliwal@gmail.com
-- Role: UI/UX Developer
-- GitHub: [@niksheppaliwal](https://github.com/niksheppaliwal)
+  
 
 ### Support Channels
 - 🐛 **Bug Reports**: [Open an issue](https://github.com/nielitropar/nielitropar.github.io/issues/new)
