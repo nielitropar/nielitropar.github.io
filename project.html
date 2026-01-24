@@ -284,10 +284,12 @@
     </a>
     </footer>
 
+   <script src="config.js"></script>
+
     <script>
         // CONFIGURATION
-        const SHEET_URL = 'https://script.google.com/macros/s/AKfycbzGbZ39b67jJ2NPODCW4K3zqlf6p6-bq8vPRHmCdNjOxl37MT9KdndnCR8vw55qv7dN/exec';
-
+        const SHEET_URL = CONFIG.SHEET_URL;
+        
         let currentProject = null;
         let projectId = null;
         // Check for logged-in user
