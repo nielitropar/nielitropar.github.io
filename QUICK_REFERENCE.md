@@ -327,7 +327,3 @@ Your site: `https://USERNAME.github.io/REPO/`
 **Made with ❤️ at NIELIT Ropar | Version 1.5.1 | January 2026**
 
 ---
-
-[⬆ Back to Top](NIELIT StudentHub - Quick Reference Card (v1.5.1))
-
-
