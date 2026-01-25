@@ -112,7 +112,7 @@
 
 ### 🔐 Enhanced Security
 
-* **Salted Password Hashing**: SHA-256 + `NIELIT_STUDENTHUB_SECURE_SALT_2026`
+* **Salted Password Hashing**: SHA-256 + `ANY_RANDOM_TEXT_SECURE_SALT_9371`
 * **Auto-Migration Protocol**: Legacy passwords upgraded on login
 * **Backward Compatible**: No user disruption during upgrade
 * **Self-Healing Crypto**: Opportunistic security improvements
