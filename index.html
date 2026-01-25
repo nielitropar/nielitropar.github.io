@@ -1732,7 +1732,13 @@
                 if (indicator) indicator.remove();
 
                 // Get response data
-                const botResponse = result.data[0];
+                let botResponse = result.data[0];
+
+                // --- FORMATTING FIX ---
+                // Convert **bold** to <strong>bold</strong>
+                botResponse = botResponse.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+                // Convert newlines to breaks
+                botResponse = botResponse.replace(/\n/g, '<br>');
 
                 history.innerHTML += `<div style="background: var(--background); padding: 8px 12px; border-radius: 12px; align-self: flex-start; margin-bottom: 10px;">${botResponse || "I couldn't generate a response."}</div>`;
                 history.scrollTop = history.scrollHeight;
@@ -1762,9 +1768,14 @@
                     Hello! How can I help you today?
                 </div>
             </div>
-            <div style="padding: 1rem; border-top: 1px solid var(--border); display: flex; gap: 10px;">
-                <input type="text" id="chat-input" placeholder="Ask me about courses..." style="flex: 1; border: 1px solid var(--border); border-radius: 8px; padding: 8px;">
-                <button id="send-chat" style="background: var(--accent); color: white; border: none; border-radius: 8px; padding: 8px 12px; cursor: pointer;">Send</button>
+            <div style="padding: 1rem; border-top: 1px solid var(--border); display: flex; flex-direction: column; gap: 10px;">
+                <div style="display: flex; gap: 10px;">
+                    <input type="text" id="chat-input" placeholder="Ask me about courses..." style="flex: 1; border: 1px solid var(--border); border-radius: 8px; padding: 8px;">
+                    <button id="send-chat" style="background: var(--accent); color: white; border: none; border-radius: 8px; padding: 8px 12px; cursor: pointer;">Send</button>
+                </div>
+                <div style="font-size: 0.75rem; color: var(--text-secondary); text-align: center;">
+                    ⚠️ AI responses can be inaccurate. Please verify details.
+                </div>
             </div>
         </div>
     </div>
