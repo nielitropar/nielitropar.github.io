@@ -1693,7 +1693,35 @@ async function askAssistant() {
         history.innerHTML += `<div style="color: red; font-size: 0.8rem; align-self: center;">Connection error. Please try again.</div>`;
     }
 }
-        
+    // --- ADD THIS TO THE END OF YOUR SCRIPT TAG ---
+
+    // 1. Activate the Toggle Button
+    const toggleBtn = document.getElementById('toggle-chat');
+    const chatWindow = document.getElementById('chat-window');
+    
+    if (toggleBtn && chatWindow) {
+        toggleBtn.onclick = () => {
+            const isHidden = chatWindow.classList.contains('hidden') || chatWindow.style.display === 'none';
+            if (isHidden) {
+                chatWindow.classList.remove('hidden');
+                chatWindow.style.display = 'flex';
+            } else {
+                chatWindow.classList.add('hidden');
+                chatWindow.style.display = 'none';
+            }
+        };
+    }
+
+    // 2. Activate the Send Button and Enter Key
+    const sendBtn = document.getElementById('send-chat');
+    const chatInput = document.getElementById('chat-input');
+
+    if (sendBtn) sendBtn.onclick = askAssistant;
+    if (chatInput) {
+        chatInput.onkeypress = (e) => {
+            if (e.key === 'Enter') askAssistant();
+        };
+    }    
     </script>
 
     <div id="chat-widget-container" style="position: fixed; bottom: 80px; right: 20px; z-index: 2000;">
