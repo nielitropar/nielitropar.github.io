@@ -157,7 +157,7 @@ function getProfileIndex() {
     major: row[3],
     profilePicture: row[7],
     likes: parseInt(row[10]) || 0
-  }));
+  })).reverse(); // ADDED THIS .reverse() Latest profiles appears on top
 
   const jsonString = JSON.stringify({ status: 'success', data: searchData });
   
