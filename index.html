@@ -1760,20 +1760,24 @@
         </button>
         
         <div id="chat-window" class="hidden" style="position: absolute; bottom: 70px; right: 0; width: 350px; height: 450px; background: white; border-radius: 20px; box-shadow: var(--shadow-lg); flex-direction: column; border: 2px solid var(--border); display: none;">
-            <div style="background: var(--primary); color: white; padding: 1rem; border-radius: 18px 18px 0 0; font-weight: 700;">
-                NIELIT Assistant
+            <div style="background: var(--primary); color: white; padding: 1rem; border-radius: 18px 18px 0 0; font-weight: 700; display: flex; align-items: center; gap: 12px;">
+                <img src="bot.png" alt="NIELIT Bot" style="width: 32px; height: 32px; border-radius: 50%; background: white; padding: 2px; object-fit: contain;">
+                
+                <span>NIELIT Assistant</span>
             </div>
+
             <div id="chat-history" style="flex: 1; padding: 1rem; overflow-y: auto; font-size: 0.9rem; display: flex; flex-direction: column; gap: 10px;">
                 <div style="background: var(--background); padding: 8px 12px; border-radius: 12px; align-self: flex-start;">
                     Hello! How can I help you today?
                 </div>
             </div>
+
             <div style="padding: 1rem; border-top: 1px solid var(--border); display: flex; flex-direction: column; gap: 10px;">
                 <div style="display: flex; gap: 10px;">
                     <input type="text" id="chat-input" placeholder="Ask me about courses..." style="flex: 1; border: 1px solid var(--border); border-radius: 8px; padding: 8px;">
                     <button id="send-chat" style="background: var(--accent); color: white; border: none; border-radius: 8px; padding: 8px 12px; cursor: pointer;">Send</button>
                 </div>
-                <div style="font-size: 0.75rem; color: var(--text-secondary); text-align: center;">
+                <div style="font-size: 0.7rem; color: var(--text-secondary); text-align: center; opacity: 0.8;">
                     ⚠️ AI responses can be inaccurate. Please verify details.
                 </div>
             </div>
