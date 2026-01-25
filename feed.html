@@ -33,6 +33,7 @@
         content="See what's trending at NIELIT Ropar. Explore new student projects and community updates.">
     <meta name="twitter:image" content="https://nielitropar.github.io/logo.png">
 
+
     <style>
         :root {
             /* NIELIT Theme Colors */
@@ -915,7 +916,7 @@
             font-size: 1.2rem;
         }
 
-        /* NEW: AI Insight Badge Styling */
+        /* AI Insight Badge Styling */
         .ai-insight-badge {
             background: rgba(16, 185, 129, 0.08);
             border: 1px solid var(--success);
@@ -929,6 +930,119 @@
             gap: 10px;
             animation: fadeIn 0.8s ease-out;
             line-height: 1.4;
+        }
+
+        /* ================= CHATBOT STYLES ================= */
+        .chat-fab {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background: var(--gradient-primary);
+            border-radius: 50%;
+            box-shadow: 0 4px 15px rgba(0, 51, 102, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 2000;
+            color: white;
+            font-size: 1.8rem;
+            transition: all 0.3s ease;
+        }
+        .chat-fab:hover {
+            transform: scale(1.1);
+        }
+        
+        .chat-window {
+            display: none;
+            position: fixed;
+            bottom: 90px;
+            right: 20px;
+            width: 350px;
+            height: 500px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+            z-index: 2000;
+            flex-direction: column;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            animation: slideUp 0.3s ease-out;
+        }
+        .chat-window.active {
+            display: flex;
+        }
+        
+        .chat-header {
+            background: var(--gradient-primary);
+            color: white;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .chat-body {
+            flex: 1;
+            padding: 1rem;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            background: #f9fafb;
+        }
+        .chat-message {
+            max-width: 80%;
+            padding: 10px 14px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+        .chat-message.bot {
+            background: white;
+            color: var(--text-primary);
+            align-self: flex-start;
+            border: 1px solid var(--border);
+            border-bottom-left-radius: 2px;
+        }
+        .chat-message.user {
+            background: var(--accent);
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 2px;
+        }
+        .chat-input-area {
+            padding: 1rem;
+            border-top: 1px solid var(--border);
+            display: flex;
+            gap: 8px;
+            background: white;
+        }
+        
+        /* Chatbot Project Card */
+        .chat-project-card {
+            background: white;
+            padding: 10px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: 0.2s;
+            margin-top: 5px;
+        }
+        .chat-project-card:hover {
+            border-color: var(--accent);
+            background: #f0f7ff;
+        }
+        
+        @media (max-width: 480px) {
+            .chat-window {
+                width: 90%;
+                right: 5%;
+                bottom: 80px;
+                height: 60vh;
+            }
         }
     </style>
 </head>
@@ -1042,15 +1156,16 @@
                     <div
                         style="display:flex; gap:10px; overflow-x:auto; padding-bottom:10px; margin-bottom:1rem; -webkit-overflow-scrolling:touch; scrollbar-width: none;">
                         <button onclick="filterCategory(this, 'All')" class="action-btn active filter-btn">All</button>
-                        <button onclick="filterCategory(this, 'Web Development')" class="action-btn filter-btn">Web
-                            Dev</button>
+                        <button onclick="filterCategory(this, 'Web Development')" class="action-btn filter-btn">Web Dev</button>
                         <button onclick="filterCategory(this, 'Mobile App')" class="action-btn filter-btn">App</button>
                         <button onclick="filterCategory(this, 'AI / ML')" class="action-btn filter-btn">AI/ML</button>
-                        <button onclick="filterCategory(this, 'IoT & Hardware')"
-                            class="action-btn filter-btn">IoT</button>
-                        <button onclick="filterCategory(this, 'Blockchain')"
-                            class="action-btn filter-btn">Blockchain</button>
-                        <button onclick="filterCategory(this, 'Other')" class="action-btn filter-btn">Other</button>
+                        <button onclick="filterCategory(this, 'Cloud & DevOps')" class="action-btn filter-btn">Cloud</button>
+                        <button onclick="filterCategory(this, 'Data Science')" class="action-btn filter-btn">Data</button>
+                        <button onclick="filterCategory(this, 'IoT & Hardware')" class="action-btn filter-btn">IoT</button>
+                        <button onclick="filterCategory(this, 'Robotics')" class="action-btn filter-btn">Robotics</button>
+                        <button onclick="filterCategory(this, 'Game Development')" class="action-btn filter-btn">Game Dev</button>
+                        <button onclick="filterCategory(this, 'AR / VR')" class="action-btn filter-btn">AR/VR</button>
+                        <button onclick="filterCategory(this, 'Blockchain')" class="action-btn filter-btn">Web3</button>
                     </div>
 
                     <div id="projectsList">
@@ -1113,6 +1228,25 @@
         </nav>
     </div>
 
+    <div class="chat-fab" onclick="toggleChat()">🤖</div>
+    
+    <div class="chat-window" id="chatWindow">
+        <div class="chat-header">
+            <div>
+                <span style="font-weight:700;">StudentHub AI</span>
+                <div style="font-size:0.7rem; opacity:0.9;">Ask me to find projects!</div>
+            </div>
+            <span onclick="toggleChat()" style="cursor:pointer; font-size:1.2rem;">&times;</span>
+        </div>
+        <div class="chat-body" id="chatBody">
+            <div class="chat-message bot">Hi! I'm the StudentHub AI. Ask me to find specific projects, like "Find me a robotics project" or "Who works on React?".</div>
+        </div>
+        <div class="chat-input-area">
+            <input type="text" id="chatInput" class="form-input" style="margin-bottom:0;" placeholder="Type your request..." onkeypress="handleChatKey(event)">
+            <button onclick="sendChatMessage()" class="btn btn-primary" style="padding:0 1rem;">➤</button>
+        </div>
+    </div>
+
     <div id="userMenuModal" class="modal">
         <div class="modal-content" style="text-align: center;">
             <div class="modal-header">
@@ -1162,7 +1296,12 @@
                         <option value="Web Development">Web Development</option>
                         <option value="Mobile App">Mobile App</option>
                         <option value="AI / ML">AI / ML</option>
+                        <option value="Cloud & DevOps">Cloud & DevOps</option>
+                        <option value="Data Science">Data Science</option>
                         <option value="IoT & Hardware">IoT & Hardware</option>
+                        <option value="Robotics">Robotics</option>
+                        <option value="Game Development">Game Development</option>
+                        <option value="AR / VR">AR / VR</option>
                         <option value="Blockchain">Blockchain</option>
                         <option value="Cybersecurity">Cybersecurity</option>
                         <option value="Other">Other</option>
@@ -1356,6 +1495,7 @@
             document.getElementById('sideMajor').textContent = currentUser.major || 'Student';
             document.getElementById('sideAvatar').src = currentUser.profilePicture || 'default-avatar.png';
 
+            // Pre-fill Edit Profile Form
             document.getElementById('editName').value = currentUser.name;
             document.getElementById('editUni').value = currentUser.university || '';
             document.getElementById('editMajorInput').value = currentUser.major || '';
@@ -1402,7 +1542,8 @@
                     btn.disabled = false;
                 }
             } catch (err) {
-                alert('Login failed.');
+                alert('Login failed. Check console.');
+                console.error(err);
                 btn.textContent = originalText;
                 btn.disabled = false;
             }
@@ -1411,7 +1552,7 @@
         async function handleSignup(e) {
             e.preventDefault();
             const btn = e.target.querySelector('button[type="submit"]');
-            btn.textContent = 'Creating...';
+            btn.textContent = 'Creating Account...';
             btn.disabled = true;
 
             const file = document.getElementById('signupPic').files[0];
@@ -1448,7 +1589,7 @@
             }
         }
 
-        // --- PROJECTS ---
+        // --- PROJECTS (SERVER-SIDE PAGINATION) ---
         async function loadProjects(append = false) {
             if (isLoading) return;
             isLoading = true;
@@ -1496,8 +1637,10 @@
                             <div style="display: flex; gap: 0.5rem; align-items: start;">
                                 <span style="font-size: 1.2rem; font-weight: 700; color: var(--accent);">${i + 1}</span>
                                 <div style="flex: 1;">
-                                    <div style="font-weight: 600; font-size: 0.9rem; color: var(--primary);">${escapeHtml(p.title)}</div>
-                                    <div style="font-size: 0.75rem; color: var(--text-secondary);">👍 ${p.upvotes} • 💬 ${p.commentCount}</div>
+                                    <div style="font-weight: 600; font-size: 0.9rem; color: var(--primary); line-height: 1.3;">${escapeHtml(p.title)}</div>
+                                    <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.25rem;">
+                                        👍 ${p.upvotes} • 💬 ${p.commentCount}
+                                    </div>
                                 </div>
                             </div>
                         </div>`).join('');
@@ -1507,10 +1650,10 @@
                     const mobileHtml = json.data.map((p, i) => `
                         <div class="mobile-trend-card" onclick="window.location.href='index.html?email=${p.authorEmail}'">
                             <div style="display:flex; justify-content:space-between; margin-bottom:0.5rem;">
-                                <span style="font-size: 0.8rem; font-weight: 800; color: var(--accent);">#${i + 1}</span>
+                                <span style="font-size: 0.8rem; font-weight: 800; color: var(--accent); background: rgba(0,102,204,0.1); padding: 2px 8px; border-radius: 10px;">#${i + 1}</span>
                                 <span style="font-size: 0.75rem; color: var(--text-secondary);">👍 ${p.upvotes}</span>
                             </div>
-                            <div style="font-weight: 600; color: var(--primary); font-size: 0.95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${escapeHtml(p.title)}</div>
+                            <div style="font-weight: 600; color: var(--primary); font-size: 0.95rem; margin-bottom: 0.25rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${escapeHtml(p.title)}</div>
                             <div style="font-size: 0.75rem; color: var(--text-secondary);">by ${escapeHtml(p.authorName)}</div>
                         </div>`).join('');
 
@@ -1522,77 +1665,49 @@
         }
 
         // --- AI LOGIC: SEMANTIC MATCHING ---
-        
-        // Define "Anchor" Descriptions for Roles
-        // The AI will compare the project text against these to find the closest meaning.
         const ROLE_DEFINITIONS = {
-            "Full Stack Developer": "Building responsive websites, front-end interfaces (React, HTML, CSS), back-end APIs (Node.js, Python), databases (SQL, MongoDB), and full web applications.",
-            "AI/ML Engineer": "Developing machine learning models, deep learning, neural networks, natural language processing (NLP), computer vision using Python, TensorFlow, PyTorch, or Scikit-learn.",
-            "Android Developer": "Creating mobile applications for Android or iOS devices using Java, Kotlin, Flutter, React Native, or Swift. Mobile UI/UX design.",
-            "IoT Engineer": "Hardware interfacing, embedded systems, microcontrollers (Arduino, Raspberry Pi), sensors, circuits, automation, and connecting devices to the internet.",
-            "Data Scientist": "Analyzing large datasets, data visualization, statistical analysis, predictive modeling, data mining, using Pandas, NumPy, SQL, PowerBI, or Tableau.",
-            "Blockchain Developer": "Smart contracts, decentralized applications (DApps), Ethereum, Solidity, cryptography, Web3, and distributed ledger technology.",
-            "Cybersecurity Analyst": "Network security, penetration testing, ethical hacking, cryptography, vulnerability assessment, securing systems against cyber threats."
+            "Full Stack Developer": "Web development, React, HTML, CSS, Node.js, Python, Django, SQL, MongoDB, building websites.",
+            "AI/ML Engineer": "Machine learning, artificial intelligence, deep learning, Python, TensorFlow, PyTorch, computer vision, NLP.",
+            "Android/iOS Developer": "Mobile apps, Java, Kotlin, Swift, Flutter, React Native, smartphone applications.",
+            "IoT & Robotics": "Arduino, Raspberry Pi, embedded systems, hardware, sensors, drones, automation, circuits.",
+            "Data Scientist": "Data analysis, statistics, pandas, visualization, SQL, big data, insights.",
+            "Cloud & DevOps": "AWS, Azure, Docker, Kubernetes, CI/CD, cloud computing, server management.",
+            "Game Developer": "Unity, Unreal Engine, C#, C++, game design, 3D graphics.",
+            "Blockchain Developer": "Smart contracts, Solidity, Ethereum, Web3, crypto, decentralized apps.",
+            "Cybersecurity": "Ethical hacking, penetration testing, network security, cryptography."
         };
 
-        // Utility: Cosine Similarity
         function cosineSimilarity(a, b) {
-            let dotProduct = 0;
-            let magnitudeA = 0;
-            let magnitudeB = 0;
-            for (let i = 0; i < a.length; i++) {
-                dotProduct += a[i] * b[i];
-                magnitudeA += a[i] * a[i];
-                magnitudeB += b[i] * b[i];
-            }
-            return dotProduct / (Math.sqrt(magnitudeA) * Math.sqrt(magnitudeB));
+            let dot = 0, magA = 0, magB = 0;
+            for(let i=0; i<a.length; i++) { dot += a[i]*b[i]; magA += a[i]*a[i]; magB += b[i]*b[i]; }
+            return dot / (Math.sqrt(magA) * Math.sqrt(magB));
         }
 
-        // Cache role embeddings so we compute them only once
         let roleEmbeddings = null;
-
         async function getSemanticInsight(text) {
             if (!window.TalentAI) return null;
-
-            // 1. Generate Embeddings for Roles (Once)
             if (!roleEmbeddings) {
                 roleEmbeddings = {};
                 for (const [role, desc] of Object.entries(ROLE_DEFINITIONS)) {
-                    const output = await window.TalentAI(desc, { pooling: 'mean', normalize: true });
-                    roleEmbeddings[role] = output.data;
+                    const out = await window.TalentAI(desc, { pooling: 'mean', normalize: true });
+                    roleEmbeddings[role] = out.data;
                 }
             }
-
-            // 2. Generate Embedding for Project Text
-            const projectOutput = await window.TalentAI(text, { pooling: 'mean', normalize: true });
-            const projectVector = projectOutput.data;
-
-            // 3. Find Best Match
-            let bestRole = null;
-            let maxScore = -1;
-
-            for (const [role, roleVector] of Object.entries(roleEmbeddings)) {
-                const score = cosineSimilarity(projectVector, roleVector);
-                if (score > maxScore) {
-                    maxScore = score;
-                    bestRole = role;
-                }
+            const pOut = await window.TalentAI(text, { pooling: 'mean', normalize: true });
+            let best = null, max = -1;
+            for(const [role, vec] of Object.entries(roleEmbeddings)) {
+                const s = cosineSimilarity(pOut.data, vec);
+                if(s > max) { max = s; best = role; }
             }
-
-            // 4. Return result if confidence is good enough (> 0.25 is usually a solid match in cosine space)
-            if (maxScore > 0.25) {
-                return { role: bestRole, score: Math.round(maxScore * 100) };
-            }
-            return null;
+            // Lowered threshold to 0.18 to show insights for more projects
+            return (max > 0.18) ? { role: best, score: Math.round(max*100) } : null;
         }
 
         async function renderProjects(list, append = false) {
             const container = document.getElementById('projectsList');
-
             if (!append) container.innerHTML = '';
-
             if (list.length === 0 && !append) {
-                container.innerHTML = '<div class="card" style="text-align: center; padding: 3rem;"><p>No projects found.</p></div>';
+                container.innerHTML = '<div class="card" style="text-align: center; padding: 3rem;"><p style="color: var(--text-secondary); font-size: 1.1rem;">No projects found.</p></div>';
                 return;
             }
 
@@ -1664,6 +1779,84 @@
                 }
             } catch (e) { console.error(e); }
         }
+
+        // ======================= CHATBOT LOGIC =======================
+        
+        function toggleChat() {
+            const win = document.getElementById('chatWindow');
+            win.classList.toggle('active');
+            if(win.classList.contains('active')) document.getElementById('chatInput').focus();
+        }
+
+        function handleChatKey(e) { if(e.key === 'Enter') sendChatMessage(); }
+
+        async function sendChatMessage() {
+            const input = document.getElementById('chatInput');
+            const txt = input.value.trim();
+            if(!txt) return;
+            
+            addMessage(txt, 'user');
+            input.value = '';
+            
+            const botMsgId = addMessage("Thinking...", 'bot');
+            
+            let results = [];
+            let reply = "";
+
+            if (!fuse) {
+                updateMessage(botMsgId, "I'm still loading the database. Give me a sec!");
+                return;
+            }
+
+            // 1. Semantic Intent Check (Reusing existing AI function)
+            const intent = await getSemanticInsight(txt); 
+            
+            // 2. Keyword Search
+            const fuseResults = fuse.search(txt).slice(0, 3).map(r => r.item);
+            
+            // 3. Logic to combine results
+            if (fuseResults.length > 0) {
+                results = fuseResults;
+                reply = `I found ${results.length} specific project(s) for "${txt}":`;
+            } else if (intent && intent.score > 20) {
+                // If keywords fail, check if user asked for a general category (e.g. "flying" -> Robotics)
+                results = searchIndex.filter(p => (p.category && p.category.includes(intent.role)) || (p.description && p.description.includes(intent.role))).slice(0, 3);
+                if (results.length > 0) {
+                    reply = `No exact matches, but this sounds like a <strong>${intent.role}</strong> request. Check these out:`;
+                } else {
+                    reply = `That sounds like a <strong>${intent.role}</strong> topic, but I couldn't find any projects yet.`;
+                }
+            } else {
+                reply = "I couldn't find any matching projects. Try searching for technologies like 'React' or 'Python'.";
+            }
+
+            const resultHtml = results.map(p => `
+                <div class="chat-project-card" onclick="window.location.href='project.html?id=${p.id}'">
+                    <div style="font-weight:600;">${escapeHtml(p.title)}</div>
+                    <div style="color:#666;font-size:0.75rem;">by ${escapeHtml(p.authorName)}</div>
+                </div>
+            `).join('');
+            
+            updateMessage(botMsgId, reply + resultHtml);
+        }
+
+        function addMessage(text, type) {
+            const body = document.getElementById('chatBody');
+            const id = 'msg-' + Date.now();
+            const div = document.createElement('div');
+            div.className = `chat-message ${type}`;
+            div.id = id;
+            div.innerHTML = text;
+            body.appendChild(div);
+            body.scrollTop = body.scrollHeight;
+            return id;
+        }
+
+        function updateMessage(id, html) {
+            document.getElementById(id).innerHTML = html;
+        }
+
+        // =============================================================
 
         function handleSearch(term) {
             const container = document.getElementById('projectsList');
