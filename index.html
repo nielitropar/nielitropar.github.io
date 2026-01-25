@@ -1139,7 +1139,7 @@
         window.onload = async () => {
             // [NEW] Load optimized index instead of standard fetch
             loadProfileIndex();
-            
+
             fetchStats();
             fetchTrending();
 
@@ -1171,7 +1171,7 @@
 
                 if (json.status === 'success') {
                     profileIndex = json.data;
-                    
+
                     // Initialize Fuse.js
                     const options = {
                         keys: ['name', 'major', 'university'],
@@ -1179,11 +1179,15 @@
                         ignoreLocation: true
                     };
                     profileFuse = new Fuse(profileIndex, options);
-                    
+
                     // Initial render (show all or first 50)
                     renderDirectory(profileIndex.slice(0, 24));
                 }
-            } catch (e) { console.error("Index load failed", e); }
+            } catch (e) {
+                console.error("Index load failed", e);
+                document.getElementById('profilesGrid').innerHTML =
+                    '<div style="text-align:center; padding: 2rem; color: var(--text-secondary);">Directory unavailable. Please refresh the page.</div>';
+            }
         }
 
         // [UPDATED] Client-side search logic
@@ -1194,7 +1198,7 @@
             if (!term || term.trim() === '') {
                 // Show default list (first 24)
                 renderDirectory(profileIndex.slice(0, 24));
-                if(loadMoreBtn) loadMoreBtn.style.display = 'block';
+                if (loadMoreBtn) loadMoreBtn.style.display = 'block';
                 return;
             }
 
@@ -1203,15 +1207,15 @@
             const results = profileFuse.search(term);
             const items = results.map(r => r.item);
             renderDirectory(items);
-            
-            if(loadMoreBtn) loadMoreBtn.style.display = 'none'; // Hide pagination in search mode
+
+            if (loadMoreBtn) loadMoreBtn.style.display = 'none'; // Hide pagination in search mode
         }
 
         // [UPDATED] Apply Filter Logic (Client-side)
         function applyFilter(btn, term) {
             document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
             if (btn) btn.classList.add('active');
-            
+
             const input = document.querySelector('.search-input');
             input.value = term;
             handleProfileSearch(term);
@@ -1338,10 +1342,10 @@
 
             // Logic: if search is empty AND we haven't shown all from profileIndex
             if (document.querySelector('.search-input').value === '' && profileIndex.length > chunk.length) {
-                 // For client-side simple view, we just show a button that renders the REST
-                 // Or we could implement true client-side pagination.
-                 // For simplicity:
-                 if(chunk.length < profileIndex.length) {
+                // For client-side simple view, we just show a button that renders the REST
+                // Or we could implement true client-side pagination.
+                // For simplicity:
+                if (chunk.length < profileIndex.length) {
                     grid.insertAdjacentHTML('beforeend', `
                         <div id="loadMoreContainer" style="grid-column: 1/-1; text-align: center; padding: 2.5rem;">
                             <button onclick="renderDirectory(profileIndex)" class="btn-primary" style="background: white; color: var(--primary); border: 2px solid var(--border); box-shadow: 0 4px 12px rgba(0,0,0,0.06);">
@@ -1349,7 +1353,7 @@
                             </button>
                         </div>
                     `);
-                 }
+                }
             }
         }
 
