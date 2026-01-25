@@ -1647,19 +1647,19 @@
             const html = results.map(r => {
                 const p = r.item;
                 return `
-        <div class="search-result-card" onclick="window.location.href='index.html?email=${p.authorEmail}'">
-            <div class="search-icon-placeholder">🚀</div>
-            <div style="flex: 1;">
-                <div style="font-weight: 700; color: var(--primary); font-size: 1.05rem;">${escapeHtml(p.title)}</div>
-                <div style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 2px;">
-                    by ${escapeHtml(p.authorName)} • <span style="color: var(--accent);">${escapeHtml(p.category)}</span>
-                </div>
-            </div>
-            <div style="background: #f1f5f9; padding: 4px 10px; border-radius: 8px; font-size: 0.75rem; color: #64748b; font-weight: 600;">
-                ${escapeHtml(p.tech).substring(0, 20)}${p.tech.length > 20 ? '...' : ''}
+    <div class="search-result-card" onclick="window.location.href='project.html?id=${p.id}'">
+        <div class="search-icon-placeholder">🚀</div>
+        <div style="flex: 1;">
+            <div style="font-weight: 700; color: var(--primary); font-size: 1.05rem;">${escapeHtml(p.title)}</div>
+            <div style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 2px;">
+                by ${escapeHtml(p.authorName)} • <span style="color: var(--accent);">${escapeHtml(p.category)}</span>
             </div>
         </div>
-        `;
+        <div style="background: #f1f5f9; padding: 4px 10px; border-radius: 8px; font-size: 0.75rem; color: #64748b; font-weight: 600;">
+            ${escapeHtml(p.tech).substring(0, 20)}${p.tech.length > 20 ? '...' : ''}
+        </div>
+    </div>
+    `;
             }).join('');
 
             container.innerHTML = html;
