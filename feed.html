@@ -33,10 +33,8 @@
         content="See what's trending at NIELIT Ropar. Explore new student projects and community updates.">
     <meta name="twitter:image" content="https://nielitropar.github.io/logo.png">
 
-
     <style>
         :root {
-            /* NIELIT Theme Colors */
             --primary: #003366;
             --secondary: #FF6B35;
             --accent: #0066CC;
@@ -67,7 +65,6 @@
             overflow-x: hidden;
         }
 
-        /* Navigation (Desktop) */
         nav.desktop-nav {
             background: var(--card-bg);
             box-shadow: var(--shadow-sm);
@@ -142,7 +139,6 @@
             border-radius: 3px;
         }
 
-        /* Mobile Bottom Navigation */
         .mobile-bottom-nav {
             display: none;
             position: fixed;
@@ -182,7 +178,6 @@
             background: rgba(0, 102, 204, 0.1);
         }
 
-        /* Layout */
         .container {
             max-width: 1200px;
             margin: 0 auto;
@@ -196,7 +191,6 @@
             gap: 2rem;
         }
 
-        /* Cards */
         .card {
             background: var(--card-bg);
             border-radius: 16px;
@@ -217,7 +211,6 @@
             height: fit-content;
         }
 
-        /* Enhanced Profile Sidebar */
         .profile-sidebar {
             text-align: center;
             background: linear-gradient(135deg, rgba(0, 51, 102, 0.05), rgba(0, 102, 204, 0.05));
@@ -231,7 +224,6 @@
             border-bottom: 2px solid var(--border);
         }
 
-        /* Project Card */
         .project-card {
             animation: fadeIn 0.5s ease-out;
             border: 1px solid var(--border);
@@ -286,7 +278,6 @@
             word-wrap: break-word;
         }
 
-        /* Enhanced Project Image */
         .project-image {
             width: 100%;
             max-width: 100%;
@@ -349,7 +340,6 @@
             white-space: nowrap;
         }
 
-        /* Footer */
         .site-footer {
             text-align: center;
             padding: 3rem 2rem;
@@ -366,7 +356,6 @@
             opacity: 0.8;
         }
 
-        /* Auth Pages */
         .auth-page {
             min-height: 100vh;
             display: flex;
@@ -456,7 +445,6 @@
             box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
         }
 
-        /* Buttons */
         .btn {
             padding: 0.875rem 1.75rem;
             border-radius: 10px;
@@ -506,7 +494,6 @@
             background: rgba(0, 0, 0, 0.05);
         }
 
-        /* Search */
         .search-container {
             margin-bottom: 2rem;
         }
@@ -532,7 +519,6 @@
             color: var(--text-secondary);
         }
 
-        /* new  */
         .search-result-card {
             background: white;
             padding: 1.2rem;
@@ -565,7 +551,6 @@
             flex-shrink: 0;
         }
 
-        /* Modal */
         .modal {
             display: none;
             position: fixed;
@@ -633,7 +618,6 @@
             color: var(--text-primary);
         }
 
-        /* Trending Section */
         .trending-item {
             margin-bottom: 1rem;
             padding: 1rem;
@@ -649,7 +633,6 @@
             transform: translateX(5px);
         }
 
-        /* MOBILE TRENDING STYLES (NEW) */
         .mobile-trending-container {
             margin-bottom: 1.5rem;
         }
@@ -689,7 +672,6 @@
             display: none;
         }
 
-        /* Utils */
         .hidden {
             display: none !important;
         }
@@ -727,7 +709,6 @@
             }
         }
 
-        /* Comment Section */
         .comment-item {
             margin-bottom: 1rem;
             background: #F9FAFB;
@@ -750,8 +731,6 @@
             word-wrap: break-word;
         }
 
-        /* RESPONSIVE BREAKPOINTS */
-
         @media (max-width: 1200px) {
             .main-layout {
                 grid-template-columns: 260px 1fr 280px;
@@ -772,7 +751,6 @@
                 display: none;
             }
 
-            /* Show mobile trending on small screens */
             .hidden-desktop {
                 display: block;
             }
@@ -887,7 +865,6 @@
             background: var(--text-secondary);
         }
 
-        /* App Download Button */
         .app-download-btn {
             display: inline-flex;
             align-items: center;
@@ -916,7 +893,7 @@
             font-size: 1.2rem;
         }
 
-        /* --- NEW AI BADGE STYLE --- */
+        /* AI Insight Badge Styling (New) */
         .ai-insight-badge {
             background: rgba(16, 185, 129, 0.08);
             border: 1px solid var(--success);
@@ -1079,14 +1056,11 @@
                     🎓 NIELIT Ropar
                 </p>
             </div>
-
             <p>&copy; 2026 <strong>StudentHub</strong>. All rights reserved.</p>
-
             <p
                 style="font-size: 0.8rem; margin: 0.5rem 0; opacity: 0.7; max-width: 300px; margin-left: auto; margin-right: auto;">
                 National Institute of Electronics & Information Technology
             </p>
-
             <a href="https://github.com/nielitropar/nielitropar.github.io/releases/tag/v1.0" target="_blank"
                 class="app-download-btn">
                 <span class="app-icon">🤖</span>
@@ -1123,7 +1097,6 @@
             <img id="menuAvatar" src="" class="avatar big-avatar">
             <h3 id="menuName">User</h3>
             <p id="menuMajor" style="color: var(--text-secondary); margin-bottom: 1.5rem;">Student</p>
-
             <div style="display: flex; flex-direction: column; gap: 1rem;">
                 <button class="btn btn-secondary" onclick="openMyProfilePage()">📁 My Projects</button>
                 <button class="btn btn-primary" onclick="closeModal('userMenu'); openModal('editProfile')">✏️ Edit
@@ -1209,7 +1182,6 @@
                     <textarea id="editBio" class="form-input" rows="3"
                         placeholder="Tell us about yourself..."></textarea>
                 </div>
-
                 <div class="form-group">
                     <label>📄 Resume (PDF)</label>
                     <div style="display: flex; gap: 10px; align-items: center;">
@@ -1219,7 +1191,6 @@
                     </div>
                     <small style="color: var(--text-secondary);">Upload a PDF file (Max 5MB)</small>
                 </div>
-
                 <div class="form-group">
                     <label>🔗 LinkedIn</label>
                     <input type="url" id="editLinked" class="form-input" placeholder="https://linkedin.com/in/...">
@@ -1258,39 +1229,25 @@
                 <h2>📤 Share Project</h2>
                 <button class="modal-close" onclick="closeModal('shareProject')">&times;</button>
             </div>
-
             <div style="margin-bottom: 1.5rem;">
-                <p style="color: var(--text-secondary); margin-bottom: 1rem;">
-                    Share this project with anyone - even those without an account!
-                </p>
+                <p style="color: var(--text-secondary); margin-bottom: 1rem;">Share this project with anyone!</p>
                 <div
                     style="display: flex; gap: 0.5rem; padding: 1rem; background: var(--background); border-radius: 8px; border: 2px solid var(--border);">
                     <input type="text" id="shareProjectLink" readonly class="form-input"
                         style="flex: 1; font-size: 0.85rem; font-family: monospace; padding: 0.5rem;">
                     <button onclick="copyShareLink()" class="btn btn-primary" id="copyShareBtn"
-                        style="white-space: nowrap;">
-                        📋 Copy
-                    </button>
+                        style="white-space: nowrap;">📋 Copy</button>
                 </div>
             </div>
-
             <div style="display: grid; gap: 0.75rem;">
                 <button onclick="shareViaEmail()" class="btn btn-secondary"
-                    style="width: 100%; justify-content: flex-start;">
-                    📧 Share via Email
-                </button>
+                    style="width: 100%; justify-content: flex-start;">📧 Share via Email</button>
                 <button onclick="shareViaWhatsApp()" class="btn btn-secondary"
-                    style="width: 100%; justify-content: flex-start;">
-                    💬 Share on WhatsApp
-                </button>
+                    style="width: 100%; justify-content: flex-start;">💬 Share on WhatsApp</button>
                 <button onclick="shareViaTwitter()" class="btn btn-secondary"
-                    style="width: 100%; justify-content: flex-start;">
-                    🐦 Share on Twitter
-                </button>
+                    style="width: 100%; justify-content: flex-start;">🐦 Share on Twitter</button>
                 <button onclick="shareViaLinkedIn()" class="btn btn-secondary"
-                    style="width: 100%; justify-content: flex-start;">
-                    💼 Share on LinkedIn
-                </button>
+                    style="width: 100%; justify-content: flex-start;">💼 Share on LinkedIn</button>
             </div>
         </div>
     </div>
@@ -1299,32 +1256,25 @@
 
     <script type="module">
         import { pipeline } from 'https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.1';
-
-        // Initialize the Zero-Shot Classifier for project skill analysis
-        window.TalentAI = await pipeline('zero-shot-classification', 'Xenova/distilbert-base-uncased-mnli');
-        console.log("AI Talent Engine Ready");
+        // Changed model to MobileBERT for better zero-shot reasoning
+        window.TalentAI = await pipeline('zero-shot-classification', 'Xenova/mobilebert-uncased-mnli');
+        console.log("Enhanced AI Talent Engine Ready");
     </script>
 
     <script>
-        // CONFIGURATION
         const SHEET_URL = CONFIG.SHEET_URL;
         const CLOUDINARY_NAME = CONFIG.CLOUDINARY_NAME;
         const CLOUDINARY_PRESET = CONFIG.CLOUDINARY_PRESET;
 
-        // STATE
         let currentUser = JSON.parse(localStorage.getItem('studenthub_user'));
         let currentCommentProjectId = null;
         let currentPage = 1;
         let currentSearchTerm = '';
         let hasMoreProjects = true;
         let isLoading = false;
-        let searchTimeout = null;
-
-        // [NEW] Search State
         let searchIndex = [];
         let fuse;
 
-        // INIT
         window.onload = () => {
             if (currentUser) {
                 showApp();
@@ -1332,14 +1282,12 @@
                     localStorage.removeItem('openPostModal');
                     openModal('project');
                 }
-                // [NEW] Load the search index in the background
                 loadSearchIndex();
             } else {
                 toggleAuth('login');
             }
         };
 
-        // --- AUTH ---
         function toggleAuth(view) {
             document.getElementById('loginPage').classList.toggle('hidden', view !== 'login');
             document.getElementById('signupPage').classList.toggle('hidden', view !== 'signup');
@@ -1350,75 +1298,49 @@
             document.getElementById('loginPage').classList.add('hidden');
             document.getElementById('signupPage').classList.add('hidden');
             document.getElementById('mainApp').classList.remove('hidden');
-
             document.getElementById('sideName').textContent = currentUser.name;
             document.getElementById('sideMajor').textContent = currentUser.major || 'Student';
             document.getElementById('sideAvatar').src = currentUser.profilePicture || 'default-avatar.png';
-
-            // Pre-fill Edit Profile Form
             document.getElementById('editName').value = currentUser.name;
             document.getElementById('editUni').value = currentUser.university || '';
             document.getElementById('editMajorInput').value = currentUser.major || '';
             document.getElementById('editBio').value = currentUser.bio || '';
             document.getElementById('editLinked').value = currentUser.linkedin || '';
             document.getElementById('editGit').value = currentUser.github || '';
-
             const resumeLinkBtn = document.getElementById('currentResumeLink');
             if (currentUser.resume) {
                 resumeLinkBtn.href = currentUser.resume;
                 resumeLinkBtn.classList.remove('hidden');
-                resumeLinkBtn.textContent = "📄 View Current Resume";
-            } else {
-                resumeLinkBtn.classList.add('hidden');
             }
-
             loadProjects();
-            fetchTrending(); // Fetch Smart Trending List
+            fetchTrending();
         }
 
-        function showSection(section) {
-            if (section === 'feed') {
-                window.scrollTo(0, 0);
-            }
-        }
+        function showSection(section) { if (section === 'feed') window.scrollTo(0, 0); }
 
         async function handleLogin(e) {
             e.preventDefault();
             const email = document.getElementById('loginEmail').value;
             const password = document.getElementById('loginPass').value;
             const btn = e.target.querySelector('button[type="submit"]');
-
-            const originalText = btn.textContent;
             btn.textContent = 'Verifying...';
             btn.disabled = true;
-
             try {
                 const res = await fetch(`${SHEET_URL}?action=login&email=${email}&password=${password}`);
                 const json = await res.json();
                 if (json.status === 'success') completeAuth(json.data);
-                else {
-                    alert(json.data);
-                    btn.textContent = originalText;
-                    btn.disabled = false;
-                }
-            } catch (err) {
-                alert('Login failed. Check console.');
-                console.error(err);
-                btn.textContent = originalText;
-                btn.disabled = false;
-            }
+                else { alert(json.data); btn.textContent = 'Log In'; btn.disabled = false; }
+            } catch (err) { alert('Login failed.'); btn.textContent = 'Log In'; btn.disabled = false; }
         }
 
         async function handleSignup(e) {
             e.preventDefault();
             const btn = e.target.querySelector('button[type="submit"]');
-            btn.textContent = 'Creating Account...';
+            btn.textContent = 'Creating...';
             btn.disabled = true;
-
             const file = document.getElementById('signupPic').files[0];
             let picUrl = '';
             if (file) picUrl = await uploadImage(file);
-
             const data = {
                 name: document.getElementById('signupName').value,
                 email: document.getElementById('signupEmail').value,
@@ -1426,14 +1348,9 @@
                 major: document.getElementById('signupMajor').value,
                 profilePicture: picUrl
             };
-
             const res = await postData('signup', { data });
             if (res.status === 'success') completeAuth(data);
-            else {
-                alert(res.data);
-                btn.textContent = 'Sign Up';
-                btn.disabled = false;
-            }
+            else { alert(res.data); btn.textContent = 'Sign Up'; btn.disabled = false; }
         }
 
         function completeAuth(user) {
@@ -1442,119 +1359,86 @@
             showApp();
         }
 
-        function logout() {
-            if (confirm('Are you sure you want to logout?')) {
-                localStorage.removeItem('studenthub_user');
-                location.reload();
-            }
-        }
+        function logout() { if (confirm('Logout?')) { localStorage.removeItem('studenthub_user'); location.reload(); } }
 
-        // --- PROJECTS (SERVER-SIDE PAGINATION) ---
         async function loadProjects(append = false) {
             if (isLoading) return;
             isLoading = true;
-
-            if (!append) {
-                currentPage = 1;
-                hasMoreProjects = true;
-            }
-
+            if (!append) { currentPage = 1; hasMoreProjects = true; }
             try {
-                const emailParam = currentUser ? `&userEmail=${encodeURIComponent(currentUser.email)}` : '';
-                const searchParam = currentSearchTerm ? `&searchTerm=${encodeURIComponent(currentSearchTerm)}` : '';
-
-                const res = await fetch(`${SHEET_URL}?action=getProjects&page=${currentPage}${emailParam}${searchParam}`);
+                const res = await fetch(`${SHEET_URL}?action=getProjects&page=${currentPage}&userEmail=${encodeURIComponent(currentUser.email)}${currentSearchTerm ? `&searchTerm=${encodeURIComponent(currentSearchTerm)}` : ''}`);
                 const json = await res.json();
-
                 if (json.status === 'success') {
-                    const { items, hasMore } = json.data;
-                    hasMoreProjects = hasMore;
-
-                    if (!append) {
-                        await renderProjects(items, false);
-                    } else {
-                        await renderProjects(items, true);
-                    }
+                    hasMoreProjects = json.data.hasMore;
+                    await renderProjects(json.data.items, append);
                 }
-            } catch (err) {
-                console.error('Load error:', err);
-            } finally {
-                isLoading = false;
-            }
+            } catch (err) { console.error(err); } finally { isLoading = false; }
         }
 
-        // [NEW] SMART TRENDING FETCH
         async function fetchTrending() {
             try {
                 const res = await fetch(`${SHEET_URL}?action=getTrending`);
                 const json = await res.json();
-
                 const desktopContainer = document.getElementById('trendingList');
                 const mobileContainer = document.getElementById('mobileTrendingList');
-
                 if (json.status === 'success' && json.data.length > 0) {
-                    // Desktop HTML (Vertical List)
                     const desktopHtml = json.data.map((p, i) => `
                         <div class="trending-item" onclick="window.location.href='index.html?email=${p.authorEmail}'">
                             <div style="display: flex; gap: 0.5rem; align-items: start;">
                                 <span style="font-size: 1.2rem; font-weight: 700; color: var(--accent);">${i + 1}</span>
                                 <div style="flex: 1;">
-                                    <div style="font-weight: 600; font-size: 0.9rem; color: var(--primary); line-height: 1.3;">${escapeHtml(p.title)}</div>
-                                    <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.25rem;">
-                                        👍 ${p.upvotes} • 💬 ${p.commentCount}
-                                    </div>
+                                    <div style="font-weight: 600; font-size: 0.9rem; color: var(--primary);">${escapeHtml(p.title)}</div>
+                                    <div style="font-size: 0.75rem; color: var(--text-secondary);">👍 ${p.upvotes} • 💬 ${p.commentCount}</div>
                                 </div>
                             </div>
-                        </div>
-                    `).join('');
-
+                        </div>`).join('');
                     if (desktopContainer) desktopContainer.innerHTML = desktopHtml;
-
-                    // Mobile HTML (Horizontal Cards)
                     const mobileHtml = json.data.map((p, i) => `
                         <div class="mobile-trend-card" onclick="window.location.href='index.html?email=${p.authorEmail}'">
                             <div style="display:flex; justify-content:space-between; margin-bottom:0.5rem;">
-                                <span style="font-size: 0.8rem; font-weight: 800; color: var(--accent); background: rgba(0,102,204,0.1); padding: 2px 8px; border-radius: 10px;">#${i + 1}</span>
+                                <span style="font-size: 0.8rem; font-weight: 800; color: var(--accent);">#${i + 1}</span>
                                 <span style="font-size: 0.75rem; color: var(--text-secondary);">👍 ${p.upvotes}</span>
                             </div>
-                            <div style="font-weight: 600; color: var(--primary); font-size: 0.95rem; margin-bottom: 0.25rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${escapeHtml(p.title)}</div>
+                            <div style="font-weight: 600; font-size: 0.95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${escapeHtml(p.title)}</div>
                             <div style="font-size: 0.75rem; color: var(--text-secondary);">by ${escapeHtml(p.authorName)}</div>
-                        </div>
-                    `).join('');
-
+                        </div>`).join('');
                     if (mobileContainer) mobileContainer.innerHTML = mobileHtml;
-
-                } else {
-                    const emptyMsg = '<p style="color: var(--text-secondary); font-size: 0.9rem; padding:1rem;">No trending projects yet</p>';
-                    if (desktopContainer) desktopContainer.innerHTML = emptyMsg;
-                    if (mobileContainer) mobileContainer.innerHTML = emptyMsg;
                 }
-            } catch (e) {
-                console.error("Trend error", e);
-            }
+            } catch (e) { console.error(e); }
         }
 
-        // [AI HELPER FUNCTION]
+        // [ENHANCED AI LOGIC]
         async function getTalentInsight(desc, tech) {
             if (!window.TalentAI) return null;
-            const roles = ['Cloud Architect', 'Full-Stack Developer', 'Embedded Systems Engineer', 'Data Scientist', 'Cybersecurity Analyst', 'DevOps Specialist'];
+
+            // Expanded professional roles
+            const roles = ['Cloud Architect', 'Full-Stack Developer', 'Embedded Systems Engineer', 'Data Scientist', 'Cybersecurity Analyst', 'DevOps Specialist', 'Blockchain Developer'];
+
             try {
-                const output = await window.TalentAI(`Project: ${desc}. Tech: ${tech}`, roles);
-                return { role: output.labels[0], score: Math.round(output.scores[0] * 100) };
+                // IMPORTANT: Added hypothesis_template for higher accuracy
+                const output = await window.TalentAI(
+                    `Project description: ${desc}. Key technologies: ${tech}`,
+                    roles,
+                    { hypothesis_template: "This project demonstrates the skills of a {}." }
+                );
+
+                // Return result only if confidence is decent (>25%) to avoid random guessing
+                if (output.scores[0] > 0.25) {
+                    return { role: output.labels[0], score: Math.round(output.scores[0] * 100) };
+                }
+                return null;
             } catch (e) { return null; }
         }
 
         async function renderProjects(list, append = false) {
             const container = document.getElementById('projectsList');
-
             if (!append) container.innerHTML = '';
-
             if (list.length === 0 && !append) {
-                container.innerHTML = '<div class="card" style="text-align: center; padding: 3rem;"><p style="color: var(--text-secondary); font-size: 1.1rem;">No projects found.</p></div>';
+                container.innerHTML = '<div class="card" style="text-align: center;"><p>No projects found.</p></div>';
                 return;
             }
 
-            // [AI INTEGRATION] Process insights in parallel
+            // Process AI insights in parallel
             const projectsWithAI = await Promise.all(list.map(async p => {
                 const insight = await getTalentInsight(p.description, p.tech);
                 return { ...p, talentInsight: insight };
@@ -1570,42 +1454,28 @@
                     <div class="project-header">
                         <img src="${p.authorPicture || 'default-avatar.png'}" class="avatar">
                         <div style="flex: 1; min-width: 0;">
-                            <div style="font-weight: 600; cursor: pointer; color: var(--primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" onclick="window.location.href='index.html?email=${p.authorEmail}'">
-                                ${escapeHtml(p.authorName)}
-                            </div>
+                            <div style="font-weight: 600; cursor: pointer; color: var(--primary);" onclick="window.location.href='index.html?email=${p.authorEmail}'">${escapeHtml(p.authorName)}</div>
                             <div style="font-size: 0.8rem; color: var(--text-secondary);">${formatDate(p.timestamp)}</div>
                         </div>
                     </div>
                     <div class="project-title">${escapeHtml(p.title)}</div>
                     <div class="project-description">${escapeHtml(p.description)}</div>
-                    ${p.projectImage ? `<img src="${p.projectImage}" class="project-image" alt="${escapeHtml(p.title)}" loading="lazy">` : ''}
+                    ${p.projectImage ? `<img src="${p.projectImage}" class="project-image" loading="lazy">` : ''}
                     <div class="project-footer">
-                        <span style="font-size:0.75rem; background: rgba(0, 102, 204, 0.1); color: var(--accent); padding:4px 10px; border-radius:12px; font-weight:600; margin-right:8px;">
-                            ${escapeHtml(p.category || 'Other')}
-                        </span>
-                        <button class="action-btn ${p.isLiked ? 'active' : ''}" onclick="upvote('${p.id}', this)">
-                            👍 <span>${p.upvotes}</span>
-                        </button>
-                        <button class="action-btn" onclick="openComments('${p.id}')">
-                            💬 <span>${p.commentCount || 0}</span>
-                        </button>
-                        <button class="action-btn" onclick="shareProject('${p.id}', '${escapeHtml(p.title).replace(/'/g, "\\'")}')">
-                            📤 Share
-                        </button>
-                        ${p.link ? `<a href="${p.link}" target="_blank" class="action-btn" style="text-decoration: none;">🔗 Code</a>` : ''}
+                        <span style="font-size:0.75rem; background: rgba(0, 102, 204, 0.1); color: var(--accent); padding:4px 10px; border-radius:12px; font-weight:600;">${escapeHtml(p.category || 'Other')}</span>
+                        <button class="action-btn ${p.isLiked ? 'active' : ''}" onclick="upvote('${p.id}', this)">👍 <span>${p.upvotes}</span></button>
+                        <button class="action-btn" onclick="openComments('${p.id}')">💬 <span>${p.commentCount || 0}</span></button>
+                        <button class="action-btn" onclick="shareProject('${p.id}', '${escapeHtml(p.title).replace(/'/g, "\\'")}')">📤 Share</button>
+                        ${p.link ? `<a href="${p.link}" target="_blank" class="action-btn">🔗 Code</a>` : ''}
                         <span class="tech-badge">${escapeHtml(p.tech || 'Tech')}</span>
                     </div>
-                </div>
-            `).join('');
+                </div>`).join('');
 
             if (append) {
-                const loadMoreBtn = document.getElementById('loadMoreContainer');
-                if (loadMoreBtn) loadMoreBtn.insertAdjacentHTML('beforebegin', html);
+                const existingBtn = document.getElementById('loadMoreContainer');
+                if (existingBtn) existingBtn.insertAdjacentHTML('beforebegin', html);
                 else container.insertAdjacentHTML('beforeend', html);
-            } else {
-                container.innerHTML = html;
-            }
-
+            } else container.innerHTML = html;
             updateLoadMoreButton();
         }
 
@@ -1613,101 +1483,50 @@
             const container = document.getElementById('projectsList');
             const existingBtn = document.getElementById('loadMoreContainer');
             if (existingBtn) existingBtn.remove();
-
             if (hasMoreProjects && !isLoading) {
-                container.insertAdjacentHTML('beforeend', `
-                    <div id="loadMoreContainer" style="text-align: center; padding: 2rem;">
-                        <button onclick="loadMore()" class="btn btn-secondary" style="width: 200px;">Load More</button>
-                    </div>
-                `);
+                container.insertAdjacentHTML('beforeend', `<div id="loadMoreContainer" style="text-align: center; padding: 2rem;"><button onclick="loadMore()" class="btn btn-secondary">Load More</button></div>`);
             }
         }
 
-        function loadMore() {
-            currentPage++;
-            loadProjects(true);
-        }
+        function loadMore() { currentPage++; loadProjects(true); }
 
-        // [NEW] Fetch the lightweight index
         async function loadSearchIndex() {
             try {
                 const res = await fetch(`${SHEET_URL}?action=getSearchIndex`);
                 const json = await res.json();
-
                 if (json.status === 'success') {
                     searchIndex = json.data;
-
-                    // Configure Fuse.js
-                    const options = {
-                        keys: ['title', 'authorName', 'tech', 'category', 'description'],
-                        threshold: 0.3, // 0.0 = exact match, 1.0 = loose match
-                        ignoreLocation: true
-                    };
-                    fuse = new Fuse(searchIndex, options);
-                    console.log("Search index loaded:", searchIndex.length, "items");
+                    fuse = new Fuse(searchIndex, { keys: ['title', 'authorName', 'tech', 'category', 'description'], threshold: 0.3 });
                 }
-            } catch (e) { console.error("Index load failed", e); }
+            } catch (e) { console.error(e); }
         }
 
-        // [UPDATED] Handle Search Logic
         function handleSearch(term) {
             const container = document.getElementById('projectsList');
             const loadMoreBtn = document.getElementById('loadMoreContainer');
-
-            // 1. If search is empty, go back to the standard Feed
             if (!term || term.trim() === '') {
                 currentSearchTerm = '';
-                if (loadMoreBtn) loadMoreBtn.style.display = 'block';
-
-                // Only reload if we were previously searching to avoid flickering
-                if (container.dataset.mode === 'search') {
-                    container.dataset.mode = 'feed';
-                    loadProjects(false); // Reload normal feed
-                }
+                if (container.dataset.mode === 'search') { container.dataset.mode = 'feed'; loadProjects(false); }
                 return;
             }
-
-            // 2. Perform Client-Side Search (Instant)
             container.dataset.mode = 'search';
             if (loadMoreBtn) loadMoreBtn.style.display = 'none';
-
-            if (!fuse) {
-                container.innerHTML = '<div class="loading">Loading search index...</div>';
-                return;
-            }
-
+            if (!fuse) return;
             const results = fuse.search(term);
             renderSearchResults(results);
         }
 
-        // [NEW] Render simplified search results
         function renderSearchResults(results) {
             const container = document.getElementById('projectsList');
-
-            if (results.length === 0) {
-                container.innerHTML = '<div class="card" style="text-align: center; padding: 2rem; color: var(--text-secondary);">No projects found matching that term.</div>';
-                return;
-            }
-
-            const html = results.map(r => {
-                const p = r.item;
-                return `
-    <div class="search-result-card" onclick="window.location.href='project.html?id=${p.id}'">
-        <div class="search-icon-placeholder">🚀</div>
-        <div style="flex: 1;">
-            <div style="font-weight: 700; color: var(--primary); font-size: 1.05rem;">${escapeHtml(p.title)}</div>
-            <div style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 2px;">
-                by ${escapeHtml(p.authorName)} • <span style="color: var(--accent);">${escapeHtml(p.category)}</span>
-            </div>
-        </div>
-        <div style="background: #f1f5f9; padding: 4px 10px; border-radius: 8px; font-size: 0.75rem; color: #64748b; font-weight: 600;">
-            ${escapeHtml(p.tech).substring(0, 20)}${p.tech.length > 20 ? '...' : ''}
-        </div>
-    </div>
-    `;
-            }).join('');
-
-            container.innerHTML = html;
+            if (results.length === 0) { container.innerHTML = '<div class="card"><p>No results.</p></div>'; return; }
+            container.innerHTML = results.map(r => `
+                <div class="search-result-card" onclick="window.location.href='project.html?id=${r.item.id}'">
+                    <div class="search-icon-placeholder">🚀</div>
+                    <div style="flex: 1;">
+                        <div style="font-weight: 700; color: var(--primary);">${escapeHtml(r.item.title)}</div>
+                        <div style="font-size: 0.85rem; color: var(--text-secondary);">by ${escapeHtml(r.item.authorName)} • ${escapeHtml(r.item.category)}</div>
+                    </div>
+                </div>`).join('');
         }
 
         function filterCategory(btn, cat) {
@@ -1720,13 +1539,9 @@
         async function handlePostProject(e) {
             e.preventDefault();
             const btn = e.target.querySelector('button[type="submit"]');
-            btn.textContent = 'Posting...';
-            btn.disabled = true;
-
+            btn.textContent = 'Posting...'; btn.disabled = true;
             const file = document.getElementById('postImage').files[0];
-            let imgUrl = '';
-            if (file) imgUrl = await uploadImage(file);
-
+            let imgUrl = ''; if (file) imgUrl = await uploadImage(file);
             const project = {
                 id: Date.now().toString(),
                 authorName: currentUser.name,
@@ -1739,280 +1554,100 @@
                 category: document.getElementById('postCategory').value,
                 projectImage: imgUrl
             };
-
             await postData('addProject', { data: project });
             closeModal('project');
             e.target.reset();
-            btn.textContent = 'Post';
-            btn.disabled = false;
             loadProjects(false);
         }
 
         async function handleEditProfile(e) {
             e.preventDefault();
             const btn = e.target.querySelector('button[type="submit"]');
-            btn.textContent = 'Saving...';
-            btn.disabled = true;
-
+            btn.textContent = 'Saving...'; btn.disabled = true;
             const imgFile = document.getElementById('editPic').files[0];
             let picUrl = currentUser.profilePicture;
             if (imgFile) picUrl = await uploadImage(imgFile);
-
             const resumeFile = document.getElementById('editResumeFile').files[0];
             let resumeUrl = currentUser.resume || '';
-            if (resumeFile) {
-                resumeUrl = await uploadFile(resumeFile);
-            }
-
-            const updatedData = {
-                name: document.getElementById('editName').value,
-                email: currentUser.email,
-                university: document.getElementById('editUni').value,
-                major: document.getElementById('editMajorInput').value,
-                bio: document.getElementById('editBio').value,
-                linkedin: document.getElementById('editLinked').value,
-                github: document.getElementById('editGit').value,
-                profilePicture: picUrl,
-                resume: resumeUrl
-            };
-
+            if (resumeFile) resumeUrl = await uploadFile(resumeFile);
+            const updatedData = { ...currentUser, name: document.getElementById('editName').value, university: document.getElementById('editUni').value, major: document.getElementById('editMajorInput').value, bio: document.getElementById('editBio').value, linkedin: document.getElementById('editLinked').value, github: document.getElementById('editGit').value, profilePicture: picUrl, resume: resumeUrl };
             await postData('updateProfile', { data: updatedData });
-
-            currentUser = { ...currentUser, ...updatedData };
+            currentUser = updatedData;
             localStorage.setItem('studenthub_user', JSON.stringify(currentUser));
-
             closeModal('editProfile');
-            btn.textContent = 'Save';
-            btn.disabled = false;
             showApp();
         }
 
-        // --- ACTIONS ---
-        function openMyProfile() {
-            if (window.innerWidth <= 968) {
-                document.getElementById('menuAvatar').src = currentUser.profilePicture || 'default-avatar.png';
-                document.getElementById('menuName').textContent = currentUser.name;
-                document.getElementById('menuMajor').textContent = currentUser.major || 'Student';
-                openModal('userMenu');
-            } else {
-                openMyProfilePage();
-            }
-        }
-
-        function openMyProfilePage() {
-            window.location.href = `index.html?email=${currentUser.email}`;
-        }
+        function openMyProfile() { if (window.innerWidth <= 968) { document.getElementById('menuAvatar').src = currentUser.profilePicture || 'default-avatar.png'; document.getElementById('menuName').textContent = currentUser.name; openModal('userMenu'); } else openMyProfilePage(); }
+        function openMyProfilePage() { window.location.href = `index.html?email=${currentUser.email}`; }
 
         async function upvote(id, btn) {
-            if (!currentUser) return alert('Please log in to upvote.');
-
             const countSpan = btn.querySelector('span');
             let currentCount = parseInt(countSpan.textContent) || 0;
             const isLiked = btn.classList.contains('active');
-
             btn.classList.toggle('active');
             countSpan.textContent = isLiked ? currentCount - 1 : currentCount + 1;
-
-            try {
-                const res = await postData('toggleUpvote', {
-                    projectId: id,
-                    userEmail: currentUser.email
-                });
-
-                if (res.status === 'success') {
-                    countSpan.textContent = res.data.newCount;
-                    if (res.data.action === 'added') btn.classList.add('active');
-                    else btn.classList.remove('active');
-                } else {
-                    btn.classList.toggle('active');
-                    countSpan.textContent = currentCount;
-                    alert('Error upvoting: ' + res.data);
-                }
-            } catch (err) {
-                btn.classList.toggle('active');
-                countSpan.textContent = currentCount;
-                console.error(err);
+            const res = await postData('toggleUpvote', { projectId: id, userEmail: currentUser.email });
+            if (res.status === 'success') {
+                countSpan.textContent = res.data.newCount;
+                if (res.data.action === 'added') btn.classList.add('active'); else btn.classList.remove('active');
             }
         }
 
-        // --- COMMENTS ---
         async function openComments(id) {
             currentCommentProjectId = id;
-            document.getElementById('commentsModal').classList.add('active');
-            document.getElementById('commentsList').innerHTML = '<div class="loading"><div class="loading-spinner">⏳</div><p>Loading...</p></div>';
-
+            openModal('comments');
+            document.getElementById('commentsList').innerHTML = '<p>Loading...</p>';
             const res = await fetch(`${SHEET_URL}?action=getComments&projectId=${id}`);
             const json = await res.json();
-
-            if (json.data.length === 0) {
-                document.getElementById('commentsList').innerHTML = '<p style="color: var(--text-secondary); text-align: center; padding: 2rem;">No comments yet.</p>';
-                return;
-            }
-
-            document.getElementById('commentsList').innerHTML = json.data.map(c => `
-                <div class="comment-item">
-                    <div class="comment-author">${escapeHtml(c.authorName)}</div>
-                    <div class="comment-text">${escapeHtml(c.comment)}</div>
-                    <div style="font-size: 0.7rem; color: var(--text-secondary); margin-top: 0.5rem;">
-                        ${formatDate(c.timestamp)}
-                    </div>
-                </div>
-            `).join('');
+            if (json.data.length === 0) document.getElementById('commentsList').innerHTML = '<p>No comments.</p>';
+            else document.getElementById('commentsList').innerHTML = json.data.map(c => `<div class="comment-item"><div class="comment-author">${escapeHtml(c.authorName)}</div><div class="comment-text">${escapeHtml(c.comment)}</div></div>`).join('');
         }
 
         async function submitComment() {
             const txt = document.getElementById('commentInput').value.trim();
             if (!txt) return;
-
-            const data = {
-                id: Date.now().toString(),
-                projectId: currentCommentProjectId,
-                authorName: currentUser.name,
-                authorEmail: currentUser.email,
-                comment: txt
-            };
-
-            await postData('addComment', { data });
+            await postData('addComment', { data: { id: Date.now().toString(), projectId: currentCommentProjectId, authorName: currentUser.name, authorEmail: currentUser.email, comment: txt } });
             document.getElementById('commentInput').value = '';
             openComments(currentCommentProjectId);
         }
 
-        // --- UTILS ---
-        function escapeHtml(text) {
-            if (!text) return '';
-            return text.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        function escapeHtml(t) { return t ? t.replace(/</g, "&lt;").replace(/>/g, "&gt;") : ''; }
+        function formatDate(ts) {
+            const d = new Date(ts);
+            const diff = (new Date() - d) / (1000 * 60 * 60 * 24);
+            if (diff < 1) return 'Today';
+            if (diff < 2) return 'Yesterday';
+            return d.toLocaleDateString();
+        }
+        function closeModal(id) { document.getElementById(id + 'Modal').classList.remove('active'); }
+        function openModal(id) { document.getElementById(id + 'Modal').classList.add('active'); }
+        async function postData(a, p) { return fetch(SHEET_URL, { method: 'POST', body: JSON.stringify({ action: a, ...p }) }).then(r => r.json()); }
+        async function uploadImage(f) {
+            const fd = new FormData(); fd.append('file', f); fd.append('upload_preset', CLOUDINARY_PRESET);
+            return fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_NAME}/image/upload`, { method: 'POST', body: fd }).then(r => r.json()).then(d => d.secure_url);
+        }
+        async function uploadFile(f) {
+            const fd = new FormData(); fd.append('file', f); fd.append('upload_preset', CLOUDINARY_PRESET);
+            return fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_NAME}/auto/upload`, { method: 'POST', body: fd }).then(r => r.json()).then(d => d.secure_url);
         }
 
-        function formatDate(timestamp) {
-            const date = new Date(timestamp);
-            const now = new Date();
-            const diff = now - date;
-            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-
-            if (days === 0) return 'Today';
-            if (days === 1) return 'Yesterday';
-            if (days < 7) return `${days}d ago`;
-            return date.toLocaleDateString();
-        }
-
-        function closeModal(id) {
-            document.getElementById(id + 'Modal').classList.remove('active');
-        }
-
-        function openModal(id) {
-            document.getElementById(id + 'Modal').classList.add('active');
-        }
-
-        async function postData(action, payload) {
-            return fetch(SHEET_URL, {
-                method: 'POST',
-                body: JSON.stringify({ action, ...payload })
-            }).then(r => r.json());
-        }
-
-        async function uploadImage(file) {
-            const formData = new FormData();
-            formData.append('file', file);
-            formData.append('upload_preset', CLOUDINARY_PRESET);
-            const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_NAME}/image/upload`, { method: 'POST', body: formData });
-            const data = await res.json();
-            return data.secure_url;
-        }
-
-        async function uploadFile(file) {
-            const formData = new FormData();
-            formData.append('file', file);
-            formData.append('upload_preset', CLOUDINARY_PRESET);
-
-            try {
-                const response = await fetch(
-                    `https://api.cloudinary.com/v1_1/${CLOUDINARY_NAME}/auto/upload`,
-                    { method: 'POST', body: formData }
-                );
-
-                if (!response.ok) {
-                    const err = await response.json();
-                    throw new Error(err.error?.message || 'Cloudinary upload failed');
-                }
-
-                const data = await response.json();
-                return data.secure_url;
-
-            } catch (err) {
-                console.error('Upload Error:', err);
-                return null;
-            }
-        }
-
-        // ===== SHARE FUNCTIONALITY =====
-        let currentShareProjectId = null;
-        let currentShareProjectTitle = null;
-
-        function shareProject(projectId, projectTitle) {
-            currentShareProjectId = projectId;
-            currentShareProjectTitle = projectTitle;
-
-            const path = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
-            const baseUrl = window.location.origin + path;
-
-            const shareLink = `${baseUrl}project.html?id=${projectId}`;
+        function shareProject(id, title) {
+            currentShareProjectId = id; currentShareProjectTitle = title;
+            const shareLink = `${window.location.origin}${window.location.pathname.replace('feed.html', 'project.html')}?id=${id}`;
             document.getElementById('shareProjectLink').value = shareLink;
-
             openModal('shareProject');
         }
-
         function copyShareLink() {
             const input = document.getElementById('shareProjectLink');
-            input.select();
-            input.setSelectionRange(0, 99999);
-
-            try {
-                document.execCommand('copy');
-
-                const btn = document.getElementById('copyShareBtn');
-                const originalText = btn.innerHTML;
-                btn.innerHTML = '✓ Copied!';
-                btn.style.background = 'var(--success)';
-
-                setTimeout(() => {
-                    btn.innerHTML = originalText;
-                    btn.style.background = '';
-                }, 2000);
-            } catch (err) {
-                alert('Failed to copy. Please copy the link manually.');
-            }
+            input.select(); document.execCommand('copy');
+            const btn = document.getElementById('copyShareBtn');
+            btn.textContent = '✓ Copied!'; setTimeout(() => btn.textContent = '📋 Copy', 2000);
         }
-
-        function shareViaEmail() {
-            const shareLink = document.getElementById('shareProjectLink').value;
-            const subject = encodeURIComponent(`Check out this project: ${currentShareProjectTitle}`);
-            const body = encodeURIComponent(`I found this interesting project on NIELIT StudentHub:\n\n${currentShareProjectTitle}\n\nView it here: ${shareLink}`);
-            window.open(`mailto:?subject=${subject}&body=${body}`);
-        }
-
-        function shareViaWhatsApp() {
-            const shareLink = document.getElementById('shareProjectLink').value;
-            const text = encodeURIComponent(`Check out this project on NIELIT StudentHub: ${currentShareProjectTitle}\n\n${shareLink}`);
-
-            if (/Android|webOS|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-                window.open(`whatsapp://send?text=${text}`);
-            } else {
-                window.open(`https://web.whatsapp.com/send?text=${text}`, '_blank');
-            }
-        }
-
-        function shareViaTwitter() {
-            const shareLink = document.getElementById('shareProjectLink').value;
-            const text = encodeURIComponent(`Check out this project: ${currentShareProjectTitle}`);
-            const url = encodeURIComponent(shareLink);
-            window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank', 'width=550,height=420');
-        }
-
-        function shareViaLinkedIn() {
-            const shareLink = document.getElementById('shareProjectLink').value;
-            const url = encodeURIComponent(shareLink);
-            window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${url}`, '_blank', 'width=550,height=420');
-        }
+        function shareViaEmail() { window.open(`mailto:?subject=Project&body=${encodeURIComponent(document.getElementById('shareProjectLink').value)}`); }
+        function shareViaWhatsApp() { window.open(`whatsapp://send?text=${encodeURIComponent(document.getElementById('shareProjectLink').value)}`); }
+        function shareViaTwitter() { window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(document.getElementById('shareProjectLink').value)}`); }
+        function shareViaLinkedIn() { window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(document.getElementById('shareProjectLink').value)}`); }
     </script>
 </body>
 
