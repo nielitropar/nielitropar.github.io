@@ -102,6 +102,19 @@
 - **Database Cache** (TrendingCache sheet) for rankings
 - Search index cached for 6 hours
 
+### 🔍 Discovery & Search (v1.5)
+- ✅ **Client-side instant search** (0ms) (NEW)
+- ✅ **Fuzzy matching with Fuse.js** (NEW)
+- ✅ **Real-time directory updates** (smart cache clearing)
+- ✅ **Instant cache refresh on new signup** (immediate visibility)
+- ✅ **Newest-first profile sorting** (freshness priority)
+- ✅ Server-side pagination (20/page)
+- ✅ Real-time filter by category
+- ✅ **Smart trending algorithm** (NEW)
+- ✅ **Time-decay scoring** (NEW)
+- ✅ **Background worker pattern** (NEW)
+- ✅ Load more (infinite scroll alternative)
+
 </td>
 <td width="50%">
 
