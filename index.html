@@ -1730,9 +1730,7 @@
                 // 4. Send Request (Matches the API Doc you pasted: /chat_with_bot)
                 const result = await gradioClient.predict("/chat_with_bot", [message, []]);
 
-                // 4. Send Request
-                // We send [message, []] because the python function expects (message, history)
-                const result = await gradioClient.predict("/chat_with_bot", [message, []]);
+                
                 
                 // 5. Remove Typing Indicator
                 const indicator = document.getElementById(typingId);
