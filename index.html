@@ -1719,7 +1719,7 @@
                 // 3. Connect to Client
                 if (!gradioClient) {
                     const { Client } = await import("https://cdn.jsdelivr.net/npm/@gradio/client/+esm");
-                    gradioClient = await Client.connect("LovnishVerma/studenthubbot");
+                    gradioClient = await Client.connect("https://lovnishverma-studenthubbot.hf.space/");
                 }
 
                 // 4. Send Request
