@@ -1718,12 +1718,17 @@
             try {
                 // 3. Connect to Client
                 if (!gradioClient) {
-    const { Client } = await import("https://cdn.jsdelivr.net/npm/@gradio/client/+esm");
-    // Force direct URL connection
-    gradioClient = await Client.connect("https://lovnishverma-studenthubbot.hf.space/", {
-        hf_token: null // Explicitly tell it we don't need a token
-    });
-}
+                    const { Client } = await import("https://cdn.jsdelivr.net/npm/@gradio/client/+esm");
+                    
+                    // FIX: Connect to the PERMANENT URL, not the repo name.
+                    // We add a timestamp (?v=...) to force the browser to ignore the dead "58nt7" cache.
+                    gradioClient = await Client.connect("https://lovnishverma-studenthubbot.hf.space/?v=" + Date.now(), {
+                        hf_token: null // This ensures it treats the space as Public
+                    });
+                }
+
+                // 4. Send Request (Matches the API Doc you pasted: /chat_with_bot)
+                const result = await gradioClient.predict("/chat_with_bot", [message, []]);
 
                 // 4. Send Request
                 // We send [message, []] because the python function expects (message, history)
