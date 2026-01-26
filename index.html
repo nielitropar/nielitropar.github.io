@@ -2,1803 +2,1626 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="description"
-        content="The official portfolio and project showcase platform for NIELIT Ropar students. Connect with peers, share innovative projects, and build your professional digital portfolio.">
-    <meta name="keywords"
-        content="NIELIT Ropar, StudentHub, Student Portfolio, Project Showcase, NIELIT Projects, Engineering Students, Coding Projects, Web Development, NIELIT ROPAR, Student Projects Directory">
-    <meta name="author" content="NIELIT ROPAR">
-    <meta name="robots" content="index, follow">
-    <meta name="theme-color" content="#003366">
-
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://nielitropar.github.io/">
-    <meta property="og:title" content="NIELIT StudentHub - Connect, Create, Inspire">
-    <meta property="og:description"
-        content="Join the community of NIELIT Ropar students. Showcase your projects, build your portfolio, and discover talent across campus.">
-    <meta property="og:image" content="https://nielitropar.github.io/logo.png">
-
-    <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="https://nielitropar.github.io/">
-    <meta property="twitter:title" content="NIELIT StudentHub - Student Portfolio Platform">
-    <meta property="twitter:description"
-        content="The dedicated platform for NIELIT Ropar students to showcase their work and connect with peers.">
-    <meta property="twitter:image" content="https://nielitropar.github.io/logo.png">
-    <title>NIELIT StudentHub - Home</title>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@600;700&display=swap"
-        rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
-    <link rel="icon" type="image/x-icon" href="logo.png">
-    <style>
-        :root {
-            --primary: #003366;
-            --secondary: #FF6B35;
-            --accent: #0066CC;
-            --background: #F5F7FA;
-            --card-bg: #FFFFFF;
-            --text-primary: #1A1A1A;
-            --text-secondary: #6B7280;
-            --border: #E5E7EB;
-            --success: #10B981;
-            --accent-hover: #0052a3;
-            --gradient-primary: linear-gradient(135deg, #003366 0%, #0066CC 100%);
-            --shadow-sm: 0 2px 8px rgba(0, 51, 102, 0.08);
-            --shadow-md: 0 4px 16px rgba(0, 51, 102, 0.12);
-            --shadow-lg: 0 10px 40px rgba(0, 51, 102, 0.15);
-            --gradient-1: linear-gradient(135deg, #ffb199 0%, #ff9966 100%);
-            --gradient-2: linear-gradient(135deg, #ffe0c3 0%, #ffcc99 100%);
-            --gradient-3: linear-gradient(135deg, #f0932b 0%, #f6b93b 100%);
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background: var(--background);
-            color: var(--text-primary);
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
-
-        nav.desktop-nav {
-            background: rgba(255, 255, 255, 0.85);
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-            padding: 1rem 2rem;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(226, 232, 240, 0.6);
-        }
-
-        .nav-container {
-            max-width: 1280px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--primary);
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 0.7rem;
-            transition: transform 0.2s;
-        }
-
-        .logo:hover {
-            transform: scale(1.02);
-        }
-
-        .nav-link {
-            margin-left: 2rem;
-            text-decoration: none;
-            color: var(--text-secondary);
-            font-weight: 500;
-            transition: all 0.2s;
-            font-size: 0.95rem;
-            position: relative;
-        }
-
-        .nav-link::after {
-            content: '';
-            position: absolute;
-            bottom: -5px;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: var(--accent);
-            transition: width 0.3s;
-        }
-
-        .nav-link:hover {
-            color: var(--accent);
-        }
-
-        .nav-link:hover::after {
-            width: 100%;
-        }
-
-        .nav-link.active {
-            color: var(--accent);
-            font-weight: 600;
-        }
-
-        .nav-link.active::after {
-            width: 100%;
-        }
-
-        .hero-section {
-            text-align: center;
-            padding: 6rem 2rem;
-            background: linear-gradient(135deg, #003366 0%, #ff9966 100%);
-            border-radius: 0;
-            color: white;
-            margin-bottom: 4rem;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .hero-section::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
-            animation: pulse 8s ease-in-out infinite;
-        }
-
-        @keyframes pulse {
-
-            0%,
-            100% {
-                opacity: 1;
-            }
-
-            50% {
-                opacity: 0.8;
-            }
-        }
-
-        .hero-bg-icon {
-            position: absolute;
-            opacity: 0.08;
-            pointer-events: none;
-            font-size: 15rem;
-            animation: float 8s ease-in-out infinite;
-        }
-
-        .bg-1 {
-            top: -50px;
-            right: -50px;
-            animation-delay: 0s;
-        }
-
-        .bg-2 {
-            bottom: -80px;
-            left: -80px;
-            animation-delay: 2s;
-        }
-
-        .bg-3 {
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 20rem;
-            animation-delay: 4s;
-            opacity: 0.04;
-        }
-
-        @keyframes float {
-
-            0%,
-            100% {
-                transform: translateY(0px) rotate(0deg);
-            }
-
-            33% {
-                transform: translateY(-20px) rotate(5deg);
-            }
-
-            66% {
-                transform: translateY(10px) rotate(-5deg);
-            }
-        }
-
-        .hero-title {
-            font-size: 3.8rem;
-            font-weight: 900;
-            margin-bottom: 1.5rem;
-            font-family: 'Space Grotesk', sans-serif;
-            line-height: 1.1;
-            position: relative;
-            z-index: 1;
-            letter-spacing: -0.02em;
-        }
-
-        .hero-subtitle {
-            font-size: 1.3rem;
-            color: rgba(255, 255, 255, 0.95);
-            max-width: 700px;
-            margin: 0 auto 3rem auto;
-            line-height: 1.7;
-            font-weight: 400;
-            position: relative;
-            z-index: 1;
-        }
-
-        .stats-container {
-            display: flex;
-            justify-content: center;
-            gap: 2.5rem;
-            flex-wrap: wrap;
-            margin-top: 3rem;
-            position: relative;
-            z-index: 2;
-        }
-
-        .stat-item {
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(10px);
-            padding: 2rem 3.5rem;
-            border-radius: 24px;
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            min-width: 200px;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
-        }
-
-        .stat-item:hover {
-            transform: translateY(-8px) scale(1.02);
-            background: rgba(255, 255, 255, 0.25);
-            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.2);
-        }
-
-        .stat-number {
-            font-size: 3.5rem;
-            font-weight: 800;
-            display: block;
-            line-height: 1;
-            margin-bottom: 0.8rem;
-            background: linear-gradient(135deg, #fff 0%, #e0e7ff 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            font-family: 'Space Grotesk', sans-serif;
-        }
-
-        .stat-label {
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            color: rgba(255, 255, 255, 0.9);
-            font-weight: 600;
-        }
-
-        /* TRENDING SECTION STYLES */
-        .trending-wrapper {
-            max-width: 1280px;
-            margin: -3rem auto 3rem auto;
-            padding: 0 2rem;
-            position: relative;
-            z-index: 10;
-        }
-
-        .trending-header {
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-            margin-bottom: 1rem;
-            color: var(--primary);
-        }
-
-        .trending-header h3 {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 1.4rem;
-            font-weight: 700;
-        }
-
-        .trending-list {
-            display: flex;
-            gap: 1.5rem;
-            overflow-x: auto;
-            padding: 1rem 0.5rem 2rem 0.5rem;
-            scroll-behavior: smooth;
-            -webkit-overflow-scrolling: touch;
-            scrollbar-width: none;
-        }
-
-        .trending-list::-webkit-scrollbar {
-            display: none;
-        }
-
-        .trending-card {
-            min-width: 280px;
-            max-width: 280px;
-            background: white;
-            border-radius: 16px;
-            padding: 1.2rem;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-            border: 1px solid rgba(0, 0, 0, 0.05);
-            transition: transform 0.3s;
-            cursor: pointer;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .trending-card:hover {
-            transform: translateY(-5px);
-        }
-
-        .trend-rank {
-            font-size: 3rem;
-            font-weight: 900;
-            color: #e2e8f0;
-            line-height: 1;
-            position: absolute;
-            top: 10px;
-            right: 15px;
-            font-family: 'Space Grotesk', sans-serif;
-            pointer-events: none;
-        }
-
-        .trend-title {
-            font-weight: 700;
-            font-size: 1.1rem;
-            color: var(--primary);
-            margin-bottom: 0.5rem;
-            padding-right: 2rem;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-
-        .trend-stats {
-            display: flex;
-            gap: 10px;
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-            margin-top: auto;
-            padding-top: 1rem;
-            border-top: 1px solid var(--border);
-        }
-
-        .trend-author {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 0.8rem;
-            color: var(--text-secondary);
-            margin-bottom: 0.8rem;
-        }
-
-        .trend-author img {
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            object-fit: cover;
-        }
-
-        /* END TRENDING STYLES */
-
-        .container {
-            max-width: 1280px;
-            margin: 0 auto;
-            padding: 0 2rem;
-            flex: 1;
-            width: 100%;
-        }
-
-        .controls-wrapper {
-            margin-bottom: 3rem;
-        }
-
-        .section-header {
-            text-align: center;
-            margin-bottom: 2.5rem;
-        }
-
-        .section-title {
-            font-size: 2.5rem;
-            font-weight: 800;
-            color: var(--primary);
-            margin-bottom: 0.8rem;
-            font-family: 'Space Grotesk', sans-serif;
-            letter-spacing: -0.02em;
-        }
-
-        .section-subtitle {
-            font-size: 1.1rem;
-            color: var(--text-secondary);
-            font-weight: 400;
-        }
-
-        .search-wrapper {
-            position: relative;
-            margin-bottom: 2rem;
-            max-width: 650px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        .search-input {
-            width: 100%;
-            padding: 1.4rem 1.8rem 1.4rem 4rem;
-            border-radius: 16px;
-            border: 2px solid var(--border);
-            font-size: 1rem;
-            outline: none;
-            transition: all 0.3s;
-            background: white;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-            font-family: 'Inter', sans-serif;
-        }
-
-        .search-input:focus {
-            border-color: var(--accent);
-            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1), 0 4px 12px rgba(0, 0, 0, 0.08);
-            transform: translateY(-1px);
-        }
-
-        .search-icon {
-            position: absolute;
-            left: 1.6rem;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 1.3rem;
-            opacity: 0.5;
-        }
-
-        .filter-container {
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-            flex-wrap: wrap;
-        }
-
-        .filter-chip {
-            background: white;
-            border: 2px solid var(--border);
-            padding: 0.8rem 1.8rem;
-            border-radius: 12px;
-            font-size: 0.95rem;
-            font-weight: 600;
-            color: var(--text-secondary);
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
-        }
-
-        .filter-chip:hover {
-            border-color: var(--accent);
-            color: var(--accent);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(99, 102, 241, 0.15);
-        }
-
-        .filter-chip.active {
-            background: var(--accent);
-            color: white;
-            border-color: var(--accent);
-            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
-        }
-
-        .profiles-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 2rem;
-        }
-
-        .profile-card {
-            background: var(--card-bg);
-            padding: 2.5rem 1.8rem;
-            border-radius: 20px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            border: 2px solid transparent;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-        }
-
-        .profile-card:hover {
-            transform: translateY(-12px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
-            border-color: var(--accent);
-        }
-
-        .profile-pic {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            object-fit: cover;
-            margin: 0 auto 1.5rem auto;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border: 4px solid white;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
-            transition: transform 0.4s;
-        }
-
-        .profile-card:hover .profile-pic {
-            transform: scale(1.08);
-        }
-
-        .card-name {
-            font-size: 1.4rem;
-            font-weight: 700;
-            color: var(--primary);
-            margin-bottom: 0.5rem;
-            font-family: 'Space Grotesk', sans-serif;
-        }
-
-        .card-major {
-            font-size: 0.95rem;
-            color: var(--text-secondary);
-            font-weight: 500;
-            margin-bottom: 0.4rem;
-        }
-
-        .card-uni {
-            font-size: 0.85rem;
-            color: var(--accent);
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .btn-primary {
-            background: var(--accent);
-            color: white;
-            border: none;
-            padding: 0.9rem 2.2rem;
-            border-radius: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.6rem;
-            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
-            font-size: 0.95rem;
-        }
-
-        .btn-primary:hover {
-            background: var(--accent-hover);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(99, 102, 241, 0.4);
-        }
-
-        .portfolio-header {
-            background: white;
-            padding: 4rem 2rem;
-            border-radius: 24px;
-            text-align: center;
-            margin-bottom: 3rem;
-            border: 2px solid var(--border);
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
-        }
-
-        .big-avatar {
-            width: 180px;
-            height: 180px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 6px solid white;
-            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
-            margin-bottom: 2rem;
-            background: var(--gradient-1);
-        }
-
-        .social-link {
-            display: inline-block;
-            padding: 0.7rem 1.5rem;
-            background: var(--background);
-            border: 2px solid var(--border);
-            border-radius: 10px;
-            text-decoration: none;
-            color: var(--text-primary);
-            font-weight: 600;
-            font-size: 0.9rem;
-            transition: all 0.3s;
-        }
-
-        .social-link:hover {
-            background: var(--accent);
-            color: white;
-            border-color: var(--accent);
-            transform: translateY(-2px);
-        }
-
-        .project-item {
-            background: white;
-            padding: 2.5rem;
-            border-radius: 20px;
-            margin-bottom: 2rem;
-            border: 2px solid var(--border);
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-            transition: all 0.3s;
-        }
-
-        .project-item:hover {
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
-            transform: translateY(-4px);
-        }
-
-        .project-img {
-            width: 100%;
-            height: 300px;
-            object-fit: cover;
-            border-radius: 16px;
-            margin: 1.5rem 0;
-            border: 2px solid var(--border);
-        }
-
-        .action-btn {
-            background: var(--background);
-            border: 2px solid var(--border);
-            padding: 0.7rem 1.3rem;
-            border-radius: 10px;
-            font-size: 0.95rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            color: var(--text-secondary);
-        }
-
-        .action-btn:hover {
-            background: var(--accent);
-            color: white;
-            border-color: var(--accent);
-            transform: translateY(-2px);
-        }
-
-        .action-btn.active {
-            color: var(--accent) !important;
-            background: rgba(0, 102, 204, 0.1);
-            border-color: var(--accent);
-        }
-
-        .site-footer {
-            background: var(--primary);
-            color: white;
-            padding: 3rem 2rem;
-            text-align: center;
-            margin-top: 5rem;
-        }
-
-        .app-download-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.8rem;
-            background: white;
-            color: var(--primary);
-            padding: 1rem 2rem;
-            border-radius: 12px;
-            text-decoration: none;
-            font-weight: 600;
-            margin-top: 1.5rem;
-            transition: all 0.3s;
-        }
-
-        .app-download-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(255, 255, 255, 0.2);
-        }
-
-        .mobile-bottom-nav {
-            display: none;
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            background: white;
-            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
-            justify-content: space-around;
-            padding: 1rem;
-            padding-bottom: calc(1rem + env(safe-area-inset-bottom));
-            z-index: 1000;
-            border-top: 2px solid var(--border);
-        }
-
-        .mobile-nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-decoration: none;
-            color: var(--text-secondary);
-            font-size: 0.75rem;
-            font-weight: 600;
-            transition: all 0.2s;
-            gap: 0.3rem;
-        }
-
-        .mobile-nav-item.active {
-            color: var(--accent);
-        }
-
-        .mobile-nav-icon {
-            font-size: 1.5rem;
-        }
-
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(15, 23, 42, 0.8);
-            z-index: 3000;
-            align-items: center;
-            justify-content: center;
-            backdrop-filter: blur(8px);
-            padding: 1rem;
-        }
-
-        .modal.active {
-            display: flex;
-        }
-
-        .modal-content {
-            background: white;
-            padding: 2.5rem;
-            border-radius: 24px;
-            width: 100%;
-            max-width: 550px;
-            max-height: 90vh;
-            overflow-y: auto;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
-            animation: slideUp 0.3s ease;
-        }
-
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
-            padding-bottom: 1rem;
-            border-bottom: 2px solid var(--border);
-        }
-
-        .modal-close {
-            background: var(--background);
-            border: none;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: var(--text-secondary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s;
-        }
-
-        .modal-close:hover {
-            background: var(--accent);
-            color: white;
-            transform: rotate(90deg);
-        }
-
-        .hidden {
-            display: none !important;
-        }
-
-        .loader {
-            border: 4px solid var(--border);
-            border-top: 4px solid var(--accent);
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 1rem auto;
-        }
-
-        .profile-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: var(--gradient-1);
-            transform: scaleX(0);
-            transition: transform 0.4s;
-        }
-
-        .profile-card:nth-child(3n)::before {
-            background: var(--gradient-1);
-        }
-
-        .profile-card:nth-child(3n+1)::before {
-            background: var(--gradient-2);
-        }
-
-        .profile-card:nth-child(3n+2)::before {
-            background: var(--gradient-3);
-        }
-
-        .profile-card:hover::before {
-            transform: scaleX(1);
-        }
-
-        @keyframes spin {
-            0% {
-                transform: rotate(0deg);
-            }
-
-            100% {
-                transform: rotate(360deg);
-            }
-        }
-
-        @media (max-width: 768px) {
-            .hero-section {
-                padding: 4rem 1.5rem;
-                border-radius: 0;
-                margin: 0 0 3rem 0;
-            }
-
-            .hero-title {
-                font-size: 2.5rem;
-            }
-
-            .hero-subtitle {
-                font-size: 1.1rem;
-            }
-
-            .stats-container {
-                gap: 1rem;
-            }
-
-            .stat-item {
-                flex: 1;
-                min-width: 140px;
-                padding: 1.5rem 2rem;
-            }
-
-            .stat-number {
-                font-size: 2.5rem;
-            }
-
-            .mobile-bottom-nav {
-                display: flex;
-            }
-
-            .desktop-nav {
-                display: none;
-            }
-
-            .filter-container {
-                justify-content: flex-start;
-                overflow-x: auto;
-                padding-bottom: 10px;
-                flex-wrap: nowrap;
-                -webkit-overflow-scrolling: touch;
-            }
-
-            .container {
-                padding: 0 1rem;
-            }
-
-            .site-footer {
-                padding-bottom: 100px;
-            }
-
-            .section-title {
-                font-size: 2rem;
-            }
-
-            .profiles-grid {
-                grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-            }
-
-            /* Ensure trending is visible on mobile */
-            .trending-wrapper {
-                margin-top: -2rem;
-            }
-
-            .trending-list {
-                padding-bottom: 1rem;
-            }
-        }
-
-        /* Typing Indicator Animation */
-        .typing {
-            display: flex;
-            gap: 4px;
-            padding: 12px !important;
-        }
-
-        .dot {
-            width: 6px;
-            height: 6px;
-            background: var(--text-secondary);
-            border-radius: 50%;
-            animation: bounce 1.4s infinite ease-in-out;
-        }
-
-        .dot:nth-child(2) {
-            animation-delay: 0.2s;
-        }
-
-        .dot:nth-child(3) {
-            animation-delay: 0.4s;
-        }
-
-        @keyframes bounce {
-
-            0%,
-            80%,
-            100% {
-                transform: translateY(0);
-            }
-
-            40% {
-                transform: translateY(-6px);
-            }
-        }
-    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description"
+        content="The official portfolio and project showcase platform for NIELIT Ropar students. Connect with peers, share innovative projects, and build your professional digital portfolio.">
+    <meta name="keywords"
+        content="NIELIT Ropar, StudentHub, Student Portfolio, Project Showcase, NIELIT Projects, Engineering Students, Coding Projects, Web Development, NIELIT ROPAR, Student Projects Directory">
+    <meta name="author" content="NIELIT ROPAR">
+    <meta name="robots" content="index, follow">
+    <meta name="theme-color" content="#003366">
+
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://nielitropar.github.io/">
+    <meta property="og:title" content="NIELIT StudentHub - Connect, Create, Inspire">
+    <meta property="og:description"
+        content="Join the community of NIELIT Ropar students. Showcase your projects, build your portfolio, and discover talent across campus.">
+    <meta property="og:image" content="https://nielitropar.github.io/logo.png">
+
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://nielitropar.github.io/">
+    <meta property="twitter:title" content="NIELIT StudentHub - Student Portfolio Platform">
+    <meta property="twitter:description"
+        content="The dedicated platform for NIELIT Ropar students to showcase their work and connect with peers.">
+    <meta property="twitter:image" content="https://nielitropar.github.io/logo.png">
+    <title>NIELIT StudentHub - Home</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@600;700&display=swap"
+        rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
+    <link rel="icon" type="image/x-icon" href="logo.png">
+    <style>
+        :root {
+            --primary: #003366;
+            --secondary: #FF6B35;
+            --accent: #0066CC;
+            --background: #F5F7FA;
+            --card-bg: #FFFFFF;
+            --text-primary: #1A1A1A;
+            --text-secondary: #6B7280;
+            --border: #E5E7EB;
+            --success: #10B981;
+            --accent-hover: #0052a3;
+            --gradient-primary: linear-gradient(135deg, #003366 0%, #0066CC 100%);
+            --shadow-sm: 0 2px 8px rgba(0, 51, 102, 0.08);
+            --shadow-md: 0 4px 16px rgba(0, 51, 102, 0.12);
+            --shadow-lg: 0 10px 40px rgba(0, 51, 102, 0.15);
+            --gradient-1: linear-gradient(135deg, #ffb199 0%, #ff9966 100%);
+            --gradient-2: linear-gradient(135deg, #ffe0c3 0%, #ffcc99 100%);
+            --gradient-3: linear-gradient(135deg, #f0932b 0%, #f6b93b 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--background);
+            color: var(--text-primary);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        nav.desktop-nav {
+            background: rgba(255, 255, 255, 0.85);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(226, 232, 240, 0.6);
+        }
+
+        .nav-container {
+            max-width: 1280px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+            transition: transform 0.2s;
+        }
+
+        .logo:hover {
+            transform: scale(1.02);
+        }
+
+        .nav-link {
+            margin-left: 2rem;
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-weight: 500;
+            transition: all 0.2s;
+            font-size: 0.95rem;
+            position: relative;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--accent);
+            transition: width 0.3s;
+        }
+
+        .nav-link:hover {
+            color: var(--accent);
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        .nav-link.active {
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        .nav-link.active::after {
+            width: 100%;
+        }
+
+        .hero-section {
+            text-align: center;
+            padding: 6rem 2rem;
+            background: linear-gradient(135deg, #003366 0%, #ff9966 100%);
+            border-radius: 0;
+            color: white;
+            margin-bottom: 4rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+            animation: pulse 8s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.8;
+            }
+        }
+
+        .hero-bg-icon {
+            position: absolute;
+            opacity: 0.08;
+            pointer-events: none;
+            font-size: 15rem;
+            animation: float 8s ease-in-out infinite;
+        }
+
+        .bg-1 {
+            top: -50px;
+            right: -50px;
+            animation-delay: 0s;
+        }
+
+        .bg-2 {
+            bottom: -80px;
+            left: -80px;
+            animation-delay: 2s;
+        }
+
+        .bg-3 {
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 20rem;
+            animation-delay: 4s;
+            opacity: 0.04;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0px) rotate(0deg);
+            }
+
+            33% {
+                transform: translateY(-20px) rotate(5deg);
+            }
+
+            66% {
+                transform: translateY(10px) rotate(-5deg);
+            }
+        }
+
+        .hero-title {
+            font-size: 3.8rem;
+            font-weight: 900;
+            margin-bottom: 1.5rem;
+            font-family: 'Space Grotesk', sans-serif;
+            line-height: 1.1;
+            position: relative;
+            z-index: 1;
+            letter-spacing: -0.02em;
+        }
+
+        .hero-subtitle {
+            font-size: 1.3rem;
+            color: rgba(255, 255, 255, 0.95);
+            max-width: 700px;
+            margin: 0 auto 3rem auto;
+            line-height: 1.7;
+            font-weight: 400;
+            position: relative;
+            z-index: 1;
+        }
+
+        .stats-container {
+            display: flex;
+            justify-content: center;
+            gap: 2.5rem;
+            flex-wrap: wrap;
+            margin-top: 3rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .stat-item {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            padding: 2rem 3.5rem;
+            border-radius: 24px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            min-width: 200px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .stat-item:hover {
+            transform: translateY(-8px) scale(1.02);
+            background: rgba(255, 255, 255, 0.25);
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.2);
+        }
+
+        .stat-number {
+            font-size: 3.5rem;
+            font-weight: 800;
+            display: block;
+            line-height: 1;
+            margin-bottom: 0.8rem;
+            background: linear-gradient(135deg, #fff 0%, #e0e7ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 600;
+        }
+
+        /* TRENDING SECTION STYLES - [NEW] */
+        .trending-wrapper {
+            max-width: 1280px;
+            margin: -3rem auto 3rem auto;
+            padding: 0 2rem;
+            position: relative;
+            z-index: 10;
+        }
+
+        .trending-header {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+
+        .trending-header h3 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 700;
+        }
+
+        .trending-list {
+            display: flex;
+            gap: 1.5rem;
+            overflow-x: auto;
+            padding: 1rem 0.5rem 2rem 0.5rem;
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+
+        .trending-list::-webkit-scrollbar {
+            display: none;
+        }
+
+        .trending-card {
+            min-width: 280px;
+            max-width: 280px;
+            background: white;
+            border-radius: 16px;
+            padding: 1.2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .trending-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .trend-rank {
+            font-size: 3rem;
+            font-weight: 900;
+            color: #e2e8f0;
+            line-height: 1;
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-family: 'Space Grotesk', sans-serif;
+            pointer-events: none;
+        }
+
+        .trend-title {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+            padding-right: 2rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .trend-stats {
+            display: flex;
+            gap: 10px;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: auto;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .trend-author {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.8rem;
+        }
+
+        .trend-author img {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        /* END TRENDING STYLES */
+
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            flex: 1;
+            width: 100%;
+        }
+
+        .controls-wrapper {
+            margin-bottom: 3rem;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 0.8rem;
+            font-family: 'Space Grotesk', sans-serif;
+            letter-spacing: -0.02em;
+        }
+
+        .section-subtitle {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            font-weight: 400;
+        }
+
+        .search-wrapper {
+            position: relative;
+            margin-bottom: 2rem;
+            max-width: 650px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 1.4rem 1.8rem 1.4rem 4rem;
+            border-radius: 16px;
+            border: 2px solid var(--border);
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s;
+            background: white;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            font-family: 'Inter', sans-serif;
+        }
+
+        .search-input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1), 0 4px 12px rgba(0, 0, 0, 0.08);
+            transform: translateY(-1px);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 1.6rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.3rem;
+            opacity: 0.5;
+        }
+
+        .filter-container {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-chip {
+            background: white;
+            border: 2px solid var(--border);
+            padding: 0.8rem 1.8rem;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+        }
+
+        .filter-chip:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(99, 102, 241, 0.15);
+        }
+
+        .filter-chip.active {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+
+        .profiles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .profile-card {
+            background: var(--card-bg);
+            padding: 2.5rem 1.8rem;
+            border-radius: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        }
+
+        .profile-card:hover {
+            transform: translateY(-12px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+            border-color: var(--accent);
+        }
+
+        .profile-pic {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin: 0 auto 1.5rem auto;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: 4px solid white;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+            transition: transform 0.4s;
+        }
+
+        .profile-card:hover .profile-pic {
+            transform: scale(1.08);
+        }
+
+        .card-name {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        .card-major {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+            margin-bottom: 0.4rem;
+        }
+
+        .card-uni {
+            font-size: 0.85rem;
+            color: var(--accent);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 0.9rem 2.2rem;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+            font-size: 0.95rem;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(99, 102, 241, 0.4);
+        }
+
+        .portfolio-header {
+            background: white;
+            padding: 4rem 2rem;
+            border-radius: 24px;
+            text-align: center;
+            margin-bottom: 3rem;
+            border: 2px solid var(--border);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+        }
+
+        .big-avatar {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 6px solid white;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+            margin-bottom: 2rem;
+            background: var(--gradient-1);
+        }
+
+        .social-link {
+            display: inline-block;
+            padding: 0.7rem 1.5rem;
+            background: var(--background);
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            text-decoration: none;
+            color: var(--text-primary);
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+
+        .social-link:hover {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+            transform: translateY(-2px);
+        }
+
+        .project-item {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 20px;
+            margin-bottom: 2rem;
+            border: 2px solid var(--border);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            transition: all 0.3s;
+        }
+
+        .project-item:hover {
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+            transform: translateY(-4px);
+        }
+
+        .project-img {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            border-radius: 16px;
+            margin: 1.5rem 0;
+            border: 2px solid var(--border);
+        }
+
+        .action-btn {
+            background: var(--background);
+            border: 2px solid var(--border);
+            padding: 0.7rem 1.3rem;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: var(--text-secondary);
+        }
+
+        .action-btn:hover {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+            transform: translateY(-2px);
+        }
+
+        .action-btn.active {
+            color: var(--accent) !important;
+            background: rgba(0, 102, 204, 0.1);
+            border-color: var(--accent);
+        }
+
+        .site-footer {
+            background: var(--primary);
+            color: white;
+            padding: 3rem 2rem;
+            text-align: center;
+            margin-top: 5rem;
+        }
+
+        .app-download-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.8rem;
+            background: white;
+            color: var(--primary);
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 1.5rem;
+            transition: all 0.3s;
+        }
+
+        .app-download-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(255, 255, 255, 0.2);
+        }
+
+        .mobile-bottom-nav {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: white;
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
+            justify-content: space-around;
+            padding: 1rem;
+            padding-bottom: calc(1rem + env(safe-area-inset-bottom));
+            z-index: 1000;
+            border-top: 2px solid var(--border);
+        }
+
+        .mobile-nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+            font-weight: 600;
+            transition: all 0.2s;
+            gap: 0.3rem;
+        }
+
+        .mobile-nav-item.active {
+            color: var(--accent);
+        }
+
+        .mobile-nav-icon {
+            font-size: 1.5rem;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.8);
+            z-index: 3000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(8px);
+            padding: 1rem;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 24px;
+            width: 100%;
+            max-width: 550px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .modal-close {
+            background: var(--background);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .modal-close:hover {
+            background: var(--accent);
+            color: white;
+            transform: rotate(90deg);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .loader {
+            border: 4px solid var(--border);
+            border-top: 4px solid var(--accent);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem auto;
+        }
+
+        .profile-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient-1);
+            transform: scaleX(0);
+            transition: transform 0.4s;
+        }
+
+        .profile-card:nth-child(3n)::before {
+            background: var(--gradient-1);
+        }
+
+        .profile-card:nth-child(3n+1)::before {
+            background: var(--gradient-2);
+        }
+
+        .profile-card:nth-child(3n+2)::before {
+            background: var(--gradient-3);
+        }
+
+        .profile-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero-section {
+                padding: 4rem 1.5rem;
+                border-radius: 0;
+                margin: 0 0 3rem 0;
+            }
+
+            .hero-title {
+                font-size: 2.5rem;
+            }
+
+            .hero-subtitle {
+                font-size: 1.1rem;
+            }
+
+            .stats-container {
+                gap: 1rem;
+            }
+
+            .stat-item {
+                flex: 1;
+                min-width: 140px;
+                padding: 1.5rem 2rem;
+            }
+
+            .stat-number {
+                font-size: 2.5rem;
+            }
+
+            .mobile-bottom-nav {
+                display: flex;
+            }
+
+            .desktop-nav {
+                display: none;
+            }
+
+            .filter-container {
+                justify-content: flex-start;
+                overflow-x: auto;
+                padding-bottom: 10px;
+                flex-wrap: nowrap;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .container {
+                padding: 0 1rem;
+            }
+
+            .site-footer {
+                padding-bottom: 100px;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .profiles-grid {
+                grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            }
+
+            /* Ensure trending is visible on mobile */
+            .trending-wrapper {
+                margin-top: -2rem;
+            }
+
+            .trending-list {
+                padding-bottom: 1rem;
+            }
+        }
+    </style>
 </head>
 
 <body>
 
-    <nav class="desktop-nav">
-        <div class="nav-container">
-            <a href="index.html" class="logo">
-                <img src="logo.png" alt="StudentHub" style="height: 38px; width: auto;">
-                <span>StudentHub</span>
-            </a>
-            <div style="display: flex; align-items: center;">
-                <a href="feed.html" class="nav-link">Feed</a>
-                <a href="index.html" class="nav-link active">Profiles</a>
-                <a href="feed.html" id="loginBtn" class="btn-primary" style="margin-left: 2rem;">
-                    Login
-                </a>
-            </div>
-        </div>
-    </nav>
-
-    <div class="container">
-
-        <div id="initialLoader"
-            style="display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 60vh;">
-            <div class="loader"></div>
-            <p style="color: var(--text-secondary); margin-top: 1rem;">Loading...</p>
-        </div>
-
-        <div id="directoryView" class="hidden">
-            <div class="hero-section">
-                <div class="hero-bg-icon bg-1">🎓</div>
-                <div class="hero-bg-icon bg-2">💡</div>
-                <div class="hero-bg-icon bg-3">🚀</div>
-
-                <h1 class="hero-title">Welcome to StudentHub</h1>
-                <p class="hero-subtitle">This initiative provides NIELIT Ropar students with an opportunity to showcase
-                    innovative projects, connect with peers, and develop professional portfolios.</p>
-
-                <div id="guest-cta" style="display: none; margin-bottom: 2.5rem; position: relative; z-index: 2;">
-                    <a href="feed.html" class="btn-primary"
-                        style="background: white; color: var(--primary); padding: 1.2rem 3rem; font-size: 1.1rem; box-shadow: 0 8px 30px rgba(255,255,255,0.3);">🚀
-                        Join the Community</a>
-                </div>
-
-                <div class="stats-container">
-                    <div class="stat-item">
-                        <span class="stat-number" id="totalStudents" data-target="0">0</span>
-                        <span class="stat-label">Students</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-number" id="totalProjects" data-target="0">0</span>
-                        <span class="stat-label">Projects</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="trending-wrapper">
-                <div class="trending-header">
-                    <h3>🔥 Trending Projects</h3>
-                </div>
-                <div id="trendingList" class="trending-list">
-                    <div style="width:100%; text-align:center; color:var(--text-secondary);">Loading trends...</div>
-                </div>
-            </div>
-
-            <div class="controls-wrapper">
-                <div class="section-header">
-                    <h2 class="section-title">Discover Talent</h2>
-                    <p class="section-subtitle">Connect with brilliant minds from NIELIT Ropar</p>
-                </div>
-
-                <div class="search-wrapper">
-                    <span class="search-icon">🔍</span>
-                    <input type="text" class="search-input" placeholder="Search by name, major, or skills..."
-                        onkeyup="handleProfileSearch(this.value)">
-                </div>
-
-                <div class="filter-container">
-                    <button class="filter-chip active" onclick="applyFilter(this, '')">✨ All Students</button>
-                    <button class="filter-chip" onclick="applyFilter(this, 'B.TECH')">💻 B.TECH</button>
-                    <button class="filter-chip" onclick="applyFilter(this, 'M.TECH')">🎓 M.TECH</button>
-                    <button class="filter-chip" onclick="applyFilter(this, 'NIELIT')">⚡ NIELIT</button>
-                    <button class="filter-chip" onclick="applyFilter(this, 'AIML')">🤖 AIML</button>
-                    <button class="filter-chip" onclick="applyFilter(this, 'Python')">🐍 Python</button>
-                </div>
-            </div>
-
-            <div id="profilesGrid" class="profiles-grid"></div>
-        </div>
-
-        <div id="portfolioView" class="hidden">
-            <div onclick="showDirectory()"
-                style="cursor: pointer; margin-bottom: 2rem; color: var(--accent); font-weight: 600; display: inline-flex; align-items: center; gap: 8px; padding: 0.8rem 1.5rem; background: white; border-radius: 12px; border: 2px solid var(--border); transition: all 0.3s;">
-                ← Back to Profiles
-            </div>
-
-            <div id="portfolioHeader" class="portfolio-header"></div>
-
-            <h2
-                style="margin-bottom: 2rem; font-size: 2rem; color: var(--primary); padding-left: 1rem; border-left: 5px solid var(--accent); font-family: 'Space Grotesk', sans-serif;">
-                Projects Showcase</h2>
-            <div id="userProjects"></div>
-        </div>
-    </div>
-
-    <div id="commentsModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 style="font-size: 1.5rem; font-weight: 700;">💬 Comments</h3>
-                <button class="modal-close" onclick="closeModal('comments')">&times;</button>
-            </div>
-            <div id="commentsList" style="margin-bottom: 1.5rem; max-height: 400px; overflow-y: auto;"></div>
-            <div style="display: flex; gap: 0.8rem;">
-                <input type="text" id="commentInput" class="search-input" placeholder="Write a comment..."
-                    style="border-radius: 12px; padding: 0.8rem;">
-                <button onclick="submitComment()" class="btn-primary"
-                    style="padding: 0.8rem 1.5rem; border-radius: 12px;">Post</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="shareProjectModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 style="font-size: 1.5rem; font-weight: 700;">📤 Share Project</h2>
-                <button class="modal-close" onclick="closeModal('shareProject')">&times;</button>
-            </div>
-            <div style="margin-bottom: 1.5rem;">
-                <p style="color: var(--text-secondary); margin-bottom: 1rem;">Copy link to share:</p>
-                <div
-                    style="display: flex; gap: 0.5rem; padding: 1rem; background: var(--background); border-radius: 12px; border: 2px solid var(--border);">
-                    <input type="text" id="shareProjectLink" readonly
-                        style="border: none; background: none; flex: 1; font-family: monospace; outline: none; color: var(--text-primary);">
-                    <button onclick="copyShareLink()" class="btn-primary" id="copyShareBtn"
-                        style="padding: 0.6rem 1.2rem; font-size: 0.85rem; border-radius: 8px;">Copy</button>
-                </div>
-            </div>
-            <div style="display: grid; gap: 0.8rem;">
-                <button onclick="shareViaWhatsApp()" class="btn-primary"
-                    style="background: #25D366; justify-content: center;">📱 Share on WhatsApp</button>
-                <button onclick="shareViaLinkedIn()" class="btn-primary"
-                    style="background: #0077b5; justify-content: center;">💼 Share on LinkedIn</button>
-                <button onclick="shareViaTwitter()" class="btn-primary"
-                    style="background: #1DA1F2; justify-content: center;">🐦 Share on Twitter</button>
-            </div>
-        </div>
-    </div>
-
-    <footer class="site-footer">
-        <div class="footer-logo">
-            <p style="font-size: 1.4rem; font-weight: 800; color: white; margin-bottom: 0.5rem;">
-                🎓 NIELIT Ropar
-            </p>
-        </div>
-        <p>&copy; 2026 <strong>StudentHub</strong>. All rights reserved.</p>
-        <p style="font-size: 0.85rem; margin: 0.8rem 0; opacity: 0.7;">
-            National Institute of Electronics & Information Technology
-        </p>
-        <a href="https://github.com/nielitropar/nielitropar.github.io/releases/tag/v1.0" target="_blank"
-            class="app-download-btn">
-            <span style="font-size: 1.2rem;">🤖</span>
-            <span>Download Android App</span>
-        </a>
-    </footer>
-
-    <nav class="mobile-bottom-nav">
-        <a href="feed.html" class="mobile-nav-item">
-            <span class="mobile-nav-icon">🏠</span><span>Feed</span>
-        </a>
-        <a href="index.html" class="mobile-nav-item active">
-            <span class="mobile-nav-icon">👥</span><span>Profiles</span>
-        </a>
-        <a href="feed.html" onclick="localStorage.setItem('openPostModal', 'true');" class="mobile-nav-item">
-            <span class="mobile-nav-icon">➕</span><span>Post</span>
-        </a>
-    </nav>
-
-    <script src="config.js"></script>
-
-    <script>
-        // --- 1. SAFE CONFIGURATION ---
-        // Prevents crash if config.js is missing
-        const SHEET_URL = (typeof CONFIG !== 'undefined' && CONFIG.SHEET_URL)
-            ? CONFIG.SHEET_URL
-            : ''; // Fallback to empty string so script continues
-
-        // --- 2. STATE MANAGEMENT ---
-        let currentPage = 1;
-        let currentList = [];
-        let isLoading = false;
-        let hasMoreProfiles = true;
-        let currentSearchTerm = '';
-        let searchTimeout = null;
-        let profileIndex = [];
-        let profileFuse;
-
-        // Lazy load Gradio client to avoid global scope issues
-        let gradioClient = null;
-
-        // Safe User Parsing
-        let currentUser = null;
-        try {
-            currentUser = JSON.parse(localStorage.getItem('studenthub_user'));
-        } catch (e) {
-            console.error("User data error", e);
-        }
-
-        let currentCommentProjectId = null;
-        let currentShareProjectId = null;
-        let currentShareProjectTitle = null;
-
-        // --- 3. MAIN INITIALIZATION (Runs when page is ready) ---
-        window.onload = async () => {
-            console.log("🚀 StudentHub Loading...");
-
-            // A. Load Data (Only if URL exists)
-            if (SHEET_URL) {
-                loadProfileIndex();
-                fetchStats();
-                fetchTrending();
-            } else {
-                console.warn("⚠️ config.js missing or invalid. Data features disabled.");
-            }
-
-            // B. Handle Login State
-            if (currentUser) {
-                const btn = document.getElementById('loginBtn');
-                if (btn) btn.textContent = 'Go to Feed';
-            } else {
-                const cta = document.getElementById('guest-cta');
-                if (cta) cta.style.display = 'block';
-            }
-
-            // C. Handle Deep Links
-            const params = new URLSearchParams(window.location.search);
-            const targetEmail = params.get('email');
-
-            if (targetEmail && SHEET_URL) {
-                await loadProfileByEmail(targetEmail);
-            } else {
-                showDirectory();
-            }
-
-            // --- D. CHAT WIDGET SETUP ---
-            const toggleBtn = document.getElementById('toggle-chat');
-            const chatWindow = document.getElementById('chat-window');
-            const sendBtn = document.getElementById('send-chat');
-            const chatInput = document.getElementById('chat-input');
-
-            if (toggleBtn && chatWindow) {
-                console.log("✅ Chat Widget Initialized");
-                toggleBtn.onclick = () => {
-                    const isHidden = chatWindow.classList.contains('hidden') || chatWindow.style.display === 'none';
-                    if (isHidden) {
-                        chatWindow.classList.remove('hidden');
-                        chatWindow.style.display = 'flex';
-                        // Focus input slightly after opening for mobile keyboard handling
-                        setTimeout(() => {
-                            if (chatInput) chatInput.focus();
-                        }, 100);
-                    } else {
-                        chatWindow.classList.add('hidden');
-                        chatWindow.style.display = 'none';
-                    }
-                };
-            } else {
-                console.error("❌ Chat Widget Elements Not Found!");
-            }
-
-            if (sendBtn) sendBtn.onclick = askAssistant;
-            if (chatInput) {
-                chatInput.onkeypress = (e) => {
-                    if (e.key === 'Enter') askAssistant();
-                };
-            }
-        };
-
-        // --- 4. CORE FUNCTIONS ---
-
-        async function loadProfileIndex() {
-            if (!SHEET_URL) return;
-            const grid = document.getElementById('profilesGrid');
-            grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 5rem 1rem;"><div class="loader"></div><p style="color: var(--text-secondary);">Loading directory...</p></div>';
-
-            try {
-                const res = await fetch(`${SHEET_URL}?action=getProfileIndex`);
-                const json = await res.json();
-
-                if (json.status === 'success') {
-                    profileIndex = json.data;
-                    const options = {
-                        keys: ['name', 'major', 'university'],
-                        threshold: 0.3,
-                        ignoreLocation: true
-                    };
-                    profileFuse = new Fuse(profileIndex, options);
-                    renderDirectory(profileIndex.slice(0, 24));
-                }
-            } catch (e) {
-                console.error("Index load failed", e);
-                grid.innerHTML = '<div style="text-align:center; padding: 2rem; color: var(--text-secondary);">Directory unavailable.</div>';
-            }
-        }
-
-        function handleProfileSearch(term) {
-            const loadMoreBtn = document.getElementById('loadMoreContainer');
-            if (!term || term.trim() === '') {
-                renderDirectory(profileIndex.slice(0, 24));
-                if (loadMoreBtn) loadMoreBtn.style.display = 'block';
-                return;
-            }
-            if (!profileFuse) return;
-            const results = profileFuse.search(term);
-            const items = results.map(r => r.item);
-            renderDirectory(items);
-            if (loadMoreBtn) loadMoreBtn.style.display = 'none';
-        }
-
-        function applyFilter(btn, term) {
-            document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
-            if (btn) btn.classList.add('active');
-            const input = document.querySelector('.search-input');
-            input.value = term;
-            handleProfileSearch(term);
-        }
-
-        async function fetchStats() {
-            if (!SHEET_URL) return;
-            try {
-                const res = await fetch(`${SHEET_URL}?action=getStats`);
-                const json = await res.json();
-                if (json.status === 'success') {
-                    animateValue("totalStudents", 0, json.data.totalStudents, 2000);
-                    animateValue("totalProjects", 0, json.data.totalProjects, 2000);
-                }
-            } catch (e) { console.error("Stats error", e); }
-        }
-
-        async function fetchTrending() {
-            if (!SHEET_URL) return;
-            try {
-                const res = await fetch(`${SHEET_URL}?action=getTrending`);
-                const json = await res.json();
-                const container = document.getElementById('trendingList');
-
-                if (json.status === 'success') {
-                    container.innerHTML = json.data.map((p, index) => `
-                        <div class="trending-card" onclick="window.location.href='project.html?id=${p.id}'">
-                            <div class="trend-rank">${index + 1}</div>
-                            <div class="trend-author">
-                                <img src="${p.authorPicture || 'default-avatar.png'}" alt="Author">
-                                <span>${escapeHtml(p.authorName)}</span>
-                            </div>
-                            <h4 class="trend-title">${escapeHtml(p.title)}</h4>
-                            <div class="trend-stats">
-                                <span>👍 ${p.upvotes}</span>
-                                <span>💬 ${p.commentCount}</span>
-                                <span style="margin-left:auto; font-size:0.75rem;">${formatDate(p.timestamp)}</span>
-                            </div>
-                        </div>
-                    `).join('');
-                } else {
-                    container.innerHTML = '<div style="width:100%; text-align:center; color:var(--text-secondary);">No trending projects yet.</div>';
-                }
-            } catch (e) { console.error("Trend error", e); }
-        }
-
-        function animateValue(id, start, end, duration) {
-            if (start === end) return;
-            const obj = document.getElementById(id);
-            if (!obj) return;
-            let range = end - start;
-            let current = start;
-            let increment = end > start ? 1 : -1;
-            let stepTime = Math.abs(Math.floor(duration / range));
-            if (stepTime < 10) { stepTime = 10; increment = Math.ceil(range / (duration / 10)); }
-
-            let timer = setInterval(function () {
-                current += increment;
-                if ((increment > 0 && current >= end) || (increment < 0 && current <= end)) {
-                    current = end;
-                    clearInterval(timer);
-                }
-                obj.textContent = current;
-            }, stepTime);
-        }
-
-        async function loadProfileByEmail(email) {
-            if (!SHEET_URL) return;
-            try {
-                const userParam = currentUser ? `&userEmail=${encodeURIComponent(currentUser.email)}` : '';
-                const res = await fetch(`${SHEET_URL}?action=getProfile&email=${encodeURIComponent(email)}${userParam}&t=${Date.now()}`);
-                const json = await res.json();
-
-                if (json.status === 'success') {
-                    showPortfolio(json.data);
-                    history.pushState({}, "", `index.html?email=${email}`);
-                } else {
-                    alert("Profile not found.");
-                    showDirectory();
-                }
-            } catch (e) {
-                console.error("Deep link error", e);
-                showDirectory();
-            }
-        }
-
-        function renderDirectory(chunk, append = false) {
-            const grid = document.getElementById('profilesGrid');
-            if (!append) grid.innerHTML = '';
-
-            if (chunk.length === 0 && !append) {
-                grid.innerHTML = `
-                    <div style="grid-column: 1/-1; text-align: center; padding: 5rem 1rem;">
-                        <div style="font-size: 5rem; margin-bottom: 1.5rem; opacity: 0.3;">🤔</div>
-                        <h3 style="color: var(--primary); margin-bottom: 1rem; font-size: 1.8rem; font-weight: 700;">No students found</h3>
-                        <p style="color: var(--text-secondary);">Try changing your search terms.</p>
-                        <button onclick="applyFilter(document.querySelector('.filter-chip'), '')" class="btn-primary" style="margin-top: 2rem;">Clear All Filters</button>
-                    </div>
-                `;
-                return;
-            }
-
-            const html = chunk.map(p => `
-                <div class="profile-card" onclick="openPortfolio('${p.email}')">
-                    <img src="${p.profilePicture || 'default-avatar.png'}" class="profile-pic" loading="lazy" alt="${p.name}">
-                    <h3 class="card-name">${escapeHtml(p.name)}</h3>
-                    <p class="card-major">${escapeHtml(p.major || 'Student')}</p>
-                    <p class="card-uni">${escapeHtml(p.university || '')}</p>
-                    ${p.likes > 0 ? `<div style="margin-top:0.5rem; font-size:0.85rem; color:var(--text-secondary);">❤️ ${p.likes}</div>` : ''}
-                </div>
-            `).join('');
-
-            if (append) {
-                const btn = document.getElementById('loadMoreContainer');
-                if (btn) btn.insertAdjacentHTML('beforebegin', html);
-                else grid.insertAdjacentHTML('beforeend', html);
-            } else {
-                grid.innerHTML = html;
-            }
-
-            const oldBtn = document.getElementById('loadMoreContainer');
-            if (oldBtn) oldBtn.remove();
-
-            if (document.querySelector('.search-input').value === '' && profileIndex.length > chunk.length) {
-                if (chunk.length < profileIndex.length) {
-                    grid.insertAdjacentHTML('beforeend', `
-                        <div id="loadMoreContainer" style="grid-column: 1/-1; text-align: center; padding: 2.5rem;">
-                            <button onclick="renderDirectory(profileIndex)" class="btn-primary" style="background: white; color: var(--primary); border: 2px solid var(--border); box-shadow: 0 4px 12px rgba(0,0,0,0.06);">
-                                Show All (${profileIndex.length})
-                            </button>
-                        </div>
-                    `);
-                }
-            }
-        }
-
-        function showDirectory() {
-            document.getElementById('directoryView').classList.remove('hidden');
-            document.getElementById('portfolioView').classList.add('hidden');
-            document.getElementById('initialLoader').classList.add('hidden');
-            history.pushState({}, "", "index.html");
-            window.scrollTo(0, 0);
-        }
-
-        function openPortfolio(email) {
-            loadProfileByEmail(email);
-        }
-
-        async function showPortfolio(profile) {
-            document.getElementById('directoryView').classList.add('hidden');
-            document.getElementById('portfolioView').classList.remove('hidden');
-            document.getElementById('initialLoader').classList.add('hidden');
-
-            document.getElementById('portfolioHeader').innerHTML = `
-                <img src="${profile.profilePicture || 'default-avatar.png'}" class="big-avatar">
-                <h1 style="font-size: 2.5rem; margin-bottom: 0.8rem; color: var(--primary); font-weight: 800; font-family: 'Space Grotesk', sans-serif;">${escapeHtml(profile.name)}</h1>
-                <p style="font-size: 1.15rem; color: var(--text-secondary); margin-bottom: 2rem; font-weight: 500;">
-                    ${escapeHtml(profile.major)} ${profile.university ? '@ ' + escapeHtml(profile.university) : ''}
-                </p>
-                <div style="margin-bottom: 2.5rem; display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem;">
-                    <button class="social-link ${profile.isLiked ? 'active' : ''}" 
-                            onclick="likeProfile('${profile.email}', this)"
-                            style="cursor: pointer; display: flex; align-items: center; gap: 5px; ${profile.isLiked ? 'background: #fee2e2; border-color: #ef4444; color: #ef4444;' : ''}">
-                        ❤️ <span style="font-weight: 700;">${profile.likes || 0}</span>
-                    </button>
-                    ${profile.linkedin ? `<a href="${profile.linkedin}" target="_blank" class="social-link">🔗 LinkedIn</a>` : ''}
-                    ${profile.github ? `<a href="${profile.github}" target="_blank" class="social-link">💻 GitHub</a>` : ''}
-                    ${profile.resume ? `<a href="${profile.resume}" target="_blank" class="social-link" style="background: #ffeb3b; color: #333; border-color: #fbc02d;">📄 Download Resume</a>` : ''}
-                    <button onclick="shareProfile('${escapeHtml(profile.name).replace(/'/g, "\\'")}', '${profile.email}')" class="social-link" style="cursor: pointer; background: white; color: var(--primary);">
-                        📤 Share Profile
-                    </button>
-                    <a href="mailto:${profile.email}" class="social-link">📧 Email</a>
-                </div>
-                <div style="max-width: 700px; margin: 0 auto; line-height: 1.8; color: var(--text-primary); background: var(--background); padding: 2.5rem; border-radius: 16px; text-align: left; border: 2px solid var(--border);">
-                    <h4 style="margin-bottom:1rem; color:var(--accent); font-size:0.85rem; text-transform:uppercase; letter-spacing:2px; font-weight: 700;">About Me</h4>
-                    <p style="font-size: 1.05rem; line-height: 1.8;">${escapeHtml(profile.bio || 'No bio yet.')}</p>
-                </div>
-            `;
-
-            const list = document.getElementById('userProjects');
-            list.innerHTML = '<div style="text-align:center; padding:3rem;"><div class="loader"></div><p>Loading projects...</p></div>';
-
-            if (!SHEET_URL) {
-                list.innerHTML = '<p style="text-align:center;">Project loading disabled (Missing Config).</p>';
-                return;
-            }
-
-            try {
-                const userParam = currentUser ? `&userEmail=${encodeURIComponent(currentUser.email)}` : '';
-                const res = await fetch(`${SHEET_URL}?action=getProjects&searchTerm=${encodeURIComponent(profile.name)}${userParam}&t=${Date.now()}`);
-                const json = await res.json();
-
-                if (json.status === 'success') {
-                    const userProjects = json.data.items.filter(p => p.authorEmail.toLowerCase() === profile.email.toLowerCase());
-                    if (userProjects.length === 0) {
-                        list.innerHTML = '<div style="text-align:center; padding: 5rem; color: var(--text-secondary); background: white; border-radius: 20px; border: 2px dashed var(--border);"><div style="font-size: 4rem; margin-bottom: 1rem; opacity: 0.3;">📁</div><h3 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--primary);">No projects posted yet</h3><p>Check back soon for amazing work!</p></div>';
-                    } else {
-                        renderUserProjects(userProjects, list);
-                    }
-                }
-            } catch (err) {
-                console.error(err);
-                list.innerHTML = '<p style="text-align:center;">Error loading projects.</p>';
-            }
-        }
-
-        async function likeProfile(targetEmail, btn) {
-            if (!currentUser) return alert('Please login to like profiles.');
-            if (currentUser.email.toLowerCase() === targetEmail.toLowerCase()) return alert("You cannot like your own profile.");
-
-            const countSpan = btn.querySelector('span');
-            let currentCount = parseInt(countSpan.textContent) || 0;
-            const isLiked = btn.classList.contains('active');
-
-            btn.classList.toggle('active');
-
-            if (isLiked) {
-                countSpan.textContent = Math.max(0, currentCount - 1);
-                btn.style.background = '';
-                btn.style.borderColor = '';
-                btn.style.color = '';
-            } else {
-                countSpan.textContent = currentCount + 1;
-                btn.style.background = '#fee2e2';
-                btn.style.borderColor = '#ef4444';
-                btn.style.color = '#ef4444';
-            }
-
-            try {
-                const res = await postData('toggleProfileLike', {
-                    targetEmail: targetEmail,
-                    userEmail: currentUser.email
-                });
-
-                if (res.status === 'success') {
-                    countSpan.textContent = res.data.newCount;
-                    if (res.data.action === 'added') {
-                        btn.classList.add('active');
-                        btn.style.background = '#fee2e2';
-                        btn.style.borderColor = '#ef4444';
-                        btn.style.color = '#ef4444';
-                    } else {
-                        btn.classList.remove('active');
-                        btn.style.background = '';
-                        btn.style.borderColor = '';
-                        btn.style.color = '';
-                    }
-                } else {
-                    btn.classList.toggle('active');
-                    countSpan.textContent = currentCount;
-                    alert('Error: ' + res.data);
-                }
-            } catch (err) {
-                btn.classList.toggle('active');
-                countSpan.textContent = currentCount;
-                console.error(err);
-                alert("Network error.");
-            }
-        }
-
-        function renderUserProjects(projects, container) {
-            container.innerHTML = projects.map(p => `
-                <div class="project-item">
-                    <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom: 1rem;">
-                        <h3 style="color: var(--primary); font-size: 1.6rem; font-weight: 700; font-family: 'Space Grotesk', sans-serif;">${escapeHtml(p.title)}</h3>
-                        <span style="font-size:0.8rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding:8px 16px; border-radius:10px; white-space: nowrap; margin-left: 1rem; font-weight: 700; box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);">${escapeHtml(p.tech)}</span>
-                    </div>
-                    ${p.projectImage ? `<img src="${p.projectImage}" class="project-img" loading="lazy" alt="Project">` : ''}
-                    <p style="font-size: 1.05rem; line-height: 1.8; margin: 1.5rem 0; color: #475569;">${escapeHtml(p.description)}</p>
-                    
-                    <div style="display:flex; gap:1rem; align-items: center; margin-top: 2rem; padding-top: 2rem; border-top: 2px solid var(--border); flex-wrap: wrap;">
-                        <button class="action-btn ${p.isLiked ? 'active' : ''}" onclick="upvoteProject('${p.id}', this)">
-                            👍 <span style="font-weight: 700; margin-left:5px;">${p.upvotes}</span>
-                        </button>
-                        <button class="action-btn" onclick="openComments('${p.id}')">
-                            💬 <span style="margin-left:5px; font-weight: 600;">${p.commentCount || 0}</span>
-                        </button>
-                        <button class="action-btn" onclick="shareProject('${p.id}', '${escapeHtml(p.title).replace(/'/g, "\\'")}')">
-                            📤 <span style="margin-left:5px; font-weight: 600;">Share</span>
-                        </button>
-                        ${p.link ? `<a href="${p.link}" target="_blank" class="btn-primary" style="padding: 0.7rem 1.5rem; margin-left: auto; font-size: 0.9rem;">View Code 🔗</a>` : ''}
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        async function upvoteProject(id, btn) {
-            if (!currentUser) return alert('Please log in from the main feed to upvote.');
-
-            const countSpan = btn.querySelector('span');
-            let currentCount = parseInt(countSpan.textContent) || 0;
-            const isLiked = btn.classList.contains('active');
-
-            btn.classList.toggle('active');
-            countSpan.textContent = isLiked ? currentCount - 1 : currentCount + 1;
-
-            try {
-                const res = await postData('toggleUpvote', { projectId: id, userEmail: currentUser.email });
-                if (res.status === 'success') {
-                    countSpan.textContent = res.data.newCount;
-                    if (res.data.action === 'added') btn.classList.add('active');
-                    else btn.classList.remove('active');
-                } else {
-                    btn.classList.toggle('active');
-                    countSpan.textContent = currentCount;
-                    alert('Error upvoting: ' + res.data);
-                }
-            } catch (err) {
-                btn.classList.toggle('active');
-                countSpan.textContent = currentCount;
-                console.error(err);
-            }
-        }
-
-        async function openComments(id) {
-            currentCommentProjectId = id;
-            openModal('comments');
-            document.getElementById('commentsList').innerHTML = '<div style="text-align:center; padding:2rem;"><div class="loader" style="width:30px; height:30px; border-width:3px;"></div></div>';
-            if (!SHEET_URL) return;
-            const res = await fetch(`${SHEET_URL}?action=getComments&projectId=${id}`);
-            const json = await res.json();
-            if (json.data.length === 0) {
-                document.getElementById('commentsList').innerHTML = '<p style="color:var(--text-secondary); text-align:center; padding: 2rem; font-size: 1rem;">No comments yet. Be the first! 💬</p>';
-            } else {
-                document.getElementById('commentsList').innerHTML = json.data.map(c => `
-                    <div class="comment-item" style="background: var(--background); padding: 1.2rem; border-radius: 12px; margin-bottom: 0.8rem; border: 2px solid var(--border);">
-                        <div style="font-weight:700; font-size:0.95rem; color:var(--primary); margin-bottom: 0.5rem;">${escapeHtml(c.authorName)}</div>
-                        <div style="margin: 0.5rem 0; color:var(--text-primary); font-size:1rem; line-height: 1.6;">${escapeHtml(c.comment)}</div>
-                        <div style="font-size:0.75rem; color:var(--text-secondary); font-weight: 500;">${formatDate(c.timestamp)}</div>
-                    </div>
-                `).join('');
-            }
-        }
-
-        async function submitComment() {
-            if (!currentUser) return alert('Please log in to comment.');
-            const txt = document.getElementById('commentInput').value.trim();
-            if (!txt) return;
-            const data = { id: Date.now().toString(), projectId: currentCommentProjectId, authorName: currentUser.name, authorEmail: currentUser.email, comment: txt };
-            await postData('addComment', { data });
-            document.getElementById('commentInput').value = '';
-            openComments(currentCommentProjectId);
-        }
-
-        function openModal(id) { document.getElementById(id + 'Modal').classList.add('active'); }
-        function closeModal(id) { document.getElementById(id + 'Modal').classList.remove('active'); }
-
-        async function postData(action, payload) {
-            if (!SHEET_URL) return { status: 'error', data: 'Config missing' };
-            return fetch(SHEET_URL, {
-                method: 'POST',
-                body: JSON.stringify({ action, ...payload })
-            }).then(r => r.json());
-        }
-
-        function escapeHtml(text) { return text ? text.replace(/</g, "&lt;").replace(/>/g, "&gt;") : ''; }
-        function formatDate(timestamp) {
-            const date = new Date(timestamp);
-            return date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
-        }
-
-        function shareViaWhatsApp() { window.open(`https://wa.me/?text=${encodeURIComponent(currentShareProjectTitle + ' ' + document.getElementById('shareProjectLink').value)}`); }
-        function shareViaTwitter() { window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(currentShareProjectTitle)}&url=${encodeURIComponent(document.getElementById('shareProjectLink').value)}`); }
-        function shareViaLinkedIn() { window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(document.getElementById('shareProjectLink').value)}`); }
-
-        function shareProfile(name, email) {
-            currentShareProjectTitle = `Check out ${name}'s profile on StudentHub`;
-            const path = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
-            const baseUrl = window.location.origin + path;
-            const shareLink = `${baseUrl}index.html?email=${email}`;
-            document.getElementById('shareProjectLink').value = shareLink;
-            const modalTitle = document.querySelector('#shareProjectModal .modal-header h2');
-            if (modalTitle) modalTitle.textContent = "📤 Share Profile";
-            openModal('shareProject');
-        }
-
-        function shareProject(projectId, projectTitle) {
-            currentShareProjectId = projectId;
-            currentShareProjectTitle = projectTitle;
-            const modalTitle = document.querySelector('#shareProjectModal .modal-header h2');
-            if (modalTitle) modalTitle.textContent = "📤 Share Project";
-            const path = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
-            const baseUrl = window.location.origin + path;
-            const shareLink = `${baseUrl}project.html?id=${projectId}`;
-            document.getElementById('shareProjectLink').value = shareLink;
-            openModal('shareProject');
-        }
-
-        function copyShareLink() {
-            const input = document.getElementById('shareProjectLink');
-            input.select();
-            input.setSelectionRange(0, 99999);
-            document.execCommand('copy');
-            const btn = document.getElementById('copyShareBtn');
-            const originalText = btn.textContent;
-            btn.textContent = '✓ Copied';
-            setTimeout(() => { btn.textContent = originalText || 'Copy'; }, 2000);
-        }
-
-        // --- 5. AI ASSISTANT FUNCTION (Improved) ---
-        // Uses Gradio Client for reliable streaming/polling on Free Tier
-        async function askAssistant() {
-            const input = document.getElementById('chat-input');
-            const history = document.getElementById('chat-history');
-            const message = input.value.trim();
-            
-            if (!message) return;
-
-            // Append User Message
-            history.innerHTML += `<div style="background: var(--accent); color: white; padding: 8px 12px; border-radius: 12px; align-self: flex-end; margin-bottom: 5px;">${message}</div>`;
-            input.value = '';
-
-            // Create and append Typing Indicator
-            const typingId = 'typing-' + Date.now();
-            const typingBubble = `
-                <div id="${typingId}" class="typing" style="background: var(--background); border-radius: 12px; align-self: flex-start; margin-bottom: 10px;">
-                    <div class="dot"></div>
-                    <div class="dot"></div>
-                    <div class="dot"></div>
-                </div>`;
-            history.innerHTML += typingBubble;
-            history.scrollTop = history.scrollHeight;
-
-            try {
-                // Dynamic Import of Gradio Client
-                if (!gradioClient) {
-                    const { Client } = await import("https://cdn.jsdelivr.net/npm/@gradio/client/+esm");
-                    gradioClient = await Client.connect("LovnishVerma/studenthubbot");
-                }
-
-                // Predict uses polling internally, so it handles the wait!
-                const result = await gradioClient.predict("/chat_with_bot", { 
-                    message: message 
-                });
-                
-                // Remove typing indicator
-                const indicator = document.getElementById(typingId);
-                if (indicator) indicator.remove();
-
-                // Get response data
-                let botResponse = result.data[0];
-
-                // --- FORMATTING FIX ---
-                // Convert **bold** to <strong>bold</strong>
-                botResponse = botResponse.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-                // Convert newlines to breaks
-                botResponse = botResponse.replace(/\n/g, '<br>');
-
-                history.innerHTML += `<div style="background: var(--background); padding: 8px 12px; border-radius: 12px; align-self: flex-start; margin-bottom: 10px;">${botResponse || "I couldn't generate a response."}</div>`;
-                history.scrollTop = history.scrollHeight;
-
-            } catch (error) {
-                console.error("Chat Error:", error);
-                const indicator = document.getElementById(typingId);
-                if (indicator) indicator.remove();
-                history.innerHTML += `<div style="color: red; font-size: 0.8rem; align-self: center;">Connection error. Retrying...</div>`;
-                // Reset client to force reconnect next time
-                gradioClient = null; 
-            }
-        }
-    </script>
-
-    <div id="chat-widget-container" style="position: fixed; bottom: 80px; right: 20px; z-index: 2000;">
-        
-        <button id="toggle-chat" style="
-            padding: 0;
-            border: none;
-            background: transparent;
-            width: 60px;
-            height: 60px;
-            cursor: pointer;
-            transition: transform 0.2s;
-        " onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
-            <img src="bot.png" alt="Chat" style="
-                width: 100%;
-                height: 100%;
-                object-fit: contain;
-                border-radius: 50%;
-                box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-                background: white; 
-            ">
-        </button>
-        
-        <div id="chat-window" class="hidden" style="position: absolute; bottom: 80px; right: 0; width: 350px; height: 450px; background: white; border-radius: 20px; box-shadow: var(--shadow-lg); flex-direction: column; border: 2px solid var(--border); display: none;">
-            
-            <div style="background: var(--primary); color: white; padding: 1rem; border-radius: 18px 18px 0 0; font-weight: 700; display: flex; align-items: center; gap: 12px;">
-                <img src="bot.png" alt="Bot" style="width: 32px; height: 32px; border-radius: 50%; background: white; padding: 2px; object-fit: contain;">
-                <span>NIELIT AI Assistant (Beta release)</span>
-            </div>
-
-            <div id="chat-history" style="flex: 1; padding: 1rem; overflow-y: auto; font-size: 0.9rem; display: flex; flex-direction: column; gap: 10px;">
-                <div style="background: var(--background); padding: 8px 12px; border-radius: 12px; align-self: flex-start;">
-                    Ask about NIELIT Ropar...
-                </div>
-            </div>
-
-            <div style="padding: 1rem; border-top: 1px solid var(--border); display: flex; flex-direction: column; gap: 10px;">
-                <div style="display: flex; gap: 10px;">
-                    <input type="text" id="chat-input" placeholder="Ask about NIELIT Ropar..." style="flex: 1; border: 1px solid var(--border); border-radius: 8px; padding: 8px;">
-                    <button id="send-chat" style="background: var(--accent); color: white; border: none; border-radius: 8px; padding: 8px 12px; cursor: pointer;">Send</button>
-                </div>
-                <div style="font-size: 0.7rem; color: var(--text-secondary); text-align: center; opacity: 0.8;">
-                    ⚠️ AI responses can be inaccurate. Please verify details at nielit.ac.in.
-                </div>
-            </div>
-        </div>
-    </div>
-
+    <nav class="desktop-nav">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <img src="logo.png" alt="StudentHub" style="height: 38px; width: auto;">
+                <span>StudentHub</span>
+            </a>
+            <div style="display: flex; align-items: center;">
+                <a href="feed.html" class="nav-link">Feed</a>
+                <a href="index.html" class="nav-link active">Profiles</a>
+                <a href="feed.html" id="loginBtn" class="btn-primary" style="margin-left: 2rem;">
+                    Login
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+
+        <div id="initialLoader"
+            style="display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 60vh;">
+            <div class="loader"></div>
+            <p style="color: var(--text-secondary); margin-top: 1rem;">Loading...</p>
+        </div>
+
+        <div id="directoryView" class="hidden">
+            <div class="hero-section">
+                <div class="hero-bg-icon bg-1">🎓</div>
+                <div class="hero-bg-icon bg-2">💡</div>
+                <div class="hero-bg-icon bg-3">🚀</div>
+
+                <h1 class="hero-title">Welcome to StudentHub</h1>
+                <p class="hero-subtitle">This initiative provides NIELIT Ropar students with an opportunity to showcase
+                    innovative projects, connect with peers, and develop professional portfolios.</p>
+
+                <div id="guest-cta" style="display: none; margin-bottom: 2.5rem; position: relative; z-index: 2;">
+                    <a href="feed.html" class="btn-primary"
+                        style="background: white; color: var(--primary); padding: 1.2rem 3rem; font-size: 1.1rem; box-shadow: 0 8px 30px rgba(255,255,255,0.3);">🚀
+                        Join the Community</a>
+                </div>
+
+                <div class="stats-container">
+                    <div class="stat-item">
+                        <span class="stat-number" id="totalStudents" data-target="0">0</span>
+                        <span class="stat-label">Students</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number" id="totalProjects" data-target="0">0</span>
+                        <span class="stat-label">Projects</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="trending-wrapper">
+                <div class="trending-header">
+                    <h3>🔥 Trending Projects</h3>
+                </div>
+                <div id="trendingList" class="trending-list">
+                    <div style="width:100%; text-align:center; color:var(--text-secondary);">Loading trends...</div>
+                </div>
+            </div>
+
+            <div class="controls-wrapper">
+                <div class="section-header">
+                    <h2 class="section-title">Discover Talent</h2>
+                    <p class="section-subtitle">Connect with brilliant minds from NIELIT Ropar</p>
+                </div>
+
+                <div class="search-wrapper">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" class="search-input" placeholder="Search by name, major, or skills..."
+                        onkeyup="handleProfileSearch(this.value)">
+                </div>
+
+                <div class="filter-container">
+                    <button class="filter-chip active" onclick="applyFilter(this, '')">✨ All Students</button>
+                    <button class="filter-chip" onclick="applyFilter(this, 'B.TECH')">💻 B.TECH</button>
+                    <button class="filter-chip" onclick="applyFilter(this, 'M.TECH')">🎓 M.TECH</button>
+                    <button class="filter-chip" onclick="applyFilter(this, 'NIELIT')">⚡ NIELIT</button>
+                    <button class="filter-chip" onclick="applyFilter(this, 'AIML')">🤖 AIML</button>
+                    <button class="filter-chip" onclick="applyFilter(this, 'Python')">🐍 Python</button>
+                </div>
+            </div>
+
+            <div id="profilesGrid" class="profiles-grid"></div>
+        </div>
+
+        <div id="portfolioView" class="hidden">
+            <div onclick="showDirectory()"
+                style="cursor: pointer; margin-bottom: 2rem; color: var(--accent); font-weight: 600; display: inline-flex; align-items: center; gap: 8px; padding: 0.8rem 1.5rem; background: white; border-radius: 12px; border: 2px solid var(--border); transition: all 0.3s;">
+                ← Back to Profiles
+            </div>
+
+            <div id="portfolioHeader" class="portfolio-header"></div>
+
+            <h2
+                style="margin-bottom: 2rem; font-size: 2rem; color: var(--primary); padding-left: 1rem; border-left: 5px solid var(--accent); font-family: 'Space Grotesk', sans-serif;">
+                Projects Showcase</h2>
+            <div id="userProjects"></div>
+        </div>
+    </div>
+
+    <div id="commentsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 style="font-size: 1.5rem; font-weight: 700;">💬 Comments</h3>
+                <button class="modal-close" onclick="closeModal('comments')">&times;</button>
+            </div>
+            <div id="commentsList" style="margin-bottom: 1.5rem; max-height: 400px; overflow-y: auto;"></div>
+            <div style="display: flex; gap: 0.8rem;">
+                <input type="text" id="commentInput" class="search-input" placeholder="Write a comment..."
+                    style="border-radius: 12px; padding: 0.8rem;">
+                <button onclick="submitComment()" class="btn-primary"
+                    style="padding: 0.8rem 1.5rem; border-radius: 12px;">Post</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="shareProjectModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 style="font-size: 1.5rem; font-weight: 700;">📤 Share Project</h2>
+                <button class="modal-close" onclick="closeModal('shareProject')">&times;</button>
+            </div>
+            <div style="margin-bottom: 1.5rem;">
+                <p style="color: var(--text-secondary); margin-bottom: 1rem;">Copy link to share:</p>
+                <div
+                    style="display: flex; gap: 0.5rem; padding: 1rem; background: var(--background); border-radius: 12px; border: 2px solid var(--border);">
+                    <input type="text" id="shareProjectLink" readonly
+                        style="border: none; background: none; flex: 1; font-family: monospace; outline: none; color: var(--text-primary);">
+                    <button onclick="copyShareLink()" class="btn-primary" id="copyShareBtn"
+                        style="padding: 0.6rem 1.2rem; font-size: 0.85rem; border-radius: 8px;">Copy</button>
+                </div>
+            </div>
+            <div style="display: grid; gap: 0.8rem;">
+                <button onclick="shareViaWhatsApp()" class="btn-primary"
+                    style="background: #25D366; justify-content: center;">📱 Share on WhatsApp</button>
+                <button onclick="shareViaLinkedIn()" class="btn-primary"
+                    style="background: #0077b5; justify-content: center;">💼 Share on LinkedIn</button>
+                <button onclick="shareViaTwitter()" class="btn-primary"
+                    style="background: #1DA1F2; justify-content: center;">🐦 Share on Twitter</button>
+            </div>
+        </div>
+    </div>
+
+    <footer class="site-footer">
+        <div class="footer-logo">
+            <p style="font-size: 1.4rem; font-weight: 800; color: white; margin-bottom: 0.5rem;">
+                🎓 NIELIT Ropar
+            </p>
+        </div>
+        <p>&copy; 2026 <strong>StudentHub</strong>. All rights reserved.</p>
+        <p style="font-size: 0.85rem; margin: 0.8rem 0; opacity: 0.7;">
+            National Institute of Electronics & Information Technology
+        </p>
+        <a href="https://github.com/nielitropar/nielitropar.github.io/releases/tag/v1.0" target="_blank"
+            class="app-download-btn">
+            <span style="font-size: 1.2rem;">🤖</span>
+            <span>Download Android App</span>
+        </a>
+    </footer>
+
+    <nav class="mobile-bottom-nav">
+        <a href="feed.html" class="mobile-nav-item">
+            <span class="mobile-nav-icon">🏠</span><span>Feed</span>
+        </a>
+        <a href="index.html" class="mobile-nav-item active">
+            <span class="mobile-nav-icon">👥</span><span>Profiles</span>
+        </a>
+        <a href="feed.html" onclick="localStorage.setItem('openPostModal', 'true');" class="mobile-nav-item">
+            <span class="mobile-nav-icon">➕</span><span>Post</span>
+        </a>
+    </nav>
+
+    <script src="config.js"></script>
+
+    <script>
+        // CONFIGURATION
+        const SHEET_URL = CONFIG.SHEET_URL;
+
+        // STATE
+        let currentPage = 1;
+        let currentList = [];
+        let isLoading = false;
+        let hasMoreProfiles = true;
+        let currentSearchTerm = '';
+        let searchTimeout = null;
+
+        // [NEW] Search State
+        let profileIndex = [];
+        let profileFuse;
+
+        let currentUser = JSON.parse(localStorage.getItem('studenthub_user'));
+        let currentCommentProjectId = null;
+        let currentShareProjectId = null;
+        let currentShareProjectTitle = null;
+
+        // INITIALIZATION
+        window.onload = async () => {
+            // [NEW] Load optimized index instead of standard fetch
+            loadProfileIndex();
+
+            fetchStats();
+            fetchTrending();
+
+            if (currentUser) {
+                const btn = document.getElementById('loginBtn');
+                if (btn) btn.textContent = 'Go to Feed';
+            } else {
+                document.getElementById('guest-cta').style.display = 'block';
+            }
+
+            const params = new URLSearchParams(window.location.search);
+            const targetEmail = params.get('email');
+
+            if (targetEmail) {
+                await loadProfileByEmail(targetEmail);
+            } else {
+                showDirectory();
+            }
+        };
+
+        // [NEW] Load lightweight profile index
+        async function loadProfileIndex() {
+            const grid = document.getElementById('profilesGrid');
+            grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 5rem 1rem;"><div class="loader"></div><p style="color: var(--text-secondary);">Loading directory...</p></div>';
+
+            try {
+                const res = await fetch(`${SHEET_URL}?action=getProfileIndex`);
+                const json = await res.json();
+
+                if (json.status === 'success') {
+                    profileIndex = json.data;
+
+                    // Initialize Fuse.js
+                    const options = {
+                        keys: ['name', 'major', 'university'],
+                        threshold: 0.3,
+                        ignoreLocation: true
+                    };
+                    profileFuse = new Fuse(profileIndex, options);
+
+                    // Initial render (show all or first 50)
+                    renderDirectory(profileIndex.slice(0, 24));
+                }
+            } catch (e) {
+                console.error("Index load failed", e);
+                document.getElementById('profilesGrid').innerHTML =
+                    '<div style="text-align:center; padding: 2rem; color: var(--text-secondary);">Directory unavailable. Please refresh the page.</div>';
+            }
+        }
+
+        // [UPDATED] Client-side search logic
+        function handleProfileSearch(term) {
+            const grid = document.getElementById('profilesGrid');
+            const loadMoreBtn = document.getElementById('loadMoreContainer');
+
+            if (!term || term.trim() === '') {
+                // Show default list (first 24)
+                renderDirectory(profileIndex.slice(0, 24));
+                if (loadMoreBtn) loadMoreBtn.style.display = 'block';
+                return;
+            }
+
+            if (!profileFuse) return;
+
+            const results = profileFuse.search(term);
+            const items = results.map(r => r.item);
+            renderDirectory(items);
+
+            if (loadMoreBtn) loadMoreBtn.style.display = 'none'; // Hide pagination in search mode
+        }
+
+        // [UPDATED] Apply Filter Logic (Client-side)
+        function applyFilter(btn, term) {
+            document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+            if (btn) btn.classList.add('active');
+
+            const input = document.querySelector('.search-input');
+            input.value = term;
+            handleProfileSearch(term);
+        }
+
+        async function fetchStats() {
+            try {
+                const res = await fetch(`${SHEET_URL}?action=getStats`);
+                const json = await res.json();
+                if (json.status === 'success') {
+                    animateValue("totalStudents", 0, json.data.totalStudents, 2000);
+                    animateValue("totalProjects", 0, json.data.totalProjects, 2000);
+                }
+            } catch (e) { console.error("Stats error", e); }
+        }
+
+        // [NEW] FETCH TRENDING
+        async function fetchTrending() {
+            try {
+                const res = await fetch(`${SHEET_URL}?action=getTrending`);
+                const json = await res.json();
+                const container = document.getElementById('trendingList');
+
+                if (json.status === 'success' && json.data.length > 0) {
+                    container.innerHTML = json.data.map((p, index) => `
+                        <div class="trending-card" onclick="window.location.href='project.html?id=${p.id}'">
+                            <div class="trend-rank">${index + 1}</div>
+                            <div class="trend-author">
+                                <img src="${p.authorPicture || 'default-avatar.png'}" alt="Author">
+                                <span>${escapeHtml(p.authorName)}</span>
+                            </div>
+                            <h4 class="trend-title">${escapeHtml(p.title)}</h4>
+                            <div class="trend-stats">
+                                <span>👍 ${p.upvotes}</span>
+                                <span>💬 ${p.commentCount}</span>
+                                <span style="margin-left:auto; font-size:0.75rem;">${formatDate(p.timestamp)}</span>
+                            </div>
+                        </div>
+                    `).join('');
+                } else {
+                    container.innerHTML = '<div style="width:100%; text-align:center; color:var(--text-secondary);">No trending projects yet.</div>';
+                }
+            } catch (e) { console.error("Trend error", e); }
+        }
+
+        function animateValue(id, start, end, duration) {
+            if (start === end) return;
+            const obj = document.getElementById(id);
+            if (!obj) return;
+            let range = end - start;
+            let current = start;
+            let increment = end > start ? 1 : -1;
+            let stepTime = Math.abs(Math.floor(duration / range));
+            if (stepTime < 10) { stepTime = 10; increment = Math.ceil(range / (duration / 10)); }
+
+            let timer = setInterval(function () {
+                current += increment;
+                if ((increment > 0 && current >= end) || (increment < 0 && current <= end)) {
+                    current = end;
+                    clearInterval(timer);
+                }
+                obj.textContent = current;
+            }, stepTime);
+        }
+
+        async function loadProfileByEmail(email) {
+            try {
+                const userParam = currentUser ? `&userEmail=${encodeURIComponent(currentUser.email)}` : '';
+                // Add &t=timestamp to force fresh data
+                const res = await fetch(`${SHEET_URL}?action=getProfile&email=${encodeURIComponent(email)}${userParam}&t=${Date.now()}`);
+                const json = await res.json();
+
+                if (json.status === 'success') {
+                    showPortfolio(json.data);
+                    history.pushState({}, "", `index.html?email=${email}`);
+                } else {
+                    alert("Profile not found.");
+                    showDirectory();
+                }
+            } catch (e) {
+                console.error("Deep link error", e);
+                showDirectory();
+            }
+        }
+
+        // [UPDATED] Render Directory (Used by Index & Search)
+        function renderDirectory(chunk, append = false) {
+            const grid = document.getElementById('profilesGrid');
+            if (!append) grid.innerHTML = '';
+
+            if (chunk.length === 0 && !append) {
+                grid.innerHTML = `
+                    <div style="grid-column: 1/-1; text-align: center; padding: 5rem 1rem;">
+                        <div style="font-size: 5rem; margin-bottom: 1.5rem; opacity: 0.3;">🤔</div>
+                        <h3 style="color: var(--primary); margin-bottom: 1rem; font-size: 1.8rem; font-weight: 700;">No students found</h3>
+                        <p style="color: var(--text-secondary);">Try changing your search terms.</p>
+                        <button onclick="applyFilter(document.querySelector('.filter-chip'), '')" class="btn-primary" style="margin-top: 2rem;">Clear All Filters</button>
+                    </div>
+                `;
+                return;
+            }
+
+            const html = chunk.map(p => `
+                <div class="profile-card" onclick="openPortfolio('${p.email}')">
+                    <img src="${p.profilePicture || 'default-avatar.png'}" class="profile-pic" loading="lazy" alt="${p.name}">
+                    <h3 class="card-name">${escapeHtml(p.name)}</h3>
+                    <p class="card-major">${escapeHtml(p.major || 'Student')}</p>
+                    <p class="card-uni">${escapeHtml(p.university || '')}</p>
+                    ${p.likes > 0 ? `<div style="margin-top:0.5rem; font-size:0.85rem; color:var(--text-secondary);">❤️ ${p.likes}</div>` : ''}
+                </div>
+            `).join('');
+
+            if (append) {
+                const btn = document.getElementById('loadMoreContainer');
+                if (btn) btn.insertAdjacentHTML('beforebegin', html);
+                else grid.insertAdjacentHTML('beforeend', html);
+            } else {
+                grid.innerHTML = html;
+            }
+
+            // Simple pagination for "All Students" view
+            const oldBtn = document.getElementById('loadMoreContainer');
+            if (oldBtn) oldBtn.remove();
+
+            // Logic: if search is empty AND we haven't shown all from profileIndex
+            if (document.querySelector('.search-input').value === '' && profileIndex.length > chunk.length) {
+                // For client-side simple view, we just show a button that renders the REST
+                // Or we could implement true client-side pagination.
+                // For simplicity:
+                if (chunk.length < profileIndex.length) {
+                    grid.insertAdjacentHTML('beforeend', `
+                        <div id="loadMoreContainer" style="grid-column: 1/-1; text-align: center; padding: 2.5rem;">
+                            <button onclick="renderDirectory(profileIndex)" class="btn-primary" style="background: white; color: var(--primary); border: 2px solid var(--border); box-shadow: 0 4px 12px rgba(0,0,0,0.06);">
+                                Show All (${profileIndex.length})
+                            </button>
+                        </div>
+                    `);
+                }
+            }
+        }
+
+        function showDirectory() {
+            document.getElementById('directoryView').classList.remove('hidden');
+            document.getElementById('portfolioView').classList.add('hidden');
+            document.getElementById('initialLoader').classList.add('hidden');
+            history.pushState({}, "", "index.html");
+            window.scrollTo(0, 0);
+        }
+
+        function openPortfolio(email) {
+            loadProfileByEmail(email);
+        }
+
+        // --- UPDATED: Restored Buttons & Added Like ---
+        async function showPortfolio(profile) {
+            document.getElementById('directoryView').classList.add('hidden');
+            document.getElementById('portfolioView').classList.remove('hidden');
+            document.getElementById('initialLoader').classList.add('hidden');
+
+            document.getElementById('portfolioHeader').innerHTML = `
+                <img src="${profile.profilePicture || 'default-avatar.png'}" class="big-avatar">
+                <h1 style="font-size: 2.5rem; margin-bottom: 0.8rem; color: var(--primary); font-weight: 800; font-family: 'Space Grotesk', sans-serif;">${escapeHtml(profile.name)}</h1>
+                <p style="font-size: 1.15rem; color: var(--text-secondary); margin-bottom: 2rem; font-weight: 500;">
+                    ${escapeHtml(profile.major)} ${profile.university ? '@ ' + escapeHtml(profile.university) : ''}
+                </p>
+                <div style="margin-bottom: 2.5rem; display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem;">
+                    
+                    <button class="social-link ${profile.isLiked ? 'active' : ''}" 
+                            onclick="likeProfile('${profile.email}', this)"
+                            style="cursor: pointer; display: flex; align-items: center; gap: 5px; ${profile.isLiked ? 'background: #fee2e2; border-color: #ef4444; color: #ef4444;' : ''}">
+                        ❤️ <span style="font-weight: 700;">${profile.likes || 0}</span>
+                    </button>
+
+                    ${profile.linkedin ? `<a href="${profile.linkedin}" target="_blank" class="social-link">🔗 LinkedIn</a>` : ''}
+                    ${profile.github ? `<a href="${profile.github}" target="_blank" class="social-link">💻 GitHub</a>` : ''}
+                    ${profile.resume ? `<a href="${profile.resume}" target="_blank" class="social-link" style="background: #ffeb3b; color: #333; border-color: #fbc02d;">📄 Download Resume</a>` : ''}
+                    
+                    <button onclick="shareProfile('${escapeHtml(profile.name).replace(/'/g, "\\'")}', '${profile.email}')" class="social-link" style="cursor: pointer; background: white; color: var(--primary);">
+                        📤 Share Profile
+                    </button>
+                    
+                    <a href="mailto:${profile.email}" class="social-link">📧 Email</a>
+                </div>
+                <div style="max-width: 700px; margin: 0 auto; line-height: 1.8; color: var(--text-primary); background: var(--background); padding: 2.5rem; border-radius: 16px; text-align: left; border: 2px solid var(--border);">
+                    <h4 style="margin-bottom:1rem; color:var(--accent); font-size:0.85rem; text-transform:uppercase; letter-spacing:2px; font-weight: 700;">About Me</h4>
+                    <p style="font-size: 1.05rem; line-height: 1.8;">${escapeHtml(profile.bio || 'No bio yet.')}</p>
+                </div>
+            `;
+
+            const list = document.getElementById('userProjects');
+            list.innerHTML = '<div style="text-align:center; padding:3rem;"><div class="loader"></div><p>Loading projects...</p></div>';
+
+            try {
+                // 1. Define who is asking (User Email)
+                const userParam = currentUser ? `&userEmail=${encodeURIComponent(currentUser.email)}` : '';
+
+                // 2. Add userParam to the URL so the server checks your likes
+                const res = await fetch(`${SHEET_URL}?action=getProjects&searchTerm=${encodeURIComponent(profile.name)}${userParam}&t=${Date.now()}`);
+
+                const json = await res.json();
+
+                if (json.status === 'success') {
+                    const userProjects = json.data.items.filter(p => p.authorEmail.toLowerCase() === profile.email.toLowerCase());
+                    if (userProjects.length === 0) {
+                        list.innerHTML = '<div style="text-align:center; padding: 5rem; color: var(--text-secondary); background: white; border-radius: 20px; border: 2px dashed var(--border);"><div style="font-size: 4rem; margin-bottom: 1rem; opacity: 0.3;">📁</div><h3 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--primary);">No projects posted yet</h3><p>Check back soon for amazing work!</p></div>';
+                    } else {
+                        renderUserProjects(userProjects, list);
+                    }
+                }
+            } catch (err) {
+                console.error(err);
+                list.innerHTML = '<p style="text-align:center;">Error loading projects.</p>';
+            }
+        }
+
+        async function likeProfile(targetEmail, btn) {
+            if (!currentUser) return alert('Please login to like profiles.');
+            if (currentUser.email.toLowerCase() === targetEmail.toLowerCase()) return alert("You cannot like your own profile.");
+
+            const countSpan = btn.querySelector('span');
+            let currentCount = parseInt(countSpan.textContent) || 0;
+            const isLiked = btn.classList.contains('active');
+
+            btn.classList.toggle('active');
+
+            if (isLiked) {
+                countSpan.textContent = Math.max(0, currentCount - 1);
+                btn.style.background = '';
+                btn.style.borderColor = '';
+                btn.style.color = '';
+            } else {
+                countSpan.textContent = currentCount + 1;
+                btn.style.background = '#fee2e2';
+                btn.style.borderColor = '#ef4444';
+                btn.style.color = '#ef4444';
+            }
+
+            try {
+                const res = await postData('toggleProfileLike', {
+                    targetEmail: targetEmail,
+                    userEmail: currentUser.email
+                });
+
+                if (res.status === 'success') {
+                    countSpan.textContent = res.data.newCount;
+                    if (res.data.action === 'added') {
+                        btn.classList.add('active');
+                        btn.style.background = '#fee2e2';
+                        btn.style.borderColor = '#ef4444';
+                        btn.style.color = '#ef4444';
+                    } else {
+                        btn.classList.remove('active');
+                        btn.style.background = '';
+                        btn.style.borderColor = '';
+                        btn.style.color = '';
+                    }
+                } else {
+                    btn.classList.toggle('active');
+                    countSpan.textContent = currentCount;
+                    alert('Error: ' + res.data);
+                }
+            } catch (err) {
+                btn.classList.toggle('active');
+                countSpan.textContent = currentCount;
+                console.error(err);
+                alert("Network error.");
+            }
+        }
+
+        function renderUserProjects(projects, container) {
+            container.innerHTML = projects.map(p => `
+                <div class="project-item">
+                    <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom: 1rem;">
+                        <h3 style="color: var(--primary); font-size: 1.6rem; font-weight: 700; font-family: 'Space Grotesk', sans-serif;">${escapeHtml(p.title)}</h3>
+                        <span style="font-size:0.8rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding:8px 16px; border-radius:10px; white-space: nowrap; margin-left: 1rem; font-weight: 700; box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);">${escapeHtml(p.tech)}</span>
+                    </div>
+                    ${p.projectImage ? `<img src="${p.projectImage}" class="project-img" loading="lazy" alt="Project">` : ''}
+                    <p style="font-size: 1.05rem; line-height: 1.8; margin: 1.5rem 0; color: #475569;">${escapeHtml(p.description)}</p>
+                    
+                    <div style="display:flex; gap:1rem; align-items: center; margin-top: 2rem; padding-top: 2rem; border-top: 2px solid var(--border); flex-wrap: wrap;">
+                        <button class="action-btn ${p.isLiked ? 'active' : ''}" onclick="upvoteProject('${p.id}', this)">
+                            👍 <span style="font-weight: 700; margin-left:5px;">${p.upvotes}</span>
+                        </button>
+                        <button class="action-btn" onclick="openComments('${p.id}')">
+                            💬 <span style="margin-left:5px; font-weight: 600;">${p.commentCount || 0}</span>
+                        </button>
+                        <button class="action-btn" onclick="shareProject('${p.id}', '${escapeHtml(p.title).replace(/'/g, "\\'")}')">
+                            📤 <span style="margin-left:5px; font-weight: 600;">Share</span>
+                        </button>
+                        ${p.link ? `<a href="${p.link}" target="_blank" class="btn-primary" style="padding: 0.7rem 1.5rem; margin-left: auto; font-size: 0.9rem;">View Code 🔗</a>` : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function upvoteProject(id, btn) {
+            if (!currentUser) return alert('Please log in from the main feed to upvote.');
+
+            const countSpan = btn.querySelector('span');
+            let currentCount = parseInt(countSpan.textContent) || 0;
+            const isLiked = btn.classList.contains('active');
+
+            btn.classList.toggle('active');
+            countSpan.textContent = isLiked ? currentCount - 1 : currentCount + 1;
+
+            try {
+                const res = await postData('toggleUpvote', { projectId: id, userEmail: currentUser.email });
+                if (res.status === 'success') {
+                    countSpan.textContent = res.data.newCount;
+                    if (res.data.action === 'added') btn.classList.add('active');
+                    else btn.classList.remove('active');
+                } else {
+                    btn.classList.toggle('active');
+                    countSpan.textContent = currentCount;
+                    alert('Error upvoting: ' + res.data);
+                }
+            } catch (err) {
+                btn.classList.toggle('active');
+                countSpan.textContent = currentCount;
+                console.error(err);
+            }
+        }
+
+        async function openComments(id) {
+            currentCommentProjectId = id;
+            openModal('comments');
+            document.getElementById('commentsList').innerHTML = '<div style="text-align:center; padding:2rem;"><div class="loader" style="width:30px; height:30px; border-width:3px;"></div></div>';
+            const res = await fetch(`${SHEET_URL}?action=getComments&projectId=${id}`);
+            const json = await res.json();
+            if (json.data.length === 0) {
+                document.getElementById('commentsList').innerHTML = '<p style="color:var(--text-secondary); text-align:center; padding: 2rem; font-size: 1rem;">No comments yet. Be the first! 💬</p>';
+            } else {
+                document.getElementById('commentsList').innerHTML = json.data.map(c => `
+                    <div class="comment-item" style="background: var(--background); padding: 1.2rem; border-radius: 12px; margin-bottom: 0.8rem; border: 2px solid var(--border);">
+                        <div style="font-weight:700; font-size:0.95rem; color:var(--primary); margin-bottom: 0.5rem;">${escapeHtml(c.authorName)}</div>
+                        <div style="margin: 0.5rem 0; color:var(--text-primary); font-size:1rem; line-height: 1.6;">${escapeHtml(c.comment)}</div>
+                        <div style="font-size:0.75rem; color:var(--text-secondary); font-weight: 500;">${formatDate(c.timestamp)}</div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        async function submitComment() {
+            if (!currentUser) return alert('Please log in to comment.');
+            const txt = document.getElementById('commentInput').value.trim();
+            if (!txt) return;
+            const data = { id: Date.now().toString(), projectId: currentCommentProjectId, authorName: currentUser.name, authorEmail: currentUser.email, comment: txt };
+            await postData('addComment', { data });
+            document.getElementById('commentInput').value = '';
+            openComments(currentCommentProjectId);
+        }
+
+        function openModal(id) { document.getElementById(id + 'Modal').classList.add('active'); }
+        function closeModal(id) { document.getElementById(id + 'Modal').classList.remove('active'); }
+
+        async function postData(action, payload) {
+            return fetch(SHEET_URL, {
+                method: 'POST',
+                body: JSON.stringify({ action, ...payload })
+            }).then(r => r.json());
+        }
+
+        function escapeHtml(text) { return text ? text.replace(/</g, "&lt;").replace(/>/g, "&gt;") : ''; }
+        function formatDate(timestamp) {
+            const date = new Date(timestamp);
+            return date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+        }
+
+        function shareViaWhatsApp() { window.open(`https://wa.me/?text=${encodeURIComponent(currentShareProjectTitle + ' ' + document.getElementById('shareProjectLink').value)}`); }
+        function shareViaTwitter() { window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(currentShareProjectTitle)}&url=${encodeURIComponent(document.getElementById('shareProjectLink').value)}`); }
+        function shareViaLinkedIn() { window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(document.getElementById('shareProjectLink').value)}`); }
+
+        function shareProfile(name, email) {
+            currentShareProjectTitle = `Check out ${name}'s profile on StudentHub`;
+            const path = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
+            const baseUrl = window.location.origin + path;
+            const shareLink = `${baseUrl}index.html?email=${email}`;
+            document.getElementById('shareProjectLink').value = shareLink;
+            const modalTitle = document.querySelector('#shareProjectModal .modal-header h2');
+            if (modalTitle) modalTitle.textContent = "📤 Share Profile";
+            openModal('shareProject');
+        }
+
+        function shareProject(projectId, projectTitle) {
+            currentShareProjectId = projectId;
+            currentShareProjectTitle = projectTitle;
+            const modalTitle = document.querySelector('#shareProjectModal .modal-header h2');
+            if (modalTitle) modalTitle.textContent = "📤 Share Project";
+            const path = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
+            const baseUrl = window.location.origin + path;
+            const shareLink = `${baseUrl}project.html?id=${projectId}`;
+            document.getElementById('shareProjectLink').value = shareLink;
+            openModal('shareProject');
+        }
+
+        function copyShareLink() {
+            const input = document.getElementById('shareProjectLink');
+            input.select();
+            input.setSelectionRange(0, 99999);
+            document.execCommand('copy');
+            const btn = document.getElementById('copyShareBtn');
+            const originalText = btn.textContent;
+            btn.textContent = '✓ Copied';
+            setTimeout(() => { btn.textContent = originalText || 'Copy'; }, 2000);
+        }
+    </script>
 </body>
+
 </html>
