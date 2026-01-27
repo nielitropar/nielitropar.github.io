@@ -19,7 +19,7 @@
 [![Automated Tests](https://github.com/nielitropar/nielitropar.github.io/actions/workflows/tests.yml/badge.svg)](https://github.com/nielitropar/nielitropar.github.io/actions/workflows/tests.yml)
 [![Deploy to GitHub Pages](https://github.com/nielitropar/nielitropar.github.io/actions/workflows/deploy.yml/badge.svg)](https://github.com/nielitropar/nielitropar.github.io/actions/workflows/deploy.yml)
 [![status](https://joss.theoj.org/papers/36c4a83f839bd7c22f930f6d90d963f3/status.svg)](https://joss.theoj.org/papers/36c4a83f839bd7c22f930f6d90d963f3)
-[![Watch the video](https://img.youtube.com/vi/vXwE1XRzi1s/maxresdefault.jpg)](https://youtu.be/vXwE1XRzi1s)
+[![YouTube](https://img.shields.io/badge/YouTube-%23FF0000.svg?style=for-the-badge&logo=YouTube&logoColor=white)](https://youtu.be/vXwE1XRzi1s)
 
 [🚀 Live Demo](https://nielitropar.github.io) • [Database](https://docs.google.com/spreadsheets/d/1FbYvYiawnVn8QpjwlHPRlJMtICFSerQR9ljbrg2dDAs/edit?usp=sharing) • [📱 Android App](https://github.com/nielitropar/nielitropar.github.io/releases/tag/v1.0) • [📖 Documentation](#documentation) • [🐛 Report Bug](https://github.com/nielitropar/nielitropar.github.io/issues) • [✨ Request Feature](https://github.com/nielitropar/nielitropar.github.io/issues)
 
