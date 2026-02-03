@@ -412,6 +412,8 @@
             position: relative;
             z-index: 1;
             animation: slideUp 0.5s ease-out;
+            max-height: 90vh;
+            overflow-y: auto;
         }
 
         @keyframes slideUp {
@@ -750,6 +752,40 @@
             word-wrap: break-word;
         }
 
+        /* NEW STYLES FOR SIGNUP FILTERS */
+        .skills-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 5px;
+        }
+
+        .skill-chip {
+            background: white;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            padding: 8px 16px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            color: var(--text-secondary);
+            font-weight: 500;
+            transition: all 0.2s ease;
+            user-select: none;
+        }
+
+        .skill-chip:hover {
+            border-color: var(--accent);
+            transform: translateY(-2px);
+        }
+
+        .skill-chip.active {
+            background: rgba(0, 102, 204, 0.1);
+            border-color: var(--accent);
+            color: var(--accent);
+            font-weight: 700;
+            box-shadow: 0 4px 8px rgba(0, 102, 204, 0.15);
+        }
+
         /* RESPONSIVE BREAKPOINTS */
 
         @media (max-width: 1200px) {
@@ -964,10 +1000,25 @@
                     <input type="password" id="signupPass" class="form-input" required minlength="6"
                         placeholder="Minimum 6 characters">
                 </div>
+
                 <div class="form-group">
-                    <label>Major / Stream</label>
-                    <input type="text" id="signupMajor" class="form-input" placeholder="e.g. Computer Science">
+                    <label>Course / Stream</label>
+                    <select id="signupCourse" class="form-input" style="background: white;" required>
+                        <option value="" disabled selected>Select your course</option>
+                        <option value="B.TECH">💻 B.TECH</option>
+                        <option value="M.TECH">🎓 M.TECH</option>
+                        <option value="NIELIT">⚡ NIELIT</option>
+                    </select>
                 </div>
+
+                <div class="form-group">
+                    <label>Interests / Skills</label>
+                    <div class="skills-container">
+                        <div class="skill-chip" onclick="toggleSkill(this, 'AIML')">🤖 AIML</div>
+                        <div class="skill-chip" onclick="toggleSkill(this, 'Python')">🐍 Python</div>
+                    </div>
+                </div>
+
                 <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Sign Up</button>
             </form>
             <p style="margin-top: 1.5rem;">
@@ -1279,11 +1330,12 @@
         </div>
     </div>
 
-    <script src="config.js"></script>
+<script src="config.js"></script>
 
     <script>
         // CONFIGURATION
         const SHEET_URL = CONFIG.SHEET_URL;
+        // Ensure these match exactly what is in your config.js
         const CLOUDINARY_NAME = CONFIG.CLOUDINARY_NAME;
         const CLOUDINARY_PRESET = CONFIG.CLOUDINARY_PRESET;
 
@@ -1295,8 +1347,9 @@
         let hasMoreProjects = true;
         let isLoading = false;
         let searchTimeout = null;
+        let selectedSkills = []; // Stores the selected skills during signup
 
-        // [NEW] Search State
+        // Search State
         let searchIndex = [];
         let fuse;
 
@@ -1308,7 +1361,6 @@
                     localStorage.removeItem('openPostModal');
                     openModal('project');
                 }
-                // [NEW] Load the search index in the background
                 loadSearchIndex();
             } else {
                 toggleAuth('login');
@@ -1349,7 +1401,7 @@
             }
 
             loadProjects();
-            fetchTrending(); // Fetch Smart Trending List
+            fetchTrending();
         }
 
         function showSection(section) {
@@ -1385,21 +1437,65 @@
             }
         }
 
+        // --- SKILL TOGGLE FUNCTION ---
+        function toggleSkill(element, skill) {
+            element.classList.toggle('active');
+            if (selectedSkills.includes(skill)) {
+                selectedSkills = selectedSkills.filter(s => s !== skill);
+            } else {
+                selectedSkills.push(skill);
+            }
+        }
+
+        // --- UPDATED SIGNUP HANDLER ---
         async function handleSignup(e) {
             e.preventDefault();
             const btn = e.target.querySelector('button[type="submit"]');
             btn.textContent = 'Creating Account...';
             btn.disabled = true;
 
+            // Get Course Dropdown Value
+            const course = document.getElementById('signupCourse').value;
+            
+            if (!course) {
+                alert("Please select a Course / Stream");
+                btn.textContent = 'Sign Up';
+                btn.disabled = false;
+                return;
+            }
+
+            // Combine Course and Skills
+            let combinedMajor = course;
+            if (selectedSkills.length > 0) {
+                combinedMajor += ` (${selectedSkills.join(', ')})`;
+            }
+
             const file = document.getElementById('signupPic').files[0];
             let picUrl = '';
-            if (file) picUrl = await uploadImage(file);
+            
+            // Try uploading if file exists
+            if (file) {
+                try {
+                    picUrl = await uploadImage(file);
+                    if (!picUrl) {
+                        // If upload failed but returned null (handled error), continue without pic
+                        console.warn("Continuing signup without profile picture due to upload error.");
+                        picUrl = ''; 
+                    }
+                } catch (err) {
+                    console.error("Critical upload error:", err);
+                    alert("Image upload failed. Please check your internet connection.");
+                    btn.textContent = 'Sign Up';
+                    btn.disabled = false;
+                    return;
+                }
+            }
 
             const data = {
                 name: document.getElementById('signupName').value,
                 email: document.getElementById('signupEmail').value,
                 password: document.getElementById('signupPass').value,
-                major: document.getElementById('signupMajor').value,
+                major: combinedMajor, 
                 profilePicture: picUrl
             };
 
@@ -1425,7 +1521,7 @@
             }
         }
 
-        // --- PROJECTS (SERVER-SIDE PAGINATION) ---
+        // --- PROJECTS ---
         async function loadProjects(append = false) {
             if (isLoading) return;
             isLoading = true;
@@ -1459,7 +1555,7 @@
             }
         }
 
-        // [NEW] SMART TRENDING FETCH
+        // --- TRENDING ---
         async function fetchTrending() {
             try {
                 const res = await fetch(`${SHEET_URL}?action=getTrending`);
@@ -1469,7 +1565,6 @@
                 const mobileContainer = document.getElementById('mobileTrendingList');
 
                 if (json.status === 'success' && json.data.length > 0) {
-                    // Desktop HTML (Vertical List)
                     const desktopHtml = json.data.map((p, i) => `
                         <div class="trending-item" onclick="window.location.href='index.html?email=${p.authorEmail}'">
                             <div style="display: flex; gap: 0.5rem; align-items: start;">
@@ -1486,7 +1581,6 @@
 
                     if (desktopContainer) desktopContainer.innerHTML = desktopHtml;
 
-                    // Mobile HTML (Horizontal Cards)
                     const mobileHtml = json.data.map((p, i) => `
                         <div class="mobile-trend-card" onclick="window.location.href='index.html?email=${p.authorEmail}'">
                             <div style="display:flex; justify-content:space-between; margin-bottom:0.5rem;">
@@ -1583,7 +1677,7 @@
             loadProjects(true);
         }
 
-        // [NEW] Fetch the lightweight index
+        // --- SEARCH ---
         async function loadSearchIndex() {
             try {
                 const res = await fetch(`${SHEET_URL}?action=getSearchIndex`);
@@ -1591,11 +1685,9 @@
 
                 if (json.status === 'success') {
                     searchIndex = json.data;
-
-                    // Configure Fuse.js
                     const options = {
                         keys: ['title', 'authorName', 'tech', 'category', 'description'],
-                        threshold: 0.3, // 0.0 = exact match, 1.0 = loose match
+                        threshold: 0.3, 
                         ignoreLocation: true
                     };
                     fuse = new Fuse(searchIndex, options);
@@ -1604,25 +1696,20 @@
             } catch (e) { console.error("Index load failed", e); }
         }
 
-        // [UPDATED] Handle Search Logic
         function handleSearch(term) {
             const container = document.getElementById('projectsList');
             const loadMoreBtn = document.getElementById('loadMoreContainer');
 
-            // 1. If search is empty, go back to the standard Feed
             if (!term || term.trim() === '') {
                 currentSearchTerm = '';
                 if (loadMoreBtn) loadMoreBtn.style.display = 'block';
-
-                // Only reload if we were previously searching to avoid flickering
                 if (container.dataset.mode === 'search') {
                     container.dataset.mode = 'feed';
-                    loadProjects(false); // Reload normal feed
+                    loadProjects(false);
                 }
                 return;
             }
 
-            // 2. Perform Client-Side Search (Instant)
             container.dataset.mode = 'search';
             if (loadMoreBtn) loadMoreBtn.style.display = 'none';
 
@@ -1635,7 +1722,6 @@
             renderSearchResults(results);
         }
 
-        // [NEW] Render simplified search results
         function renderSearchResults(results) {
             const container = document.getElementById('projectsList');
 
@@ -1672,6 +1758,7 @@
             loadProjects(false);
         }
 
+        // --- POSTING PROJECT ---
         async function handlePostProject(e) {
             e.preventDefault();
             const btn = e.target.querySelector('button[type="submit"]');
@@ -1680,7 +1767,18 @@
 
             const file = document.getElementById('postImage').files[0];
             let imgUrl = '';
-            if (file) imgUrl = await uploadImage(file);
+            
+            if (file) {
+                try {
+                    imgUrl = await uploadImage(file);
+                    if (!imgUrl) throw new Error("Upload failed");
+                } catch(err) {
+                    alert("Failed to upload project image. Please try again.");
+                    btn.textContent = 'Post';
+                    btn.disabled = false;
+                    return;
+                }
+            }
 
             const project = {
                 id: Date.now().toString(),
@@ -1703,6 +1801,7 @@
             loadProjects(false);
         }
 
+        // --- EDIT PROFILE ---
         async function handleEditProfile(e) {
             e.preventDefault();
             const btn = e.target.querySelector('button[type="submit"]');
@@ -1711,12 +1810,16 @@
 
             const imgFile = document.getElementById('editPic').files[0];
             let picUrl = currentUser.profilePicture;
-            if (imgFile) picUrl = await uploadImage(imgFile);
+            if (imgFile) {
+                const url = await uploadImage(imgFile);
+                if (url) picUrl = url;
+            }
 
             const resumeFile = document.getElementById('editResumeFile').files[0];
             let resumeUrl = currentUser.resume || '';
             if (resumeFile) {
-                resumeUrl = await uploadFile(resumeFile);
+                const url = await uploadFile(resumeFile);
+                if (url) resumeUrl = url;
             }
 
             const updatedData = {
@@ -1865,16 +1968,41 @@
             }).then(r => r.json());
         }
 
+        // --- UPDATED UPLOAD IMAGE FUNCTION (ROBUST) ---
         async function uploadImage(file) {
+            // Check if config exists
+            if (!CLOUDINARY_NAME || !CLOUDINARY_PRESET) {
+                alert("Cloudinary configuration missing in config.js");
+                return null;
+            }
+
             const formData = new FormData();
             formData.append('file', file);
             formData.append('upload_preset', CLOUDINARY_PRESET);
-            const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_NAME}/image/upload`, { method: 'POST', body: formData });
-            const data = await res.json();
-            return data.secure_url;
+
+            try {
+                const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_NAME}/image/upload`, { 
+                    method: 'POST', 
+                    body: formData 
+                });
+
+                if (!res.ok) {
+                    const err = await res.json();
+                    throw new Error(err.error?.message || 'Upload failed');
+                }
+
+                const data = await res.json();
+                return data.secure_url;
+            } catch (error) {
+                console.error("Image upload error:", error);
+                alert("Failed to upload image. Error: " + error.message);
+                return null;
+            }
         }
 
         async function uploadFile(file) {
+            if (!CLOUDINARY_NAME || !CLOUDINARY_PRESET) return null;
+
             const formData = new FormData();
             formData.append('file', file);
             formData.append('upload_preset', CLOUDINARY_PRESET);
@@ -1895,6 +2023,7 @@
 
             } catch (err) {
                 console.error('Upload Error:', err);
+                alert("File upload failed: " + err.message);
                 return null;
             }
         }
